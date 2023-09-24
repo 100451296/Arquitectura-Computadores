@@ -6,5 +6,3 @@ build/
 *.exe
 *.out
 *.log
-*.txt
-*.pdf
