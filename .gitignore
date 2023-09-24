@@ -1,0 +1,10 @@
+# Archivos y carpetas que se deben ignorar
+build/
+*.o
+*.a
+*.so
+*.exe
+*.out
+*.log
+*.txt
+*.pdf
