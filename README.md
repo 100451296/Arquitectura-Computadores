@@ -5,4 +5,4 @@
   
 ## Compilacion
   1) Después de clonar el proyecto ejecuta ```bash build.sh```. Esto crea la carpeta build y genera una carpeta por cada componente. En esta carpeta se compila el codigo fuente.
-  2) Dentro de la carpeta build ejecuta ```make```. Esto compila el proyecto entero. Si solo quieres compilar un componente, ejecuta make dentro de su carpeta en build.
+  2) Dentro de la carpeta build ejecuta ```make```. Esto compila el proyecto entero. Si solo quieres compilar un componente, ejecuta ```make``` dentro de su carpeta en build.
