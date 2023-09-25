@@ -1,6 +1,6 @@
 # Arquitectura-Computadores
 
-## Simulación 3D del proyecto
+## Video de ejemplo
   [Este vídeo](https://www.youtube.com/watch?v=FRoIgCHV93U) es una simulación de lo que vamos a programar. Se ve que las partículas se agrupan en bloques y se ubican dentro de la malla. En cada iteración los distintos parámetros afectan a como se colisionan y mueven los bloques de partículas.
   
 ## Compilacion
