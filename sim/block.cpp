@@ -4,7 +4,8 @@
 
 using namespace std;
 
-int block() {  // Función para probar que los metodos funcionen
+// Función para probar los metodos
+int block() {
   // Crear dos arreglos de partículas
   Particle particles1[3];
   Particle particles2[3];
@@ -38,8 +39,11 @@ int block() {  // Función para probar que los metodos funcionen
 
   // Realizar otras operaciones o pruebas con los bloques aquí
   block1.densityIncrease(block2);
+
   return 0;
 }
+
+// METODOS de BLOCK
 
 void Block::initVectors() {
   fill(this->accelerations.begin(), this->accelerations.end(), 0);
