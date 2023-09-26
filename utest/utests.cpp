@@ -1,7 +1,10 @@
-#include "grid_test.hpp"
 #include <iostream>
 
+#include "../sim/block.hpp"
+#include "grid_test.hpp"
+
 int main() {
-	std::cout << GRID_SIZE << std::endl;	
-	return 0;
+  std::cout << GRID_SIZE << std::endl;
+  block();
+  return 0;
 }

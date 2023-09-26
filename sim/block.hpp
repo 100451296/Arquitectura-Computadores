@@ -1,0 +1,46 @@
+// Block Class
+
+#ifndef BLOCK
+#define BLOCK
+
+#include <vector>
+
+using namespace std;
+
+int block();
+
+struct Particle {
+  unsigned int id;
+  double posX;
+  double posY;
+  double posZ;
+  double smoothVecX;
+  double smoothVecY;
+  double smoothVecZ;
+  double velX;
+  double velY;
+  double velZ;
+} typedef Particle;
+
+class Block {
+  // Representa una clase en la malla. Realizará todos los cálculos entre
+  // partículas
+ public:
+  vector<Particle*> particlesId;
+  vector<double> accelerations;
+  vector<double> densities;
+
+  void initVectors();
+
+  void densityIncrease(Block& contiguousBlock);
+  void accelerationTransfer(Block& contiguousBlock);
+  void collisionsX(unsigned int cx);
+  void collisionsY(unsigned int cy);
+  void collisionsZ(unsigned int cz);
+  void particleMotion();
+  void interactionsX(unsigned int cx);
+  void interactionsY(unsigned int cy);
+  void interactionsZ(unsigned int cz);
+};
+
+#endif
