@@ -50,6 +50,7 @@ class Block {
   vector<double> accelerations;
   vector<double> densities;
 
+  void addParticle(Particle* particle);
   void initVectors();
 
   void densityIncrease(Block& contiguousBlock);
