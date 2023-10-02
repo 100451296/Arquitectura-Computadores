@@ -16,3 +16,6 @@
   - C++
   - CMake Tools: Sirve para hacer build y make del proyecto de manera más rápida
   - Code Runner: Permite ejecutar el proyecto o componentes separadas de manera más rápida
+
+## Clang
+Explicacion
