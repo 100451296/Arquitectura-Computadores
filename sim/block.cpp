@@ -4,6 +4,8 @@
 
 using namespace std;
 
+// coment
+
 // Función para probar los metodos
 int block() {
   // Crear dos arreglos de partículas
