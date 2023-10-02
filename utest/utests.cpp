@@ -1,10 +1,9 @@
-#include <iostream>
+#include <gtest/gtest.h>
 
-#include "../sim/block.hpp"
-#include "grid_test.hpp"
+int main(int argc, char** argv) {
+  // Inicializa Google Test
+  ::testing::InitGoogleTest(&argc, argv);
 
-int main() {
-  std::cout << GRID_SIZE << std::endl;
-  block();
-  return 0;
+  // Ejecuta todas las pruebas
+  return RUN_ALL_TESTS();
 }
