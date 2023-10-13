@@ -4,7 +4,7 @@
 
 using namespace std;
 
-// coment 2
+// QUE SI QUE NO
 
 // Función para probar los metodos
 int block() {
