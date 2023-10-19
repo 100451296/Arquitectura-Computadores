@@ -1,7 +1,4 @@
-#include <iostream>
-//Biblioteca que sirve para hacer uso de clases y funciones para operaciones de entrada y salida de archivos
-#include <fstream>
-#include <utility>
+#include "progargs.hpp"
 using namespace std;
 
 
