@@ -17,4 +17,4 @@ int comparacion_cantidad_particulas(int num_particles, int particles_contadas);
 int leer_archivo_entrada(string input_file);
 int progargs(int argc, const string & arg1, const string & arg2, const string & arg3);
 
-#endif // MY_PROGRAM_HPP
+#endif 
