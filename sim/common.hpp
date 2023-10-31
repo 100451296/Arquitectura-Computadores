@@ -17,3 +17,16 @@
 #define LIMITE_INFERIOR_RECINTO_X -0.065
 #define LIMITE_INFERIOR_RECINTO_Y -0.08
 #define LIMITE_INFERIOR_RECINTO_Z -0.065
+
+struct Particle {
+  unsigned int id;
+  double posX;
+  double posY;
+  double posZ;
+  double smoothVecX;
+  double smoothVecY;
+  double smoothVecZ;
+  double velX;
+  double velY;
+  double velZ;
+} typedef Particle;

@@ -11,19 +11,6 @@ using namespace std;
 
 int block();
 
-struct Particle {
-  unsigned int id;
-  double posX;
-  double posY;
-  double posZ;
-  double smoothVecX;
-  double smoothVecY;
-  double smoothVecZ;
-  double velX;
-  double velY;
-  double velZ;
-} typedef Particle;
-
 class Block {
   // Representa un bloque en la malla. Realizará todos los cálculos entre
   // partículas
