@@ -42,7 +42,7 @@ struct Particles {
 class Grid {
   // Representa la malla. Contendrá todas las partículas y la matriz de bloques
  public:
-  Particles particles;
+  Particles particles; // AoS
 };
 
 #endif
