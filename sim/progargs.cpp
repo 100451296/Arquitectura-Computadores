@@ -111,6 +111,7 @@ int progargs(int argc, const string & arg1, const string & arg2, const string & 
     // Se llama a cada una de las funciones en las que se realizan las comprobaciones
     //Para la primera comprobacion se recibe como parametro el numero de argumentos del mandato
     //Para la segunda comprobacion se recibe como parametro el segundo valor del mandato, que corresponderia con el primer argumento que nos interesa
+    
     int comp1 = comprobacion_num_param(argc);
     if (comp1 == -1){
         return -1;
@@ -133,6 +134,6 @@ int progargs(int argc, const string & arg1, const string & arg2, const string & 
     if (comp5 == -1){
         return -1;
     }
-    cout << "Hola" << endl;
+
     return 0;
 } 
