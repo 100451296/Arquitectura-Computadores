@@ -29,6 +29,18 @@ int block() {
   Block block1;
   Block block2;
 
+  // Crear parejas de un mismo bloque
+  void Block::generarParejasBloque(){
+    // Generar pares dentro del bloque actual
+    for (size_t i = 0; i < particlesId.size(); ++i) {
+        for (size_t j = i + 1; j < particlesId.size(); ++j) {
+            particlePairs.push_back(std::make_pair(particlesId[i], particlesId[j]));
+            
+        }
+    }
+
+  }
+
   // Añadir las partículas del primer arreglo al primer bloque
   for (int i = 0; i < 3; i++) {
     block1.addParticle(particles1[i]);
@@ -55,8 +67,8 @@ void Block::initVectors() {
 // Función para añadir una partícula al vector
 void Block::addParticle(Particle &particle) {
   this->particlesId.push_back(particle);
-  this->accelerations.push_back(0.0);  // Agrega una entrada 0 a accelerations
-  this->densities.push_back(0.0);      // Agrega una entrada 0 a densities
+  this->accelerations.push_back(0.0);  //Agrega una entrada 0 a accelerations
+  this->densities.push_back(0.0);      //Agrega una entrada 0 a densities
 }
 
 void Block::densityIncrease(Block& contiguousBlock) {

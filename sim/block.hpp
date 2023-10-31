@@ -18,10 +18,11 @@ class Block {
   vector<Particle> particlesId;
   vector<double> accelerations;
   vector<double> densities;
+  vector<std::pair<Particle, Particle>> particlePairs;
+  
 
   void addParticle(Particle &particle);
   void initVectors();
-
   void densityIncrease(Block& contiguousBlock);
   void accelerationTransfer(Block& contiguousBlock);
   void collisionsX(unsigned int cx);
@@ -31,6 +32,7 @@ class Block {
   void interactionsX(unsigned int cx);
   void interactionsY(unsigned int cy);
   void interactionsZ(unsigned int cz);
+  void generarParejasBloque();
 };
 
 #endif
