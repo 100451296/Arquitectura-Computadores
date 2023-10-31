@@ -41,7 +41,7 @@ int block() {
 
   // Realizar otras operaciones o pruebas con los bloques aquí
   block1.densityIncrease(block2);
-
+  cout << "bloque2 " << block2.particlesId[0]->posX << endl;
   return 0;
 }
 
@@ -64,7 +64,7 @@ void Block::densityIncrease(Block& contiguousBlock) {
   // del contiguo incluyendo la transformación lineal
 
   Block aux = contiguousBlock;  // Borrar linea
-
+  aux.particlesId[0]->posX= 0.07;
   cout << "Incremento de densidades" << endl;
   // Tu código aquí
 }
