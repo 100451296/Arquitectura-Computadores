@@ -15,11 +15,11 @@ class Block {
   // Representa un bloque en la malla. Realizará todos los cálculos entre
   // partículas
  public:
-  vector<Particle*> particlesId;
+  vector<Particle> particlesId;
   vector<double> accelerations;
   vector<double> densities;
 
-  void addParticle(Particle* particle);
+  void addParticle(Particle &particle);
   void initVectors();
 
   void densityIncrease(Block& contiguousBlock);

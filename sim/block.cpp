@@ -31,12 +31,12 @@ int block() {
 
   // Añadir las partículas del primer arreglo al primer bloque
   for (int i = 0; i < 3; i++) {
-    block1.addParticle(&particles1[i]);
+    block1.addParticle(particles1[i]);
   }
 
   // Añadir las partículas del segundo arreglo al segundo bloque
   for (int i = 0; i < 3; i++) {
-    block2.addParticle(&particles2[i]);
+    block2.addParticle(particles2[i]);
   }
 
   // Realizar otras operaciones o pruebas con los bloques aquí
@@ -53,7 +53,7 @@ void Block::initVectors() {
 }
 
 // Función para añadir una partícula al vector
-void Block::addParticle(Particle* particle) {
+void Block::addParticle(Particle &particle) {
   this->particlesId.push_back(particle);
   this->accelerations.push_back(0.0);  // Agrega una entrada 0 a accelerations
   this->densities.push_back(0.0);      // Agrega una entrada 0 a densities
