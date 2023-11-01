@@ -4,6 +4,7 @@
 #include <cmath>
 #include "../sim/progargs.hpp"
 #include "../sim/block.hpp"
+#include "../sim/grid.hpp"
 
 int main(int argc, char* argv[]) {
     using namespace std;
@@ -17,7 +18,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int resultado = progargs(argc, argv[1], argv[2], argv[3]);
+    int resultado = progargs(argc, argv[1], argv[2], argv[3]); // Validaciones 
 
    
 	
@@ -67,6 +68,16 @@ int main(int argc, char* argv[]) {
     std::cout << "Number of blocks: " << num_blocks << std::endl;
     std::cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
 
+    
+    Grid grid(nx, ny, nz);
+    
+    
+    
+    
+    
+    
+    
+    
     // Valida archivo de salida
     std::ofstream output_file(output_file_name, std::ios::binary);
     if (!output_file.is_open()) {
@@ -77,7 +88,7 @@ int main(int argc, char* argv[]) {
 	// Escribe la cabecera (ppm y numero de particulas)
     output_file.write(reinterpret_cast<char*>(&ppm), sizeof(float));
     output_file.write(reinterpret_cast<char*>(&num_particles), sizeof(int));
-	
+
 	// Escribe particulas
     for (int i = 0; i < num_particles; ++i) {
         output_file.write(reinterpret_cast<char*>(&particles[i]), sizeof(Particle));
