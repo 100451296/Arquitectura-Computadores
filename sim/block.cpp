@@ -1,84 +1,97 @@
 #include "block.hpp"
-
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
-// QUE SI QUE NO
-
-// Función para probar los metodos
-int block() {
-  // Crear dos arreglos de partículas
-  Particle particles1[3];
-  Particle particles2[3];
-
-  // Inicializar las partículas con algunos valores de ejemplo
-  for (int i = 0; i < 3; i++) {
-    particles1[i].id = i;
-    particles1[i].posX = i * 1.0;
-    particles1[i].posY = i * 1.0;
-    particles1[i].posZ = i * 1.0;
-
-    particles2[i].id = i + 3;  // Asegurarse de que las ID sean diferentes
-    particles2[i].posX = (i + 3) * 1.0;
-    particles2[i].posY = (i + 3) * 1.0;
-    particles2[i].posZ = (i + 3) * 1.0;
-  }
-
-  // Crear dos bloques
-  Block block1;
-  Block block2;
-
-  // Crear parejas de un mismo bloque
-  void Block::generarParejasBloque(){
-    // Generar pares dentro del bloque actual
-    for (size_t i = 0; i < particlesId.size(); ++i) {
-        for (size_t j = i + 1; j < particlesId.size(); ++j) {
-            particlePairs.push_back(std::make_pair(particlesId[i], particlesId[j]));
-            
-        }
-    }
-
-  }
-
-  // Añadir las partículas del primer arreglo al primer bloque
-  for (int i = 0; i < 3; i++) {
-    block1.addParticle(particles1[i]);
-  }
-
-  // Añadir las partículas del segundo arreglo al segundo bloque
-  for (int i = 0; i < 3; i++) {
-    block2.addParticle(particles2[i]);
-  }
-
-  // Realizar otras operaciones o pruebas con los bloques aquí
-  block1.densityIncrease(block2);
-  cout << "bloque2 " << block2.particlesId[0].posX << endl;
-  return 0;
-}
 
 // METODOS de BLOCK
 
-void Block::initVectors() {
-  fill(this->accelerations.begin(), this->accelerations.end(), 0);
-  fill(this->densities.begin(), this->densities.end(), 0);
+// Crear parejas de un mismo bloque
+void Block::generarParejasBloque() {
+  // Generar pares dentro del bloque actual
+  for (int i = 0; i < particles.size(); ++i) {
+    for (int j = i + 1; j < particles.size(); ++j) {
+      particlePairs.push_back(std::make_pair(particles[i], particles[j]));      
+    }
+  }
 }
 
-// Función para añadir una partícula al vector
+// Crear parejas de dos bloques contiguos
+vector<std::pair<Particle, Particle>> Block::generarParejasEntreBloques(Block& otherBlock) {
+    // Generar pares entre el bloque actual y el bloque contiguo
+    vector<std::pair<Particle, Particle>> aux;
+    for (int i = 0; i < particles.size(); ++i) {
+        for (int j = 0; j < otherBlock.particles.size(); ++j) {
+            aux.push_back(std::make_pair(particles[i], otherBlock.particles[j]));
+        }
+    }
+    return aux;
+};
+
+/*void Block::initVectors() {
+  fill(this->accelerations.begin(), this->accelerations.end(), 0);
+  fill(this->densities.begin(), this->densities.end(), 0);
+}*/
+
+/*// Función para añadir una partícula al vector
 void Block::addParticle(Particle &particle) {
-  this->particlesId.push_back(particle);
+  this->particles.push_back(particle);
   this->accelerations.push_back(0.0);  //Agrega una entrada 0 a accelerations
   this->densities.push_back(0.0);      //Agrega una entrada 0 a densities
+}*/
+
+// Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un bloque
+void Block::calculateDataCommon() {
+  data.mass = DENSIDAD_FLUIDO / pow(data.ppm, 3);
+  data.long_suavizado = MULTIPLICADOR_RADIO / data.ppm;
+}
+
+// Funcion inicializar la densidad y la aceleracion para cada particula
+void Block::initDensityAcceleration() {
+  for (int i = 0; i < aceleration_x.size(); ++i){
+    density[i] = 0;
+    aceleration_x[i] = ACELERACION_GRAVEDAD_X;
+    aceleration_y[i] = ACELERACION_GRAVEDAD_Y;
+    aceleration_z[i] = ACELERACION_GRAVEDAD_Z;
+  }
 }
 
 void Block::densityIncrease(Block& contiguousBlock) {
-  // Funcion encarga de modificar el vector de densidades del propio bloque y
-  // del contiguo incluyendo la transformación lineal
+  // Funcion encargada de modificar el vector de densidades del propio bloque
+  // Parte del bloque actual
+  double aux_x, aux_y, aux_z, increm_density_pair;
+  for (const auto& pair : block.particlePairs){
+    aux_x = pow(pair.first.posX - pair.second.posX, 2);
+    aux_y = pow(pair.first.posY - pair.second.posY, 2);
+    aux_z = pow(pair.first.posZ - pair.second.posZ, 2);
+    if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)){
+      increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
+    }else{
+      increm_density_pair = 0;
+    }
+    density[pair.first.id] = density[pair.first.id] + increm_density_pair;
+    density[pair.second.id] = density[pair.second.id] + increm_density_pair;
+  }
+  // Parte del bloque contiguo
+  vector<std::pair<Particle, Particle>> aux;
+  aux = generarParejasEntreBloques(contiguousBlock);
+  for (const auto& pair : aux){
+    aux_x = pow(pair.first.posX - pair.second.posX, 2);
+    aux_y = pow(pair.first.posY - pair.second.posY, 2);
+    aux_z = pow(pair.first.posZ - pair.second.posZ, 2);
+    if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)){
+      increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
+    }else{
+      increm_density_pair = 0;
+    }
+    density[pair.first.id] = density[pair.first.id] + increm_density_pair;
+    density[pair.second.id] = density[pair.second.id] + increm_density_pair;
+  }
+}
 
-  // Borrar linea
-  contiguousBlock.particlesId[0].posX= 0.07;
-  cout << "Incremento de densidades" << endl;
-  // Tu código aquí
+void lineal_transformate_density(particle& Particle) {
+  
 }
 
 void Block::accelerationTransfer(Block& contiguousBlock) {

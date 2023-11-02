@@ -1,3 +1,6 @@
+#ifndef COMMON
+#define COMMON
+
 #define MULTIPLICADOR_RADIO 1.695
 #define DENSIDAD_FLUIDO 103
 #define PRESION_RIGIDEZ 3.0
@@ -30,3 +33,11 @@ struct Particle {
   double velY;
   double velZ;
 } typedef Particle;
+
+struct DataCommon {
+  double ppm;
+  double mass;
+  double long_suavizado;
+} typedef DataCommon;
+
+#endif
