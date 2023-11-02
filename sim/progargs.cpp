@@ -94,7 +94,7 @@ int leer_archivo_entrada(string num_iter_file){
 }
 
 
-int progargs(int num_params, const string & num_iter, const string & input, const string & output) {
+int proargs_validations(int num_params, const string & num_iter, const string & input, const string & output) {
     // Comprobación numero parametros
     if (comprobacion_num_param(num_params) == -1) return -1;
     
@@ -110,7 +110,6 @@ int progargs(int num_params, const string & num_iter, const string & input, cons
     // Comprobacion de archivo de salida 
     if (comprobacion_archivo_escritura(output) == -1) return -1;
 
-
-
     return 0;
 } 
+

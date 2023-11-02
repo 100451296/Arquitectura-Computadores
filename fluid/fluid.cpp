@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    int resultado = progargs(argc, argv[1], argv[2], argv[3]); // Validaciones 
+    int resultado = proargs_validations(argc, argv[1], argv[2], argv[3]); // Validaciones 
 
    
 	
