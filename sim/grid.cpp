@@ -1,4 +1,4 @@
 int grid() {
-    // Código de las pruebas unitarias
-    return 0;
+  // Código de las pruebas unitarias
+  return 0;
 }
