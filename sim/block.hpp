@@ -35,7 +35,9 @@ class Block {
   void interactionsY(unsigned int cy);
   void interactionsZ(unsigned int cz);
   void generarParejasBloque();
-  vector<std::pair<Particle, Particle>> Block::generarParejasEntreBloques(Block& otherBlock);
+  vector<std::pair<Particle, Particle>> generarParejasEntreBloques(Block& otherBlock);
+  void calculateDataCommon();
+  void initDensityAcceleration();
 };
 
 #endif

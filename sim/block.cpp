@@ -10,8 +10,8 @@ using namespace std;
 // Crear parejas de un mismo bloque
 void Block::generarParejasBloque() {
   // Generar pares dentro del bloque actual
-  for (int i = 0; i < particles.size(); ++i) {
-    for (int j = i + 1; j < particles.size(); ++j) {
+  for (size_t i = 0; i < particles.size(); ++i) {
+    for (size_t j = i + 1; j < particles.size(); ++j) {
       particlePairs.push_back(std::make_pair(particles[i], particles[j]));      
     }
   }
@@ -21,8 +21,8 @@ void Block::generarParejasBloque() {
 vector<std::pair<Particle, Particle>> Block::generarParejasEntreBloques(Block& otherBlock) {
     // Generar pares entre el bloque actual y el bloque contiguo
     vector<std::pair<Particle, Particle>> aux;
-    for (int i = 0; i < particles.size(); ++i) {
-        for (int j = 0; j < otherBlock.particles.size(); ++j) {
+    for (size_t i = 0; i < particles.size(); ++i) {
+        for (size_t j = 0; j < otherBlock.particles.size(); ++j) {
             aux.push_back(std::make_pair(particles[i], otherBlock.particles[j]));
         }
     }
@@ -49,11 +49,11 @@ void Block::calculateDataCommon() {
 
 // Funcion inicializar la densidad y la aceleracion para cada particula
 void Block::initDensityAcceleration() {
-  for (int i = 0; i < aceleration_x.size(); ++i){
+  for (size_t i = 0; i < acelerationX.size(); ++i){
     density[i] = 0;
-    aceleration_x[i] = ACELERACION_GRAVEDAD_X;
-    aceleration_y[i] = ACELERACION_GRAVEDAD_Y;
-    aceleration_z[i] = ACELERACION_GRAVEDAD_Z;
+    acelerationX[i] = ACELERACION_GRAVEDAD_X;
+    acelerationY[i] = ACELERACION_GRAVEDAD_Y;
+    acelerationZ[i] = ACELERACION_GRAVEDAD_Z;
   }
 }
 
@@ -61,7 +61,7 @@ void Block::densityIncrease(Block& contiguousBlock) {
   // Funcion encargada de modificar el vector de densidades del propio bloque
   // Parte del bloque actual
   double aux_x, aux_y, aux_z, increm_density_pair;
-  for (const auto& pair : block.particlePairs){
+  for (const auto& pair : particlePairs){
     aux_x = pow(pair.first.posX - pair.second.posX, 2);
     aux_y = pow(pair.first.posY - pair.second.posY, 2);
     aux_z = pow(pair.first.posZ - pair.second.posZ, 2);
@@ -90,9 +90,9 @@ void Block::densityIncrease(Block& contiguousBlock) {
   }
 }
 
-void lineal_transformate_density(particle& Particle) {
+/*void lineal_transformate_density(particle& Particle) {
   
-}
+}*/
 
 void Block::accelerationTransfer(Block& contiguousBlock) {
   // Funcion que se encarga de actualizar el vector de aceleraciones del propio
