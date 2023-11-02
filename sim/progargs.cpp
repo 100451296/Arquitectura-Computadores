@@ -2,20 +2,20 @@
 using namespace std;
 
 
-int comprobacion_num_param(int argc){
+int comprobacion_num_param(int num_params){
     //Esta comprobacion se encarga de evaluar el numero de argumentos que se reciben como entrada
-    if (argc != 4){
+    if (num_params != 4){
         //En caso de no ser exactamente tres argumentos, se generara un mensaje de error y se termina el programa devolviendo -1
-        cout << "Error: Invalid number of arguments: " << argc << endl;
+        cout << "Error: Invalid number of arguments: " << num_params << endl;
         return -1;
     }
     return 0;
 }
 
-int comprobacion_primer_argumento(const string & arg1){
+int comprobacion_primer_argumento(const string & num_iter){
     /*Esta comprobacion evalua si el primer argumento recibido no es un numero entero.
     En caso de no serlo, muestra un mensaje de error y devuelve -1*/
-    for (char c : arg1){
+    for (char c : num_iter){
         if (!isdigit(c)){
         cout << "Error: time steps must be numeric." << endl;
         return -1;
@@ -24,8 +24,8 @@ int comprobacion_primer_argumento(const string & arg1){
     return 0;
 }
 
-int comprobacion_pasos_tiempo(const string & arg1){
-    int pasos = stoi(arg1);
+int comprobacion_pasos_tiempo(const string & num_iter){
+    int pasos = stoi(num_iter);
     /*Esta comprobacion evalua si el numero de pasos de tiempo (primer argumento recibido) es un numero negativo. 
     En caso de serlo, se genera un mensaje de error y se devuelve -2*/
     if (pasos< 0){
@@ -35,23 +35,23 @@ int comprobacion_pasos_tiempo(const string & arg1){
     return 0;
 }
 
-int comprobacion_archivo_lectura(const string & arg2){
+int comprobacion_archivo_lectura(const string & input){
     /*Esta comprobacion evalua si el archivo de entrada se puede abrir para lectura.
     En caso de que no se pueda, envia un mensaje de error y se devuelve -3 */
-    ifstream entrada(arg2);
+    ifstream entrada(input);
     if (!entrada.is_open()){
-        cout << "Error: Cannot open " << arg2 << "for reading" << endl;
+        cout << "Error: Cannot open " << input << "for reading" << endl;
         return -3;
     }
     return 0;
 }
 
-int comprobacion_archivo_escritura(const string & arg3){
+int comprobacion_archivo_escritura(const string & output){
     /*Esta comprobacion evalua si el archivo de salida no se puede abrir para escritura.
     En caso de que no es evalue, envia un mensaje de error y se devuelve -4*/
-    ofstream salida(arg3);
+    ofstream salida(output);
     if (!salida.is_open()){
-        cout << "Error: Cannot open " << arg3 << "for writing" << endl;
+        cout << "Error: Cannot open " << output << "for writing" << endl;
         return -4;
     }
     return 0;
@@ -75,9 +75,9 @@ int comparacion_cantidad_particulas(int num_particles, int particles_contadas){
     return 0;
 }
 
-int leer_archivo_entrada(string input_file){
+int leer_archivo_entrada(string num_iter_file){
     ifstream fichero;
-    fichero.open(input_file, ios::binary);
+    fichero.open(num_iter_file, ios::binary);
     int num_particles, particles_contadas;
     //Mueve el puntero del archivo. Nos saltamos el valor de ppm para la lectura
     fichero.seekg(sizeof(float),ios::cur);
@@ -94,46 +94,23 @@ int leer_archivo_entrada(string input_file){
 }
 
 
-/*
-int leido_con_exito(const string & arg2){
-    // Imprime parametros
-    cout << "Number of particles: " << obtener_num_particles(arg2) << std::endl;
-    cout << "Particles per meter: " << static_cast<int>(ppm) << std::endl;
-    cout << "Smoothing length: " << h << std::endl;
-    cout << "Particle mass: " << particle_mass << std::endl;
-    cout << "Grid size: " << nx << " x " << ny << " x " << nz << std::endl;
-    cout << "Number of blocks: " << num_blocks << std::endl;
-    cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
-}
-*/
-
-int progargs(int argc, const string & arg1, const string & arg2, const string & arg3) {
-    // Se llama a cada una de las funciones en las que se realizan las comprobaciones
-    //Para la primera comprobacion se recibe como parametro el numero de argumentos del mandato
-    //Para la segunda comprobacion se recibe como parametro el segundo valor del mandato, que corresponderia con el primer argumento que nos interesa
+int progargs(int num_params, const string & num_iter, const string & input, const string & output) {
+    // Comprobación numero parametros
+    if (comprobacion_num_param(num_params) == -1) return -1;
     
-    int comp1 = comprobacion_num_param(argc);
-    if (comp1 == -1){
-        return -1;
-    }
-    if (comprobacion_primer_argumento(arg1) == -1){
-        return -1;
-    }
-    //Para la tercera comprobacion se vuelve a recibir como parametro el segundo valor del mandato, que son los pasos de tiempo (primer argumento)
-    int comp3 = comprobacion_pasos_tiempo(arg1);
-    if (comp3 == -1){
-        return -1;
-    }
-    //Para la cuarta comprobacion se recibe como parametro el tercer valor del mandato, que corresponde al archivo de entrada
-    int comp4 = comprobacion_archivo_lectura(arg2);
-    if (comp4 == -1){
-        return -1;
-    }
-    //Para la quinta comprobacion se recibe como parametro el cuarto valor del mandato, que corresponde al archivo de salida
-    int comp5 = comprobacion_archivo_escritura(arg3);
-    if (comp5 == -1){
-        return -1;
-    }
+    // Comprobación numero de iteraciones 
+    if (comprobacion_primer_argumento(num_iter) == -1) return -1;
+    
+    // Comprobacion numero
+    if (comprobacion_pasos_tiempo(num_iter) == -1) return -1;
+    
+    // Comprobacion archivo de entrada 
+    if (comprobacion_archivo_lectura(input) == -1) return -1;
+
+    // Comprobacion de archivo de salida 
+    if (comprobacion_archivo_escritura(output) == -1) return -1;
+
+
 
     return 0;
 } 
