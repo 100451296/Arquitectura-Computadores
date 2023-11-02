@@ -68,15 +68,3 @@ int main(int argc, char * argv[]) {
 
   return 0;
 }
-<<<<<<< HEAD
-
-/*
-int main(){
-        using namespace std;
-        block();
-        cout << "eeeee" << endl;
-        return 0;
-}
-*/
-=======
->>>>>>> ac2d651 (formateo de codigo)
