@@ -6,47 +6,25 @@
 #include "../sim/block.hpp"
 #include "../sim/grid.hpp"
 
+using namespace std;
+
 int main(int argc, char* argv[]) {
-    using namespace std;
+  
+    // Comprueba parametros
+    if (argc != 4) return 1;
+    if( int resultado = proargs_validations(argc, argv[1], argv[2], argv[3]) != 0) return resultado;
 
-    // Código de la aplicación
-    cout << "Programa main" << std::endl;
-
-     // Comprueba parametros
-    if (argc != 4) {
-        std::cerr << "Uso: " << argv[0] << " <iteraciones> <archivo_entrada> <archivo_salida>" << std::endl;
-        return 1;
-    }
-
-    int resultado = proargs_validations(argc, argv[1], argv[2], argv[3]); // Validaciones 
-
-   
-	
 	// Inicializa variables
     //int num_iterations = std::stoi(argv[1]);
     std::string input_file_name = argv[2];
     std::string output_file_name = argv[3];
-	
-	// Valida archivo de entrada
-    std::ifstream input_file(input_file_name, std::ios::binary);
-    if (!input_file.is_open()) {
-        std::cerr << "Error: no se pudo abrir el archivo de entrada. " << input_file_name << std::endl;
-        return 1;
-    }
-	
-	// Lee particulas x metro y numero de particulas
     float ppm;
     int num_particles;
-    input_file.read(reinterpret_cast<char*>(&ppm), sizeof(float));
-    input_file.read(reinterpret_cast<char*>(&num_particles), sizeof(int));
-	
-	// Lee particulas 
-    std::vector<Particle> particles(num_particles);
-    for (int i = 0; i < num_particles; ++i) {
-        input_file.read(reinterpret_cast<char*>(&particles[i]), sizeof(Particle));
-    }
+    vector<Particle> particles;
 
-    input_file.close();
+    readFile(input_file_name, ppm, num_particles, particles);
+	
+
 
 	// Calcula parametros
     double h = MULTIPLICADOR_RADIO / ppm;
@@ -60,7 +38,7 @@ int main(int argc, char* argv[]) {
     double sz = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / nz;
 
 	// Imprime parametros
-    std::cout << "Number of particles: " << num_particles << std::endl;
+    std::cout << "Number of particles: " << particles.size() << std::endl;
     std::cout << "Particles per meter: " << static_cast<int>(ppm) << std::endl;
     std::cout << "Smoothing length: " << h << std::endl;
     std::cout << "Particle mass: " << particle_mass << std::endl;
@@ -97,7 +75,7 @@ int main(int argc, char* argv[]) {
     output_file.close();
     
     
-    return resultado;
+    return 0;
 }
 
 

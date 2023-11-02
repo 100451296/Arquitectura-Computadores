@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
+#include <vector>
+#include "common.hpp"
 
 using namespace std;
 
@@ -16,5 +18,5 @@ int iniciacion_simulacion(int num_particulas);
 int comparacion_cantidad_particulas(int num_particles, int particles_contadas);
 int leer_archivo_entrada(string input_file);
 int proargs_validations(int argc, const string & arg1, const string & arg2, const string & arg3);
-
+int readFile(const string input_file_name, float &ppm, int &num_particles, vector<Particle> &particles);
 #endif 

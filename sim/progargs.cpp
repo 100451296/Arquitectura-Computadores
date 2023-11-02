@@ -1,4 +1,6 @@
 #include "progargs.hpp"
+
+
 using namespace std;
 
 
@@ -113,3 +115,43 @@ int proargs_validations(int num_params, const string & num_iter, const string & 
     return 0;
 } 
 
+int readFile(const string input_file_name, float &ppm, int &num_particles, vector<Particle> &particles){
+    // Valida archivo de entrada
+    std::ifstream input_file(input_file_name, std::ios::binary);
+    if (!input_file.is_open()) {
+        std::cerr << "Error al abrir el archivo de entrada" << std::endl;
+        return -1;
+    }
+	
+	// Lee particulas x metro y numero de particulas
+    input_file.read(reinterpret_cast<char*>(&ppm), sizeof(float));
+    input_file.read(reinterpret_cast<char*>(&num_particles), sizeof(int));
+	
+	// Verifica si los datos leídos son válidos
+    if (num_particles <= 0) {
+        std::cerr << "Número de partículas inválido" << std::endl;
+        return -1;
+    }
+	
+	// Lee particulas 
+    particles.resize(num_particles);
+    int particles_read = 0;
+    while (particles_read < num_particles) {
+        if (!input_file.read(reinterpret_cast<char*>(&particles[particles_read].posX), sizeof(float) * 9)) {
+            std::cerr << "Error al leer las partículas del archivo" << std::endl;
+            return -1;
+        }
+        particles[particles_read].id = particles_read; // Asigna el valor de particles_read al miembro "id"
+        particles_read++;
+    }
+	
+	// Verifica si el número de partículas leído coincide con el número de partículas esperado
+    if (particles_read != num_particles) {
+        std::cerr << "El número de partículas leído no coincide con el número de partículas esperado" << std::endl;
+        return -1;
+    }
+
+
+    input_file.close();
+    return 0;
+}
