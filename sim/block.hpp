@@ -38,6 +38,8 @@ class Block {
   vector<std::pair<Particle, Particle>> generarParejasEntreBloques(Block& otherBlock);
   void calculateDataCommon();
   void initDensityAcceleration();
+  void lineal_transformate_density();
+  double pow(double base, int exponent);
 };
 
 #endif

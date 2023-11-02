@@ -1,6 +1,6 @@
 #include "block.hpp"
 #include <iostream>
-#include <cmath>
+#include <numbers>
 
 using namespace std;
 
@@ -58,7 +58,7 @@ void Block::initDensityAcceleration() {
 }
 
 void Block::densityIncrease(Block& contiguousBlock) {
-  // Funcion encargada de modificar el vector de densidades del propio bloque
+  // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
   // Parte del bloque actual
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (const auto& pair : particlePairs){
@@ -88,11 +88,15 @@ void Block::densityIncrease(Block& contiguousBlock) {
     density[pair.first.id] = density[pair.first.id] + increm_density_pair;
     density[pair.second.id] = density[pair.second.id] + increm_density_pair;
   }
+  lineal_transformate_density();
 }
 
-/*void lineal_transformate_density(particle& Particle) {
-  
-}*/
+void Block::lineal_transformate_density(){
+
+  for( size_t i = 0 ; i < density.size(); i++){
+    density[i] = (density[i] + pow(data.long_suavizado,6)) * 315 * data.mass/ (64 * std::numbers::pi * pow(data.long_suavizado,9));
+  }
+}
 
 void Block::accelerationTransfer(Block& contiguousBlock) {
   // Funcion que se encarga de actualizar el vector de aceleraciones del propio
@@ -158,4 +162,13 @@ void Block::interactionsZ(unsigned int cz) {
 
   cout << "Interacciones en la dirección Z con valor de cz: " << cz << endl;
   // Tu código aquí
+}
+
+//Metodo para calcular potencias de numeros
+double Block::pow(double base, int exponent) {
+    double result = 1.0;
+    for (int i = 0; i < exponent; ++i) {
+        result *= base;
+    }
+    return result;
 }
