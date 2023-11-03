@@ -24,23 +24,23 @@ class Block {
     vector<double> acelerationZ;
     vector<double> density;
 
-    void addParticle(Particle & particle);
-    void initVectors();
-    void densityIncrease(Block & contiguousBlock);
-    void accelerationTransfer(Block & contiguousBlock);
-    void collisionsX(unsigned int cx);
-    void collisionsY(unsigned int cy);
-    void collisionsZ(unsigned int cz);
-    void particleMotion();
-    void interactionsX(unsigned int cx);
-    void interactionsY(unsigned int cy);
-    void interactionsZ(unsigned int cz);
-    void generarParejasBloque();
-    vector<std::pair<Particle, Particle>> generarParejasEntreBloques(Block & otherBlock);
-    void calculateDataCommon();
-    void initDensityAcceleration();
-    void lineal_transformate_density();
-    double pow(double base, int exponent);
+  void addParticle(Particle &particle);
+  void initVectors();
+  void densityIncrease(Block& contiguousBlock);
+  void accelerationTransfer(Block& contiguousBlock);
+  void collisionsX(unsigned int cx);
+  void collisionsY(unsigned int cy);
+  void collisionsZ(unsigned int cz);
+  void particleMotion();
+  void interactionsX(unsigned int cx);
+  void interactionsY(unsigned int cy);
+  void interactionsZ(unsigned int cz);
+  void generarParejasBloque();
+  vector<std::pair<Particle, Particle>> generarParejasEntreBloques(Block& otherBlock);
+  void calculateDataCommon();
+  void initDensityAcceleration();
+  void lineal_transformate_density();
+  double max(double n1, double n2);
 };
 
 #endif

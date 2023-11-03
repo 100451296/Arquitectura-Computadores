@@ -1,5 +1,5 @@
 #include "block.hpp"
-
+#include <cmath>
 #include <iostream>
 #include <numbers>
 
@@ -12,7 +12,7 @@ void Block::generarParejasBloque() {
   // Generar pares dentro del bloque actual
   for (size_t i = 0; i < particles.size(); ++i) {
     for (size_t j = i + 1; j < particles.size(); ++j) {
-      particlePairs.push_back(std::make_pair(particles[i], particles[j]));
+      particlePairs.push_back(make_pair(particles[i], particles[j]));
     }
   }
 }
@@ -23,7 +23,7 @@ vector<std::pair<Particle, Particle>> Block::generarParejasEntreBloques(Block & 
   vector<std::pair<Particle, Particle>> aux;
   for (size_t i = 0; i < particles.size(); ++i) {
     for (size_t j = 0; j < otherBlock.particles.size(); ++j) {
-      aux.push_back(std::make_pair(particles[i], otherBlock.particles[j]));
+      aux.push_back(make_pair(particles[i], otherBlock.particles[j]));
     }
   }
   return aux;
@@ -59,8 +59,8 @@ void Block::initDensityAcceleration() {
 }
 
 void Block::densityIncrease(Block & contiguousBlock) {
-  // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion
-  // lineal Parte del bloque actual
+  // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
+  // Parte del bloque actual
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
     aux_x = pow(pair.first.posX - pair.second.posX, 2);
@@ -75,8 +75,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
     density[pair.second.id] = density[pair.second.id] + increm_density_pair;
   }
   // Parte del bloque contiguo
-  vector<std::pair<Particle, Particle>> aux;
-  aux = generarParejasEntreBloques(contiguousBlock);
+  vector<std::pair<Particle, Particle>> aux = generarParejasEntreBloques(contiguousBlock);
   for (auto const & pair : aux) {
     aux_x = pow(pair.first.posX - pair.second.posX, 2);
     aux_y = pow(pair.first.posY - pair.second.posY, 2);
@@ -95,18 +94,31 @@ void Block::densityIncrease(Block & contiguousBlock) {
 void Block::lineal_transformate_density() {
   for (size_t i = 0; i < density.size(); i++) {
     density[i] = (density[i] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                 (64 * std::numbers::pi * pow(data.long_suavizado, 9));
+                 (64 * numbers::pi * pow(data.long_suavizado, 9));
   }
 }
 
 void Block::accelerationTransfer(Block & contiguousBlock) {
-  // Funcion que se encarga de actualizar el vector de aceleraciones del propio
-  // bloque y debe calcular la distancia y el incremento
+  // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe calcular la distancia y el incremento
+  // Parte del bloque actual
+  double aux_x, aux_y, aux_z;
+  for (auto const & pair : particlePairs) {
+    aux_x = pair.first.posX - pair.second.posX;
+    aux_y = pair.first.posY - pair.second.posY;
+    aux_z = pair.first.posZ - pair.second.posZ;
+    if (pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2) < pow(data.long_suavizado, 2)){
+      double dist = sqrt(max(pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2), pow(10, -12)));
+      vector<double> position = {aux_x, aux_y, aux_z};
+      vector<double> velocity = {pair.first.velX - pair.second.velX, pair.first.velY - pair.second.velY, pair.first.velZ - pair.second.velZ};
+      vector<double> increm_aceleration = (position * (15 / numbers::pi * pow(data.long_suavizado, 6)) * (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) * (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) + velocity * (45 / numbers::pi * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass) / (density[pair.first.id] * density[pair.second.id]);
 
-  Block aux = contiguousBlock;  // Borrar linea
+    }
+  }
+  // Parte del bloque contiguo
+  vector<std::pair<Particle, Particle>> aux = generarParejasEntreBloques(contiguousBlock);
+  for (auto const & pair : aux) {
 
-  cout << "Transferencia de aceleración" << endl;
-  // Tu código aquí
+  }
 }
 
 void Block::collisionsX(unsigned int cx) {
@@ -165,9 +177,10 @@ void Block::interactionsZ(unsigned int cz) {
   // Tu código aquí
 }
 
-// Metodo para calcular potencias de numeros
-double Block::pow(double base, int exponent) {
-  double result = 1.0;
-  for (int i = 0; i < exponent; ++i) { result *= base; }
-  return result;
+double Block::max(double n1, double n2){
+  if (n1 > n2){
+    return n1;
+  }else{
+    return n2;
+  }
 }
