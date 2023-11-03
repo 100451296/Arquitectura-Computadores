@@ -103,8 +103,13 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
   // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe
   // calcular la distancia y el incremento Parte del bloque actual
   for (auto const & pair : particlePairs) {
-    if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) + pow(pair.first.posZ - pair.second.posZ, 2) < pow(data.long_suavizado, 2)) {
-      double dist = sqrt(max(pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) + pow(pair.first.posZ - pair.second.posZ, 2), pow(10, -12)));
+    if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) +
+            pow(pair.first.posZ - pair.second.posZ, 2) <
+        pow(data.long_suavizado, 2)) {
+      double dist                       = sqrt(max(pow(pair.first.posX - pair.second.posX, 2) +
+                                                       pow(pair.first.posY - pair.second.posY, 2) +
+                                                       pow(pair.first.posZ - pair.second.posZ, 2),
+                                                   pow(10, -12)));
       vector<double> increm_aceleration = {
         ((pair.first.posX - pair.second.posX) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
              (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
@@ -135,8 +140,13 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
   // Parte del bloque contiguo
   vector<std::pair<Particle, Particle>> aux = generarParejasEntreBloques(contiguousBlock);
   for (auto const & pair : aux) {
-        if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) + pow(pair.first.posZ - pair.second.posZ, 2) < pow(data.long_suavizado, 2)) {
-      double dist = sqrt(max(pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) + pow(pair.first.posZ - pair.second.posZ, 2), pow(10, -12)));
+    if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) +
+            pow(pair.first.posZ - pair.second.posZ, 2) <
+        pow(data.long_suavizado, 2)) {
+      double dist                       = sqrt(max(pow(pair.first.posX - pair.second.posX, 2) +
+                                                       pow(pair.first.posY - pair.second.posY, 2) +
+                                                       pow(pair.first.posZ - pair.second.posZ, 2),
+                                                   pow(10, -12)));
       vector<double> increm_aceleration = {
         ((pair.first.posX - pair.second.posX) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
              (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
