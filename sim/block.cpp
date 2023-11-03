@@ -1,4 +1,5 @@
 #include "block.hpp"
+
 #include <cmath>
 #include <iostream>
 #include <numbers>
@@ -59,8 +60,8 @@ void Block::initDensityAcceleration() {
 }
 
 void Block::densityIncrease(Block & contiguousBlock) {
-  // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
-  // Parte del bloque actual
+  // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion
+  // lineal Parte del bloque actual
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
     aux_x = pow(pair.first.posX - pair.second.posX, 2);
@@ -99,25 +100,41 @@ void Block::lineal_transformate_density() {
 }
 
 void Block::accelerationTransfer(Block & contiguousBlock) {
-  // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe calcular la distancia y el incremento
-  // Parte del bloque actual
+  // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe
+  // calcular la distancia y el incremento Parte del bloque actual
   double aux_x, aux_y, aux_z;
   for (auto const & pair : particlePairs) {
     aux_x = pair.first.posX - pair.second.posX;
     aux_y = pair.first.posY - pair.second.posY;
     aux_z = pair.first.posZ - pair.second.posZ;
-    if (pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2) < pow(data.long_suavizado, 2)){
+    if (pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2) < pow(data.long_suavizado, 2)) {
       double dist = sqrt(max(pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2), pow(10, -12)));
-      vector<double> position = {aux_x, aux_y, aux_z};
-      vector<double> velocity = {pair.first.velX - pair.second.velX, pair.first.velY - pair.second.velY, pair.first.velZ - pair.second.velZ};
-      vector<double> increm_aceleration = (position * (15 / numbers::pi * pow(data.long_suavizado, 6)) * (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) * (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) + velocity * (45 / numbers::pi * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass) / (density[pair.first.id] * density[pair.second.id]);
-      acelerationX[pair.first.id] = acelerationX[pair.first.id] + increm_aceleration[0];
-      acelerationY[pair.first.id] = acelerationY[pair.first.id] + increm_aceleration[1];
-      acelerationZ[pair.first.id] = acelerationZ[pair.first.id] + increm_aceleration[2];
+      vector<double> increm_aceleration = {
+        (aux_x * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
+         (pair.first.velX - pair.second.velX) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[pair.first.id] * density[pair.second.id]),
+        (aux_y * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
+         (pair.first.velY - pair.second.velY) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[pair.first.id] * density[pair.second.id]),
+        (aux_z * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
+         (pair.first.velZ - pair.second.velZ) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[pair.first.id] * density[pair.second.id])};
+      acelerationX[pair.first.id]  = acelerationX[pair.first.id] + increm_aceleration[0];
+      acelerationY[pair.first.id]  = acelerationY[pair.first.id] + increm_aceleration[1];
+      acelerationZ[pair.first.id]  = acelerationZ[pair.first.id] + increm_aceleration[2];
       acelerationX[pair.second.id] = acelerationX[pair.second.id] + increm_aceleration[0];
       acelerationY[pair.second.id] = acelerationY[pair.second.id] + increm_aceleration[1];
       acelerationZ[pair.second.id] = acelerationZ[pair.second.id] + increm_aceleration[2];
-      }
+    }
   }
   // Parte del bloque contiguo
   vector<std::pair<Particle, Particle>> aux = generarParejasEntreBloques(contiguousBlock);
@@ -125,18 +142,34 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
     aux_x = pair.first.posX - pair.second.posX;
     aux_y = pair.first.posY - pair.second.posY;
     aux_z = pair.first.posZ - pair.second.posZ;
-    if (pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2) < pow(data.long_suavizado, 2)){
+    if (pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2) < pow(data.long_suavizado, 2)) {
       double dist = sqrt(max(pow(aux_x, 2) + pow(aux_y, 2) + pow(aux_z, 2), pow(10, -12)));
-      vector<double> position = {aux_x, aux_y, aux_z};
-      vector<double> velocity = {pair.first.velX - pair.second.velX, pair.first.velY - pair.second.velY, pair.first.velZ - pair.second.velZ};
-      vector<double> increm_aceleration = (position * (15 / numbers::pi * pow(data.long_suavizado, 6)) * (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) * (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) + velocity * (45 / numbers::pi * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass) / (density[pair.first.id] * density[pair.second.id]);
-      acelerationX[pair.first.id] = acelerationX[pair.first.id] + increm_aceleration[0];
-      acelerationY[pair.first.id] = acelerationY[pair.first.id] + increm_aceleration[1];
-      acelerationZ[pair.first.id] = acelerationZ[pair.first.id] + increm_aceleration[2];
+      vector<double> increm_aceleration = {
+        (aux_x * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
+         (pair.first.velX - pair.second.velX) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[pair.first.id] * density[pair.second.id]),
+        (aux_y * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
+         (pair.first.velY - pair.second.velY) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[pair.first.id] * density[pair.second.id]),
+        (aux_z * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
+         (pair.first.velZ - pair.second.velZ) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[pair.first.id] * density[pair.second.id])};
+      acelerationX[pair.first.id]  = acelerationX[pair.first.id] + increm_aceleration[0];
+      acelerationY[pair.first.id]  = acelerationY[pair.first.id] + increm_aceleration[1];
+      acelerationZ[pair.first.id]  = acelerationZ[pair.first.id] + increm_aceleration[2];
       acelerationX[pair.second.id] = acelerationX[pair.second.id] + increm_aceleration[0];
       acelerationY[pair.second.id] = acelerationY[pair.second.id] + increm_aceleration[1];
       acelerationZ[pair.second.id] = acelerationZ[pair.second.id] + increm_aceleration[2];
-      }
+    }
   }
 }
 
@@ -196,10 +229,10 @@ void Block::interactionsZ(unsigned int cz) {
   // Tu código aquí
 }
 
-double Block::max(double n1, double n2){
-  if (n1 > n2){
+double Block::max(double n1, double n2) {
+  if (n1 > n2) {
     return n1;
-  }else{
+  } else {
     return n2;
   }
 }
