@@ -43,6 +43,7 @@ class Block {
   vector<double> calculate_increm_aceleration(vector<double> position, vector <double> velocity, double dist, vector<unsigned int> Id);
   double calculate_dist(double posX, double posY, double posZ);
   double max(double n1, double n2);
+  void accelerationTransferCalculations(vector<std::pair<const ParticleRef, const ParticleRef>> pair_vec);
 };
 
 #endif

@@ -63,31 +63,31 @@ void Block::densityIncrease(Block & contiguousBlock) {
   // lineal Parte del bloque actual
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
-    aux_x = pow(*(pair.first).posX - *(pair.second.posX), 2);
-    aux_y = pow(pair.first.posY - pair.second.posY, 2);
-    aux_z = pow(pair.first.posZ - pair.second.posZ, 2);
+    aux_x = pow(pair.first.p1.posX - pair.second.p1.posX, 2);
+    aux_y = pow(pair.first.p1.posY - pair.second.p1.posY, 2);
+    aux_z = pow(pair.first.p1.posZ - pair.second.p1.posZ, 2);
     if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)) {
       increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
     } else {
       increm_density_pair = 0;
     }
-    density[pair.first.id]  = density[pair.first.id] + increm_density_pair;
-    density[pair.second.id] = density[pair.second.id] + increm_density_pair;
+    density[pair.first.p1.id]  = density[pair.first.p1.id] + increm_density_pair;
+    density[pair.second.p1.id] = density[pair.second.p1.id] + increm_density_pair;
   }
   // Parte del bloque contiguo
-  vector<std::pair<Particle const &, Particle const &>> aux =
+  vector<std::pair<const ParticleRef, const ParticleRef>> aux =
       generarParejasEntreBloques(contiguousBlock);
   for (auto const & pair : aux) {
-    aux_x = pow(pair.first.posX - pair.second.posX, 2);
-    aux_y = pow(pair.first.posY - pair.second.posY, 2);
-    aux_z = pow(pair.first.posZ - pair.second.posZ, 2);
+    aux_x = pow(pair.first.p1.posX - pair.second.p1.posX, 2);
+    aux_y = pow(pair.first.p1.posY - pair.second.p1.posY, 2);
+    aux_z = pow(pair.first.p1.posZ - pair.second.p1.posZ, 2);
     if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)) {
       increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
     } else {
       increm_density_pair = 0;
     }
-    density[pair.first.id]  = density[pair.first.id] + increm_density_pair;
-    density[pair.second.id] = density[pair.second.id] + increm_density_pair;
+    density[pair.first.p1.id]  = density[pair.first.p1.id] + increm_density_pair;
+    density[pair.second.p1.id] = density[pair.second.p1.id] + increm_density_pair;
   }
   lineal_transformate_density();
 }
@@ -127,60 +127,42 @@ double Block::calculate_dist(double posX, double posY, double posZ) {
   return dist;
 }
 
+void Block::accelerationTransferCalculations(vector<std::pair<const ParticleRef, const ParticleRef>> pair_vec){
+  for (auto const & pair : pair_vec) {
+    if (pow(pair.first.p1.posX - pair.second.p1.posX, 2) + pow(pair.first.p1.posY - pair.second.p1.posY, 2) +
+            pow(pair.first.p1.posZ - pair.second.p1.posZ, 2) <
+        pow(data.long_suavizado, 2)) {
+      double dist =
+          calculate_dist(pair.first.p1.posX - pair.second.p1.posX, pair.first.p1.posY - pair.second.p1.posY,
+                         pair.first.p1.posZ - pair.second.p1.posZ);
+      vector<double> position = {pair.first.p1.posX - pair.second.p1.posX,
+                                 pair.first.p1.posY - pair.second.p1.posY,
+                                 pair.first.p1.posZ - pair.second.p1.posZ};
+      vector<double> velocity = {pair.first.p1.velX - pair.second.p1.velX,
+                                 pair.first.p1.velY - pair.second.p1.velY,
+                                 pair.first.p1.velZ - pair.second.p1.velZ};
+      vector<unsigned int> Id = {pair.first.p1.id, pair.second.p1.id};
+      vector<double> increm_aceleration =
+          calculate_increm_aceleration(position, velocity, dist, Id);
+      accelerationX[pair.first.p1.id]  = accelerationX[pair.first.p1.id] + increm_aceleration[0];
+      accelerationY[pair.first.p1.id]  = accelerationY[pair.first.p1.id] + increm_aceleration[1];
+      accelerationZ[pair.first.p1.id]  = accelerationZ[pair.first.p1.id] + increm_aceleration[2];
+      accelerationX[pair.second.p1.id] = accelerationX[pair.second.p1.id] + increm_aceleration[0];
+      accelerationY[pair.second.p1.id] = accelerationY[pair.second.p1.id] + increm_aceleration[1];
+      accelerationZ[pair.second.p1.id] = accelerationZ[pair.second.p1.id] + increm_aceleration[2];
+    }
+  }
+}
+
 void Block::accelerationTransfer(Block & contiguousBlock) {
   // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe
-  // calcular la distancia y el incremento Parte del bloque actual
-  for (auto const & pair : particlePairs) {
-    if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) +
-            pow(pair.first.posZ - pair.second.posZ, 2) <
-        pow(data.long_suavizado, 2)) {
-      double dist =
-          calculate_dist(pair.first.posX - pair.second.posX, pair.first.posY - pair.second.posY,
-                         pair.first.posZ - pair.second.posZ);
-      vector<double> position = {pair.first.posX - pair.second.posX,
-                                 pair.first.posY - pair.second.posY,
-                                 pair.first.posZ - pair.second.posZ};
-      vector<double> velocity = {pair.first.velX - pair.second.velX,
-                                 pair.first.velY - pair.second.velY,
-                                 pair.first.velZ - pair.second.velZ};
-      vector<unsigned int> Id = {pair.first.id, pair.second.id};
-      vector<double> increm_aceleration =
-          calculate_increm_aceleration(position, velocity, dist, Id);
-      accelerationX[pair.first.id]  = accelerationX[pair.first.id] + increm_aceleration[0];
-      accelerationY[pair.first.id]  = accelerationY[pair.first.id] + increm_aceleration[1];
-      accelerationZ[pair.first.id]  = accelerationZ[pair.first.id] + increm_aceleration[2];
-      accelerationX[pair.second.id] = accelerationX[pair.second.id] + increm_aceleration[0];
-      accelerationY[pair.second.id] = accelerationY[pair.second.id] + increm_aceleration[1];
-      accelerationZ[pair.second.id] = accelerationZ[pair.second.id] + increm_aceleration[2];
-    }
-  }
+  // calcular la distancia y el incremento
+  // Parte del bloque actual
+  accelerationTransferCalculations(particlePairs);
   // Parte del bloque contiguo
-  vector<std::pair<Particle const &, Particle const &>> aux =
+  vector<std::pair<const ParticleRef, const ParticleRef>> aux =
       generarParejasEntreBloques(contiguousBlock);
-  for (auto const & pair : aux) {
-    if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) +
-            pow(pair.first.posZ - pair.second.posZ, 2) <
-        pow(data.long_suavizado, 2)) {
-      double dist =
-          calculate_dist(pair.first.posX - pair.second.posX, pair.first.posY - pair.second.posY,
-                         pair.first.posZ - pair.second.posZ);
-      vector<double> position = {pair.first.posX - pair.second.posX,
-                                 pair.first.posY - pair.second.posY,
-                                 pair.first.posZ - pair.second.posZ};
-      vector<double> velocity = {pair.first.velX - pair.second.velX,
-                                 pair.first.velY - pair.second.velY,
-                                 pair.first.velZ - pair.second.velZ};
-      vector<unsigned int> Id = {pair.first.id, pair.second.id};
-      vector<double> increm_aceleration =
-          calculate_increm_aceleration(position, velocity, dist, Id);
-      accelerationX[pair.first.id]  = accelerationX[pair.first.id] + increm_aceleration[0];
-      accelerationY[pair.first.id]  = accelerationY[pair.first.id] + increm_aceleration[1];
-      accelerationZ[pair.first.id]  = accelerationZ[pair.first.id] + increm_aceleration[2];
-      accelerationX[pair.second.id] = accelerationX[pair.second.id] + increm_aceleration[0];
-      accelerationY[pair.second.id] = accelerationY[pair.second.id] + increm_aceleration[1];
-      accelerationZ[pair.second.id] = accelerationZ[pair.second.id] + increm_aceleration[2];
-    }
-  }
+  accelerationTransferCalculations(aux);
 }
 
 void Block::collisionsX(unsigned int cx) {
