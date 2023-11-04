@@ -16,15 +16,15 @@ class Block {
     // partículas
 
   public:
-    vector<Particle> particles;
-    vector<std::pair<Particle, Particle>> particlePairs;
+    vector<Particle&> particles;
+    vector<std::pair< const Particle&, const Particle&>> particlePairs;
     DataCommon data;
-    vector<double> acelerationX;
-    vector<double> acelerationY;
-    vector<double> acelerationZ;
+    vector<double> accelerationX;
+    vector<double> accelerationY;
+    vector<double> accelerationZ;
     vector<double> density;
 
-  void addParticle(Particle &particle);
+  void addParticle(Particle& particle);
   void initVectors();
   void densityIncrease(Block& contiguousBlock);
   void accelerationTransfer(Block& contiguousBlock);
@@ -36,10 +36,12 @@ class Block {
   void interactionsY(unsigned int cy);
   void interactionsZ(unsigned int cz);
   void generarParejasBloque();
-  vector<std::pair<Particle, Particle>> generarParejasEntreBloques(Block& otherBlock);
+  vector<std::pair<const Particle&, const Particle&>> generarParejasEntreBloques(Block& otherBlock);
   void calculateDataCommon();
   void initDensityAcceleration();
   void lineal_transformate_density();
+  vector<double> Block::calculate_increm_aceleration(vector<double> position, vector <double> velocity, double dist, vector<unsigned int> Id);
+  double calculate_dist(double posX, double posY, double posZ);
   double max(double n1, double n2);
 };
 

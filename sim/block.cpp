@@ -4,13 +4,13 @@
 #include <iostream>
 #include <numbers>
 
+
 using namespace std;
 
 // METODOS de BLOCK
 
 // Crear parejas de un mismo bloque
 void Block::generarParejasBloque() {
-  // Generar pares dentro del bloque actual
   for (size_t i = 0; i < particles.size(); ++i) {
     for (size_t j = i + 1; j < particles.size(); ++j) {
       particlePairs.push_back(make_pair(particles[i], particles[j]));
@@ -18,10 +18,10 @@ void Block::generarParejasBloque() {
   }
 }
 
-// Crear parejas de dos bloques contiguos
-vector<std::pair<Particle, Particle>> Block::generarParejasEntreBloques(Block & otherBlock) {
+
+vector<std::pair<const Particle&, const Particle&>> Block::generarParejasEntreBloques(Block & otherBlock) {
   // Generar pares entre el bloque actual y el bloque contiguo
-  vector<std::pair<Particle, Particle>> aux;
+  vector<std::pair<const Particle&, const Particle&>> aux;
   for (size_t i = 0; i < particles.size(); ++i) {
     for (size_t j = 0; j < otherBlock.particles.size(); ++j) {
       aux.push_back(make_pair(particles[i], otherBlock.particles[j]));
@@ -51,11 +51,11 @@ void Block::calculateDataCommon() {
 
 // Funcion inicializar la densidad y la aceleracion para cada particula
 void Block::initDensityAcceleration() {
-  for (size_t i = 0; i < acelerationX.size(); ++i) {
+  for (size_t i = 0; i < accelerationX.size(); ++i) {
     density[i]      = 0;
-    acelerationX[i] = ACELERACION_GRAVEDAD_X;
-    acelerationY[i] = ACELERACION_GRAVEDAD_Y;
-    acelerationZ[i] = ACELERACION_GRAVEDAD_Z;
+    accelerationX[i] = ACELERACION_GRAVEDAD_X;
+    accelerationY[i] = ACELERACION_GRAVEDAD_Y;
+    accelerationZ[i] = ACELERACION_GRAVEDAD_Z;
   }
 }
 
@@ -76,7 +76,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
     density[pair.second.id] = density[pair.second.id] + increm_density_pair;
   }
   // Parte del bloque contiguo
-  vector<std::pair<Particle, Particle>> aux = generarParejasEntreBloques(contiguousBlock);
+  vector<std::pair<const Particle&, const Particle&>> aux = generarParejasEntreBloques(contiguousBlock);
   for (auto const & pair : aux) {
     aux_x = pow(pair.first.posX - pair.second.posX, 2);
     aux_y = pow(pair.first.posY - pair.second.posY, 2);
@@ -99,6 +99,36 @@ void Block::lineal_transformate_density() {
   }
 }
 
+vector<double> Block::calculate_increm_aceleration(vector<double> position, vector <double> velocity,double dist, vector<unsigned int> Id) {
+  vector<double> increm_aceleration;
+  increm_aceleration = {
+        ((position[0]) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
+         (velocity[0]) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[Id[0]] * density[Id[1]]),
+        ((position[1]) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
+         (velocity[1]) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[Id[0]] * density[Id[1]]),
+        ((position[2]) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
+             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+             (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
+         (velocity[2]) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
+             VISCOSIDAD * data.mass) /
+            (density[Id[0]] * density[Id[1]])};
+  return increm_aceleration;
+}
+
+double Block::calculate_dist(double posX, double posY, double posZ) {
+  double dist;
+  dist = sqrt(max(pow(posX, 2) + pow(posY, 2) + pow(posZ, 2), pow(10, -12)));
+  return dist;
+}
+
 void Block::accelerationTransfer(Block & contiguousBlock) {
   // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe
   // calcular la distancia y el incremento Parte del bloque actual
@@ -106,72 +136,37 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
     if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) +
             pow(pair.first.posZ - pair.second.posZ, 2) <
         pow(data.long_suavizado, 2)) {
-      double dist                       = sqrt(max(pow(pair.first.posX - pair.second.posX, 2) +
-                                                       pow(pair.first.posY - pair.second.posY, 2) +
-                                                       pow(pair.first.posZ - pair.second.posZ, 2),
-                                                   pow(10, -12)));
-      vector<double> increm_aceleration = {
-        ((pair.first.posX - pair.second.posX) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
-             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
-         (pair.first.velX - pair.second.velX) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
-             VISCOSIDAD * data.mass) /
-            (density[pair.first.id] * density[pair.second.id]),
-        ((pair.first.posY - pair.second.posY) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
-             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
-         (pair.first.velY - pair.second.velY) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
-             VISCOSIDAD * data.mass) /
-            (density[pair.first.id] * density[pair.second.id]),
-        ((pair.first.posZ - pair.second.posZ) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
-             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
-         (pair.first.velZ - pair.second.velZ) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
-             VISCOSIDAD * data.mass) /
-            (density[pair.first.id] * density[pair.second.id])};
-      acelerationX[pair.first.id]  = acelerationX[pair.first.id] + increm_aceleration[0];
-      acelerationY[pair.first.id]  = acelerationY[pair.first.id] + increm_aceleration[1];
-      acelerationZ[pair.first.id]  = acelerationZ[pair.first.id] + increm_aceleration[2];
-      acelerationX[pair.second.id] = acelerationX[pair.second.id] + increm_aceleration[0];
-      acelerationY[pair.second.id] = acelerationY[pair.second.id] + increm_aceleration[1];
-      acelerationZ[pair.second.id] = acelerationZ[pair.second.id] + increm_aceleration[2];
+      double dist                       = calculate_dist(pair.first.posX - pair.second.posX,pair.first.posY - pair.second.posY,pair.first.posZ - pair.second.posZ);
+      vector<double> position = { pair.first.posX - pair.second.posX , pair.first.posY - pair.second.posY , pair.first.posZ - pair.second.posZ };
+      vector<double> velocity = { pair.first.velX - pair.second.velX , pair.first.velY - pair.second.velY , pair.first.velZ - pair.second.velZ };
+      vector<unsigned int> Id = {pair.first.id , pair.second.id};
+      vector<double> increm_aceleration = calculate_increm_aceleration( position, velocity , dist , Id );
+      vector<double&> acc1 = { accelerationX[pair.first.id] , accelerationY[pair.first.id] , accelerationZ[pair.first.id] };
+      accelerationX[pair.first.id]  = accelerationX[pair.first.id] + increm_aceleration[0];
+      accelerationY[pair.first.id]  = accelerationY[pair.first.id] + increm_aceleration[1];
+      accelerationZ[pair.first.id]  = accelerationZ[pair.first.id] + increm_aceleration[2];
+      accelerationX[pair.second.id] = accelerationX[pair.second.id] + increm_aceleration[0];
+      accelerationY[pair.second.id] = accelerationY[pair.second.id] + increm_aceleration[1];
+      accelerationZ[pair.second.id] = accelerationZ[pair.second.id] + increm_aceleration[2];
     }
   }
   // Parte del bloque contiguo
-  vector<std::pair<Particle, Particle>> aux = generarParejasEntreBloques(contiguousBlock);
+  vector<std::pair<const Particle&, const Particle&>> aux = generarParejasEntreBloques(contiguousBlock);
   for (auto const & pair : aux) {
     if (pow(pair.first.posX - pair.second.posX, 2) + pow(pair.first.posY - pair.second.posY, 2) +
             pow(pair.first.posZ - pair.second.posZ, 2) <
         pow(data.long_suavizado, 2)) {
-      double dist                       = sqrt(max(pow(pair.first.posX - pair.second.posX, 2) +
-                                                       pow(pair.first.posY - pair.second.posY, 2) +
-                                                       pow(pair.first.posZ - pair.second.posZ, 2),
-                                                   pow(10, -12)));
-      vector<double> increm_aceleration = {
-        ((pair.first.posX - pair.second.posX) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
-             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
-         (pair.first.velX - pair.second.velX) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
-             VISCOSIDAD * data.mass) /
-            (density[pair.first.id] * density[pair.second.id]),
-        ((pair.first.posY - pair.second.posY) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
-             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
-         (pair.first.velY - pair.second.velY) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
-             VISCOSIDAD * data.mass) /
-            (density[pair.first.id] * density[pair.second.id]),
-        ((pair.first.posZ - pair.second.posZ) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-             (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
-             (density[pair.first.id] + density[pair.second.id] - 2 * DENSIDAD_FLUIDO) +
-         (pair.first.velZ - pair.second.velZ) * (45 / numbers::pi * pow(data.long_suavizado, 6)) *
-             VISCOSIDAD * data.mass) /
-            (density[pair.first.id] * density[pair.second.id])};
-      acelerationX[pair.first.id]  = acelerationX[pair.first.id] + increm_aceleration[0];
-      acelerationY[pair.first.id]  = acelerationY[pair.first.id] + increm_aceleration[1];
-      acelerationZ[pair.first.id]  = acelerationZ[pair.first.id] + increm_aceleration[2];
-      acelerationX[pair.second.id] = acelerationX[pair.second.id] + increm_aceleration[0];
-      acelerationY[pair.second.id] = acelerationY[pair.second.id] + increm_aceleration[1];
-      acelerationZ[pair.second.id] = acelerationZ[pair.second.id] + increm_aceleration[2];
+      double dist                       = calculate_dist(pair.first.posX - pair.second.posX,pair.first.posY - pair.second.posY,pair.first.posZ - pair.second.posZ);
+      vector<double> position = { pair.first.posX - pair.second.posX , pair.first.posY - pair.second.posY , pair.first.posZ - pair.second.posZ };
+      vector<double> velocity = { pair.first.velX - pair.second.velX , pair.first.velY - pair.second.velY , pair.first.velZ - pair.second.velZ };
+      vector<unsigned int> Id = {pair.first.id , pair.second.id};
+      vector<double> increm_aceleration = calculate_increm_aceleration( position, velocity , dist , Id);
+      accelerationX[pair.first.id]  = accelerationX[pair.first.id] + increm_aceleration[0];
+      accelerationY[pair.first.id]  = accelerationY[pair.first.id] + increm_aceleration[1];
+      accelerationZ[pair.first.id]  = accelerationZ[pair.first.id] + increm_aceleration[2];
+      accelerationX[pair.second.id] = accelerationX[pair.second.id] + increm_aceleration[0];
+      accelerationY[pair.second.id] = accelerationY[pair.second.id] + increm_aceleration[1];
+      accelerationZ[pair.second.id] = accelerationZ[pair.second.id] + increm_aceleration[2];
     }
   }
 }
