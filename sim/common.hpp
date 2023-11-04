@@ -34,6 +34,11 @@ struct Particle {
   double velZ;
 } typedef Particle;
 
+struct ParticleRef {
+    Particle& p1;
+    ParticleRef(Particle& p1_) : p1(p1_) {}
+};
+
 struct DataCommon {
   double ppm;
   double mass;

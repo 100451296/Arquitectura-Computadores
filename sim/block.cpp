@@ -17,10 +17,10 @@ void Block::generarParejasBloque() {
   }
 }
 
-vector<std::pair<Particle const &, Particle const &>>
+vector<std::pair< const ParticleRef, const ParticleRef>>
     Block::generarParejasEntreBloques(Block & otherBlock) {
   // Generar pares entre el bloque actual y el bloque contiguo
-  vector<std::pair<Particle const &, Particle const &>> aux;
+  vector<std::pair<const ParticleRef, const ParticleRef>> aux;
   for (size_t i = 0; i < particles.size(); ++i) {
     for (size_t j = 0; j < otherBlock.particles.size(); ++j) {
       aux.push_back(make_pair(particles[i], otherBlock.particles[j]));
@@ -63,7 +63,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
   // lineal Parte del bloque actual
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
-    aux_x = pow(pair.first.posX - pair.second.posX, 2);
+    aux_x = pow(*(pair.first).posX - *(pair.second.posX), 2);
     aux_y = pow(pair.first.posY - pair.second.posY, 2);
     aux_z = pow(pair.first.posZ - pair.second.posZ, 2);
     if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)) {
