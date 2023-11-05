@@ -30,5 +30,8 @@ int main(int argc, char * argv[]) {
   readFile(input_file_name, ppm, num_particles, particles);
   printParameters(ppm, num_particles);
 
+  Grid grid(particles, ppm, num_particles);
+  grid.printParticles();
+
   return 0;
 }

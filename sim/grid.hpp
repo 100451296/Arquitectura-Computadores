@@ -6,9 +6,9 @@
 #include "block.hpp"
 #include "common.hpp"
 
+#include <iostream>
+#include <memory>
 #include <vector>
-
-using namespace std;
 
 int grid();
 
@@ -41,12 +41,21 @@ struct Particles {
 };
 
 class Grid {
-    // Representa la malla. Contendrá todas las partículas y la matriz de bloques
-
   public:
-    vector<Particle> particles;  // AoS
+    std::vector<std::shared_ptr<Particle>> particles;     // AoS
+    std::vector<std::vector<std::vector<Block>>> blocks;  // Matriz tridimensional de bloques
+    float ppm;
+    int num_particles;
 
-    vector<vector<vector<Block>>> blocks;  // Matriz tridimensional de bloques
+    void printParticles();
+
+    Grid(std::vector<Particle> & particles, float ppm, int num_particles)
+      : ppm(ppm), num_particles(num_particles) {
+      for (auto & particle : particles) {
+        this->particles.push_back(std::make_shared<Particle>(particle));
+      }
+      // Resto de la lógica de inicialización de Grid
+    }
 };
 
 #endif
