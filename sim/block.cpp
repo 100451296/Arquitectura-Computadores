@@ -17,10 +17,10 @@ void Block::generarParejasBloque() {
   }
 }
 
-vector<std::pair< const ParticleRef, const ParticleRef>>
+vector<std::pair<ParticleRef const, ParticleRef const>>
     Block::generarParejasEntreBloques(Block & otherBlock) {
   // Generar pares entre el bloque actual y el bloque contiguo
-  vector<std::pair<const ParticleRef, const ParticleRef>> aux;
+  vector<std::pair<ParticleRef const, ParticleRef const>> aux;
   for (size_t i = 0; i < particles.size(); ++i) {
     for (size_t j = 0; j < otherBlock.particles.size(); ++j) {
       aux.push_back(make_pair(particles[i], otherBlock.particles[j]));
@@ -75,7 +75,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
     density[pair.second.p1.id] = density[pair.second.p1.id] + increm_density_pair;
   }
   // Parte del bloque contiguo
-  vector<std::pair<const ParticleRef, const ParticleRef>> aux =
+  vector<std::pair<ParticleRef const, ParticleRef const>> aux =
       generarParejasEntreBloques(contiguousBlock);
   for (auto const & pair : aux) {
     aux_x = pow(pair.first.p1.posX - pair.second.p1.posX, 2);
@@ -127,14 +127,16 @@ double Block::calculate_dist(double posX, double posY, double posZ) {
   return dist;
 }
 
-void Block::accelerationTransferCalculations(vector<std::pair<const ParticleRef, const ParticleRef>> pair_vec){
+void Block::accelerationTransferCalculations(
+    vector<std::pair<ParticleRef const, ParticleRef const>> pair_vec) {
   for (auto const & pair : pair_vec) {
-    if (pow(pair.first.p1.posX - pair.second.p1.posX, 2) + pow(pair.first.p1.posY - pair.second.p1.posY, 2) +
+    if (pow(pair.first.p1.posX - pair.second.p1.posX, 2) +
+            pow(pair.first.p1.posY - pair.second.p1.posY, 2) +
             pow(pair.first.p1.posZ - pair.second.p1.posZ, 2) <
         pow(data.long_suavizado, 2)) {
-      double dist =
-          calculate_dist(pair.first.p1.posX - pair.second.p1.posX, pair.first.p1.posY - pair.second.p1.posY,
-                         pair.first.p1.posZ - pair.second.p1.posZ);
+      double dist             = calculate_dist(pair.first.p1.posX - pair.second.p1.posX,
+                                               pair.first.p1.posY - pair.second.p1.posY,
+                                               pair.first.p1.posZ - pair.second.p1.posZ);
       vector<double> position = {pair.first.p1.posX - pair.second.p1.posX,
                                  pair.first.p1.posY - pair.second.p1.posY,
                                  pair.first.p1.posZ - pair.second.p1.posZ};
@@ -155,12 +157,11 @@ void Block::accelerationTransferCalculations(vector<std::pair<const ParticleRef,
 }
 
 void Block::accelerationTransfer(Block & contiguousBlock) {
-  // Funcion que se encarga de actualizar el vector de aceleraciones del propio bloque y debe
-  // calcular la distancia y el incremento
+  // Funcion que se encarga de actualizar el vector de aceleraciones y el incremento
   // Parte del bloque actual
   accelerationTransferCalculations(particlePairs);
   // Parte del bloque contiguo
-  vector<std::pair<const ParticleRef, const ParticleRef>> aux =
+  vector<std::pair<ParticleRef const, ParticleRef const>> aux =
       generarParejasEntreBloques(contiguousBlock);
   accelerationTransferCalculations(aux);
 }
@@ -191,10 +192,20 @@ void Block::collisionsZ(unsigned int cx) {
 
 void Block::particleMotion() {
   // Debe actualizar la posicion, velocidad y vector de suavizado de cada
-  // particula
-
-  cout << "Movimiento de partículas" << endl;
-  // Tu código aquí
+  for (size_t i = 0; i < particles.size(); i++) {
+    particles[i].p1.posX = particles[i].p1.posX + particles[i].p1.smoothVecX * PASO_TIEMPO +
+                           accelerationX[i] * pow(PASO_TIEMPO, 2);
+    particles[i].p1.posY = particles[i].p1.posY + particles[i].p1.smoothVecY * PASO_TIEMPO +
+                           accelerationY[i] * pow(PASO_TIEMPO, 2);
+    particles[i].p1.posZ = particles[i].p1.posZ + particles[i].p1.smoothVecZ * PASO_TIEMPO +
+                           accelerationZ[i] * pow(PASO_TIEMPO, 2);
+    particles[i].p1.velX = particles[i].p1.smoothVecX + ((accelerationX[i] * PASO_TIEMPO) / 2);
+    particles[i].p1.velY = particles[i].p1.smoothVecY + ((accelerationY[i] * PASO_TIEMPO) / 2);
+    particles[i].p1.velZ = particles[i].p1.smoothVecZ + ((accelerationZ[i] * PASO_TIEMPO) / 2);
+    particles[i].p1.smoothVecX = particles[i].p1.smoothVecX + accelerationX[i] * PASO_TIEMPO;
+    particles[i].p1.smoothVecY = particles[i].p1.smoothVecY + accelerationY[i] * PASO_TIEMPO;
+    particles[i].p1.smoothVecZ = particles[i].p1.smoothVecZ + accelerationZ[i] * PASO_TIEMPO;
+  }
 }
 
 void Block::interactionsX(unsigned int cx) {
