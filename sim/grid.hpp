@@ -61,9 +61,7 @@ class Grid {
     void positionateParticle();
 
     Grid(std::vector<Particle> & particles, float ppm, int num_particles)
-      : particles(), blocks(std::vector<std::vector<std::vector<Block>>>(
-                         nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz)))),
-        ppm(ppm), num_particles(num_particles), h(MULTIPLICADOR_RADIO / ppm),
+      : particles(), ppm(ppm), num_particles(num_particles), h(MULTIPLICADOR_RADIO / ppm),
         particle_mass(DENSIDAD_FLUIDO * std::pow(ppm, -3)),
         nx(std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h)),
         ny(std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h)),
@@ -74,6 +72,7 @@ class Grid {
       for (auto & particle : particles) {
         this->particles.push_back(std::make_shared<Particle>(particle));
       }
+      blocks.resize(nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz)));
     }
 };
 

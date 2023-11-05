@@ -6,7 +6,7 @@ int grid() {
 }
 
 void Grid::positionateParticle() {
-  blocks[0][0][0].addParticle(particles[0])
+  // blocks[0][0][0].addParticle(particles[0]);
 }
 
 /*
