@@ -96,20 +96,11 @@ int leer_archivo_entrada(string num_iter_file) {
 
 int proargs_validations(int num_params, string const & num_iter, string const & input,
                         string const & output) {
-  // Comprobación numero parametros
   if (comprobacion_num_param(num_params) == -1) { return -1; }
-
-  // Comprobación numero de iteraciones
-  if (comprobacion_primer_argumento(num_iter) == -1) { return -1; }
-
-  // Comprobacion numero
-  if (comprobacion_pasos_tiempo(num_iter) == -1) { return -1; }
-
-  // Comprobacion archivo de entrada
-  if (comprobacion_archivo_lectura(input) == -1) { return -1; }
-
-  // Comprobacion de archivo de salida
-  if (comprobacion_archivo_escritura(output) == -1) { return -1; }
+  if (comprobacion_primer_argumento(num_iter) == -1) { return -2; }
+  if (comprobacion_pasos_tiempo(num_iter) == -2) { return -3; }
+  if (comprobacion_archivo_lectura(input) == -3) { return -4; }
+  if (comprobacion_archivo_escritura(output) == -4) { return -5; }
 
   return 0;
 }
@@ -172,23 +163,40 @@ bool readParticle(std::ifstream & input_file, Particle & particle, int index) {
 }
 
 void printParameters(int ppm, int num_particles) {
-  // Calcula parametros
-  double h             = MULTIPLICADOR_RADIO / ppm;
-  double particle_mass = DENSIDAD_FLUIDO * std::pow(ppm, -3);
-  int nx               = std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
-  int ny               = std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h);
-  int nz               = std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / h);
-  int num_blocks       = nx * ny * nz;
-  double sx            = (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / nx;
-  double sy            = (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / ny;
-  double sz            = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / nz;
-
-  // Imprime parametros
+  // Calcula parametros y los imprime directamente
   std::cout << "Number of particles: " << num_particles << std::endl;
-  std::cout << "Particles per meter: " << static_cast<int>(ppm) << std::endl;
-  std::cout << "Smoothing length: " << h << std::endl;
-  std::cout << "Particle mass: " << particle_mass << std::endl;
-  std::cout << "Grid size: " << nx << " x " << ny << " x " << nz << std::endl;
-  std::cout << "Number of blocks: " << num_blocks << std::endl;
-  std::cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
+  std::cout << "Particles per meter: " << ppm << std::endl;
+  std::cout << "Smoothing length: " << MULTIPLICADOR_RADIO / static_cast<double>(ppm) << std::endl;
+  std::cout << "Particle mass: " << DENSIDAD_FLUIDO * std::pow(ppm, -3) << std::endl;
+  std::cout << "Grid size: "
+            << std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
+                          (MULTIPLICADOR_RADIO / ppm))
+            << " x "
+            << std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
+                          (MULTIPLICADOR_RADIO / ppm))
+            << " x "
+            << std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
+                          (MULTIPLICADOR_RADIO / ppm))
+            << std::endl;
+  std::cout << "Number of blocks: "
+            << std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
+                          (MULTIPLICADOR_RADIO / ppm)) *
+                   std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
+                              (MULTIPLICADOR_RADIO / ppm)) *
+                   std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
+                              (MULTIPLICADOR_RADIO / ppm))
+            << std::endl;
+  std::cout << "Block size: "
+            << (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
+                   std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
+                              (MULTIPLICADOR_RADIO / ppm))
+            << " x "
+            << (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
+                   std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
+                              (MULTIPLICADOR_RADIO / ppm))
+            << " x "
+            << (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
+                   std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
+                              (MULTIPLICADOR_RADIO / ppm))
+            << std::endl;
 }

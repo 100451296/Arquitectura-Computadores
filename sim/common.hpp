@@ -2,7 +2,7 @@
 #define COMMON
 
 #define MULTIPLICADOR_RADIO 1.695
-#define DENSIDAD_FLUIDO 103
+#define DENSIDAD_FLUIDO 10e3
 #define PRESION_RIGIDEZ 3.0
 #define COLISIONES_RIGIDEZ 3e4
 #define AMORTIGUAMIENTO 128.0
@@ -22,27 +22,28 @@
 #define LIMITE_INFERIOR_RECINTO_Z -0.065
 
 struct Particle {
-  unsigned int id;
-  double posX;
-  double posY;
-  double posZ;
-  double smoothVecX;
-  double smoothVecY;
-  double smoothVecZ;
-  double velX;
-  double velY;
-  double velZ;
+    unsigned int id;
+    double posX;
+    double posY;
+    double posZ;
+    double smoothVecX;
+    double smoothVecY;
+    double smoothVecZ;
+    double velX;
+    double velY;
+    double velZ;
 } typedef Particle;
 
 struct ParticleRef {
-    Particle& p1;
-    ParticleRef(Particle& p1_) : p1(p1_) {}
+    Particle & p1;
+
+    ParticleRef(Particle & p1_) : p1(p1_) { }
 };
 
 struct DataCommon {
-  double ppm;
-  double mass;
-  double long_suavizado;
+    double ppm;
+    double mass;
+    double long_suavizado;
 } typedef DataCommon;
 
 #endif
