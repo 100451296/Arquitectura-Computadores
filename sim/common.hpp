@@ -41,18 +41,12 @@ struct ParticleRef {
 };
 
 struct DataCommon {
-<<<<<<< HEAD
-    double ppm;
-    double mass;
-    double long_suavizado;
-=======
   double ppm;
   double mass;
   double long_suavizado;
   unsigned int nx;
   unsigned int ny;
   unsigned int nz;
->>>>>>> 86b5dcc (finiquitao)
 } typedef DataCommon;
 
 #endif
