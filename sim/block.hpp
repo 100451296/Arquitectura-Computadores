@@ -22,7 +22,6 @@ class Block {
     std::vector<double> density;
 
     void addParticle(std::shared_ptr<Particle> particle);
-    void initVectors();
     void densityIncrease(Block & contiguousBlock);
     void accelerationTransfer(Block & contiguousBlock);
     void collisionsX(unsigned int cx);
