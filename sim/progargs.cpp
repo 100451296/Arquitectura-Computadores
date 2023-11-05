@@ -114,46 +114,81 @@ int proargs_validations(int num_params, string const & num_iter, string const & 
   return 0;
 }
 
-int readFile(string const input_file_name, float & ppm, int & num_particles,
-             vector<Particle> & particles) {
-  // Valida archivo de entrada
+int readFile(std::string const & input_file_name, float & ppm, int & num_particles,
+             std::vector<Particle> & particles) {
   std::ifstream input_file(input_file_name, std::ios::binary);
   if (!input_file.is_open()) {
     std::cerr << "Error al abrir el archivo de entrada" << std::endl;
     return -1;
   }
 
-  // Lee particulas x metro y numero de particulas
-  input_file.read(reinterpret_cast<char *>(&ppm), sizeof(float));
-  input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
+  if (!readHeader(input_file, ppm, num_particles)) { return -1; }
 
-  // Verifica si los datos leídos son válidos
   if (num_particles <= 0) {
     std::cerr << "Número de partículas inválido" << std::endl;
     return -1;
   }
 
-  // Lee particulas
-  particles.resize(num_particles);
-  int particles_read = 0;
-  while (particles_read < num_particles) {
-    if (!input_file.read(reinterpret_cast<char *>(&particles[particles_read].posX),
-                         sizeof(float) * 9)) {
-      std::cerr << "Error al leer las partículas del archivo" << std::endl;
-      return -1;
-    }
-    particles[particles_read].id =
-        particles_read;  // Asigna el valor de particles_read al miembro "id"
-    particles_read++;
-  }
-
-  // Verifica si el número de partículas leído coincide con el número de partículas esperado
-  if (particles_read != num_particles) {
-    std::cerr << "El número de partículas leído no coincide con el número de partículas esperado"
-              << std::endl;
-    return -1;
-  }
+  if (!readParticles(input_file, particles, num_particles)) { return -1; }
 
   input_file.close();
   return 0;
+}
+
+bool readHeader(std::ifstream & input_file, float & ppm, int & num_particles) {
+  input_file.read(reinterpret_cast<char *>(&ppm), sizeof(float));
+  input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
+  return input_file.good();
+}
+
+bool readParticles(std::ifstream & input_file, std::vector<Particle> & particles,
+                   int num_particles) {
+  particles.resize(num_particles);
+  for (int i = 0; i < num_particles; i++) {
+    if (!readParticle(input_file, particles[i], i)) { return false; }
+  }
+  return true;
+}
+
+bool readParticle(std::ifstream & input_file, Particle & particle, int index) {
+  float buffer[9];
+  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * 9)) {
+    std::cerr << "Error al leer las partículas del archivo" << std::endl;
+    return false;
+  }
+
+  particle.id         = index;
+  particle.posX       = static_cast<double>(buffer[0]);
+  particle.posY       = static_cast<double>(buffer[1]);
+  particle.posZ       = static_cast<double>(buffer[2]);
+  particle.smoothVecX = static_cast<double>(buffer[3]);
+  particle.smoothVecY = static_cast<double>(buffer[4]);
+  particle.smoothVecZ = static_cast<double>(buffer[5]);
+  particle.velX       = static_cast<double>(buffer[6]);
+  particle.velY       = static_cast<double>(buffer[7]);
+  particle.velZ       = static_cast<double>(buffer[8]);
+
+  return true;
+}
+
+void printParameters(int ppm, int num_particles) {
+  // Calcula parametros
+  double h             = MULTIPLICADOR_RADIO / ppm;
+  double particle_mass = DENSIDAD_FLUIDO * std::pow(ppm, -3);
+  int nx               = std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
+  int ny               = std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h);
+  int nz               = std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / h);
+  int num_blocks       = nx * ny * nz;
+  double sx            = (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / nx;
+  double sy            = (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / ny;
+  double sz            = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / nz;
+
+  // Imprime parametros
+  std::cout << "Number of particles: " << num_particles << std::endl;
+  std::cout << "Particles per meter: " << static_cast<int>(ppm) << std::endl;
+  std::cout << "Smoothing length: " << h << std::endl;
+  std::cout << "Particle mass: " << particle_mass << std::endl;
+  std::cout << "Grid size: " << nx << " x " << ny << " x " << nz << std::endl;
+  std::cout << "Number of blocks: " << num_blocks << std::endl;
+  std::cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
 }
