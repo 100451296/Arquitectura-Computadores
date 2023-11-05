@@ -39,6 +39,7 @@ class Block {
   vector<std::pair<const ParticleRef, const ParticleRef>> generarParejasEntreBloques(Block& otherBlock);
   void calculateDataCommon();
   void initDensityAcceleration();
+  void calculate_increm_density(vector<std::pair<ParticleRef const, ParticleRef const>> ParejaParticulas);
   void lineal_transformate_density();
   vector<double> calculate_increm_aceleration(vector<double> position, vector <double> velocity, double dist, vector<unsigned int> Id);
   double calculate_dist(double posX, double posY, double posZ);

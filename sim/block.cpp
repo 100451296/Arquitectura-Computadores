@@ -32,10 +32,10 @@ vector<std::pair<ParticleRef const, ParticleRef const>>
 // Función para añadir una partícula al vector
 void Block::addParticle(ParticleRef particle) {
   this->particles.push_back(particle);
-  this->accelerationX.push_back(0.0);
-  this->accelerationY.push_back(0.0);
-  this->accelerationZ.push_back(0.0);  // Agrega una entrada 0 a accelerations
-  this->density.push_back(0.0);        // Agrega una entrada 0 a densities
+  this->accelerationX.push_back(0.0);  // Agrega una entrada 0 a accelerationX
+  this->accelerationY.push_back(0.0);  // Agrega una entrada 0 a accelerationY
+  this->accelerationZ.push_back(0.0);  // Agrega una entrada 0 a accelerationZ
+  this->density.push_back(0.0);        // Agrega una entrada 0 a density
 }
 
 // Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un
@@ -58,23 +58,18 @@ void Block::initDensityAcceleration() {
 void Block::densityIncrease(Block & contiguousBlock) {
   // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion
   // lineal Parte del bloque actual
-  double aux_x, aux_y, aux_z, increm_density_pair;
-  for (auto const & pair : particlePairs) {
-    aux_x = pow(pair.first.p1.posX - pair.second.p1.posX, 2);
-    aux_y = pow(pair.first.p1.posY - pair.second.p1.posY, 2);
-    aux_z = pow(pair.first.p1.posZ - pair.second.p1.posZ, 2);
-    if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)) {
-      increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
-    } else {
-      increm_density_pair = 0;
-    }
-    density[pair.first.p1.id]  = density[pair.first.p1.id] + increm_density_pair;
-    density[pair.second.p1.id] = density[pair.second.p1.id] + increm_density_pair;
-  }
+  calculate_increm_density(this->particlePairs);
   // Parte del bloque contiguo
   vector<std::pair<ParticleRef const, ParticleRef const>> aux =
       generarParejasEntreBloques(contiguousBlock);
-  for (auto const & pair : aux) {
+  calculate_increm_density(aux);
+  lineal_transformate_density();
+}
+
+void Block::calculate_increm_density(
+    vector<std::pair<ParticleRef const, ParticleRef const>> ParejaParticulas) {
+  double aux_x, aux_y, aux_z, increm_density_pair;
+  for (auto const & pair : ParejaParticulas) {
     aux_x = pow(pair.first.p1.posX - pair.second.p1.posX, 2);
     aux_y = pow(pair.first.p1.posY - pair.second.p1.posY, 2);
     aux_z = pow(pair.first.p1.posZ - pair.second.p1.posZ, 2);
@@ -86,13 +81,14 @@ void Block::densityIncrease(Block & contiguousBlock) {
     density[pair.first.p1.id]  = density[pair.first.p1.id] + increm_density_pair;
     density[pair.second.p1.id] = density[pair.second.p1.id] + increm_density_pair;
   }
-  lineal_transformate_density();
 }
 
 void Block::lineal_transformate_density() {
   for (size_t i = 0; i < density.size(); i++) {
-    density[i] = (density[i] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                 (64 * numbers::pi * pow(data.long_suavizado, 9));
+    if (density[i] != 0) {
+      density[i] = (density[i] + pow(data.long_suavizado, 6)) * 315 * data.mass /
+                   (64 * numbers::pi * pow(data.long_suavizado, 9));
+    }
   }
 }
 
