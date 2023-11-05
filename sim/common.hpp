@@ -34,19 +34,13 @@ struct Particle {
     double velZ;
 } typedef Particle;
 
-struct ParticleRef {
-    Particle & p1;
-
-    ParticleRef(Particle & p1_) : p1(p1_) { }
-};
-
 struct DataCommon {
-  double ppm;
-  double mass;
-  double long_suavizado;
-  unsigned int nx;
-  unsigned int ny;
-  unsigned int nz;
+    double ppm;
+    double mass;
+    double long_suavizado;
+    unsigned int nx;
+    unsigned int ny;
+    unsigned int nz;
 } typedef DataCommon;
 
 #endif
