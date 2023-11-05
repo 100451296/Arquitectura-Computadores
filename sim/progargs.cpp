@@ -96,11 +96,11 @@ int leer_archivo_entrada(string num_iter_file) {
 
 int proargs_validations(int num_params, string const & num_iter, string const & input,
                         string const & output) {
-  if (comprobacion_num_param(num_params) == -1) { return -1; }
-  if (comprobacion_primer_argumento(num_iter) == -1) { return -2; }
-  if (comprobacion_pasos_tiempo(num_iter) == -2) { return -3; }
-  if (comprobacion_archivo_lectura(input) == -3) { return -4; }
-  if (comprobacion_archivo_escritura(output) == -4) { return -5; }
+  if (comprobacion_num_param(num_params) == -1) { return -1; }       // Numero de parametros
+  if (comprobacion_primer_argumento(num_iter) == -1) { return -2; }  // Numero de iteraciones
+  if (comprobacion_pasos_tiempo(num_iter) == -2) { return -3; }      // Numero de iteraciones
+  if (comprobacion_archivo_lectura(input) == -3) { return -4; }      // Archivo de entrada
+  if (comprobacion_archivo_escritura(output) == -4) { return -5; }   // Archivo de salida
 
   return 0;
 }
