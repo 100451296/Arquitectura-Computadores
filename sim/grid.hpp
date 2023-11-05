@@ -95,6 +95,10 @@ class Grid {
     void collisionsXGrid();
     void collisionsYGrid();
     void collisionsZGrid();
+    void particleMotionGrid();
+    void interactionsXGrid();
+    void interactionsYGrid();
+    void interactionsZGrid();
 
     Grid(std::vector<Particle> & particles, float ppm, int num_particles)
       : particles(), ppm(ppm), num_particles(num_particles), h(MULTIPLICADOR_RADIO / ppm),
