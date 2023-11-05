@@ -42,8 +42,8 @@ void Block::addParticle(shared_ptr<Particle> particle) {
 // Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un
 // bloque
 void Block::calculateDataCommon() {
-  data.mass           = DENSIDAD_FLUIDO / pow(data.ppm, 3);
-  data.long_suavizado = MULTIPLICADOR_RADIO / data.ppm;
+  data->mass           = DENSIDAD_FLUIDO / pow(data->ppm, 3);
+  data->long_suavizado = MULTIPLICADOR_RADIO / data->ppm;
 }
 
 // Funcion inicializar la densidad y la aceleracion para cada particula
@@ -75,8 +75,8 @@ void Block::calculate_increm_density(
     aux_x = pow(pair.first->posX - pair.second->posX, 2);
     aux_y = pow(pair.first->posY - pair.second->posY, 2);
     aux_z = pow(pair.first->posZ - pair.second->posZ, 2);
-    if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)) {
-      increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
+    if (aux_x + aux_y + aux_z < pow(data->long_suavizado, 2)) {
+      increm_density_pair = pow(pow(data->long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
     } else {
       increm_density_pair = 0;
     }
@@ -89,8 +89,8 @@ void Block::calculate_increm_density(
 void Block::lineal_transformate_density() {
   for (size_t i = 0; i < density.size(); i++) {
     if (density[i] != 0) {
-      density[i] = (density[i] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                   (64 * numbers::pi * pow(data.long_suavizado, 9));
+      density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
+                   (64 * numbers::pi * pow(data->long_suavizado, 9));
     }
   }
 }
@@ -100,20 +100,20 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
                                                    double dist, vector<unsigned int> Id) {
   vector<double> increm_aceleration;
   increm_aceleration = {
-    ((position[0]) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-         (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+    ((position[0]) * (15 / numbers::pi * pow(data->long_suavizado, 6)) *
+         (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[0]) * (45 / numbers::pi * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass) /
+     (velocity[0]) * (45 / numbers::pi * pow(data->long_suavizado, 6)) * VISCOSIDAD * data->mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[1]) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-         (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+    ((position[1]) * (15 / numbers::pi * pow(data->long_suavizado, 6)) *
+         (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[1]) * (45 / numbers::pi * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass) /
+     (velocity[1]) * (45 / numbers::pi * pow(data->long_suavizado, 6)) * VISCOSIDAD * data->mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[2]) * (15 / numbers::pi * pow(data.long_suavizado, 6)) *
-         (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
+    ((position[2]) * (15 / numbers::pi * pow(data->long_suavizado, 6)) *
+         (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[2]) * (45 / numbers::pi * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass) /
+     (velocity[2]) * (45 / numbers::pi * pow(data->long_suavizado, 6)) * VISCOSIDAD * data->mass) /
         (density[Id[0]] * density[Id[1]])};
   return increm_aceleration;
 }
@@ -131,7 +131,7 @@ void Block::accelerationTransferCalculations(
     if (pow(pair.first->posX - pair.second->posX, 2) +
             pow(pair.first->posY - pair.second->posY, 2) +
             pow(pair.first->posZ - pair.second->posZ, 2) <
-        pow(data.long_suavizado, 2)) {
+        pow(data->long_suavizado, 2)) {
       double dist =
           calculate_dist(pair.first->posX - pair.second->posX, pair.first->posY - pair.second->posY,
                          pair.first->posZ - pair.second->posZ);
@@ -171,14 +171,14 @@ void Block::collisionsX(unsigned int cx) {
     cord_x = particles[i]->posX + particles[i]->smoothVecX * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
-    } else if (cx == data.nx - 1) {
+    } else if (cx == data->nx - 1) {
       increm_x = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_X - cord_x);
     }
     if (increm_x > pow(10, -10)) {
       if (cx == 0) {
         accelerationX[i] =
             accelerationX[i] + COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * particles[i]->velX;
-      } else if (cx == data.nx - 1) {
+      } else if (cx == data->nx - 1) {
         accelerationX[i] =
             accelerationX[i] - COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * particles[i]->velX;
       }
@@ -193,14 +193,14 @@ void Block::collisionsY(unsigned int cy) {
     cord_y = particles[i]->posY + particles[i]->smoothVecY * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
-    } else if (cy == data.ny - 1) {
+    } else if (cy == data->ny - 1) {
       increm_y = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_Y - cord_y);
     }
     if (increm_y > pow(10, -10)) {
       if (cy == 0) {
         accelerationY[i] =
             accelerationY[i] + COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * particles[i]->velY;
-      } else if (cy == data.ny - 1) {
+      } else if (cy == data->ny - 1) {
         accelerationY[i] =
             accelerationY[i] - COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * particles[i]->velY;
       }
@@ -215,14 +215,14 @@ void Block::collisionsZ(unsigned int cz) {
     cord_z = particles[i]->posZ + particles[i]->smoothVecZ * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
-    } else if (cz == data.nz - 1) {
+    } else if (cz == data->nz - 1) {
       increm_z = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_Z - cord_z);
     }
     if (increm_z > pow(10, -10)) {
       if (cz == 0) {
         accelerationZ[i] =
             accelerationZ[i] + COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * particles[i]->velZ;
-      } else if (cz == data.nz - 1) {
+      } else if (cz == data->nz - 1) {
         accelerationZ[i] =
             accelerationZ[i] - COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * particles[i]->velZ;
       }
@@ -254,13 +254,13 @@ void Block::interactionsX(unsigned int cx) {
   for (size_t i = 0; i < particles.size(); ++i) {
     if (cx == 0) {
       dx = particles[i]->posX - LIMITE_INFERIOR_RECINTO_X;
-    } else if (cx == data.nx - 1) {
+    } else if (cx == data->nx - 1) {
       dx = LIMITE_SUPERIOR_RECINTO_X - particles[i]->posX;
     }
     if (dx < 0) {
       if (cx == 0) {
         particles[i]->posX = LIMITE_INFERIOR_RECINTO_X - dx;
-      } else if (cx == data.nx - 1) {
+      } else if (cx == data->nx - 1) {
         particles[i]->posX = LIMITE_SUPERIOR_RECINTO_X + dx;
       }
       particles[i]->velX       = particles[i]->velX * -1;
@@ -275,13 +275,13 @@ void Block::interactionsY(unsigned int cy) {
   for (size_t i = 0; i < particles.size(); ++i) {
     if (cy == 0) {
       dy = particles[i]->posY - LIMITE_INFERIOR_RECINTO_Y;
-    } else if (cy == data.ny - 1) {
+    } else if (cy == data->ny - 1) {
       dy = LIMITE_SUPERIOR_RECINTO_Y - particles[i]->posY;
     }
     if (dy < 0) {
       if (cy == 0) {
         particles[i]->posY = LIMITE_INFERIOR_RECINTO_Y - dy;
-      } else if (cy == data.ny - 1) {
+      } else if (cy == data->ny - 1) {
         particles[i]->posY = LIMITE_SUPERIOR_RECINTO_Y + dy;
       }
       particles[i]->velY       = particles[i]->velY * -1;
@@ -296,13 +296,13 @@ void Block::interactionsZ(unsigned int cz) {
   for (size_t i = 0; i < particles.size(); ++i) {
     if (cz == 0) {
       dz = particles[i]->posZ - LIMITE_INFERIOR_RECINTO_Z;
-    } else if (cz == data.nz - 1) {
+    } else if (cz == data->nz - 1) {
       dz = LIMITE_SUPERIOR_RECINTO_Z - particles[i]->posZ;
     }
     if (dz < 0) {
       if (cz == 0) {
         particles[i]->posZ = LIMITE_INFERIOR_RECINTO_Z - dz;
-      } else if (cz == data.nz - 1) {
+      } else if (cz == data->nz - 1) {
         particles[i]->posZ = LIMITE_SUPERIOR_RECINTO_Z + dz;
       }
       particles[i]->velZ       = particles[i]->velZ * -1;

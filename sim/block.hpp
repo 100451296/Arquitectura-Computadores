@@ -3,8 +3,8 @@
 
 #include "common.hpp"
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 int block();
 
@@ -13,20 +13,18 @@ class Block {
     // partículas
 
   public:
-    std::vector<std::shared_ptr<Particle>> particles;  
+    std::vector<std::shared_ptr<Particle>> particles;
     std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> particlePairs;
-    DataCommon& data;
+    std::shared_ptr<DataCommon> data;
     std::vector<double> accelerationX;
     std::vector<double> accelerationY;
     std::vector<double> accelerationZ;
     std::vector<double> density;
 
-    Block(DataCommon& data) : data(data) {}
-
     void addParticle(std::shared_ptr<Particle> particle);
     void initVectors();
-    void densityIncrease(Block& contiguousBlock);
-    void accelerationTransfer(Block& contiguousBlock);
+    void densityIncrease(Block & contiguousBlock);
+    void accelerationTransfer(Block & contiguousBlock);
     void collisionsX(unsigned int cx);
     void collisionsY(unsigned int cy);
     void collisionsZ(unsigned int cz);
@@ -35,15 +33,21 @@ class Block {
     void interactionsY(unsigned int cy);
     void interactionsZ(unsigned int cz);
     void generarParejasBloque();
-    std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> generarParejasEntreBloques(Block& otherBlock);
+    std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>>
+        generarParejasEntreBloques(Block & otherBlock);
     void calculateDataCommon();
     void initDensityAcceleration();
-    void calculate_increm_density(std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> ParejaParticulas);
+    void calculate_increm_density(
+        std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>>
+            ParejaParticulas);
     void lineal_transformate_density();
-    std::vector<double> calculate_increm_aceleration(std::vector<double> position, std::vector<double> velocity, double dist, std::vector<unsigned int> Id);
+    std::vector<double> calculate_increm_aceleration(std::vector<double> position,
+                                                     std::vector<double> velocity, double dist,
+                                                     std::vector<unsigned int> Id);
     double calculate_dist(double posX, double posY, double posZ);
     double max(double n1, double n2);
-    void accelerationTransferCalculations(std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> pair_vec);
+    void accelerationTransferCalculations(
+        std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> pair_vec);
 };
 
 #endif
