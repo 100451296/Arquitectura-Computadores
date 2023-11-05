@@ -29,17 +29,14 @@ vector<std::pair<ParticleRef const, ParticleRef const>>
   return aux;
 };
 
-/*void Block::initVectors() {
-  fill(this->accelerations.begin(), this->accelerations.end(), 0);
-  fill(this->densities.begin(), this->densities.end(), 0);
-}*/
-
-/*// Función para añadir una partícula al vector
-void Block::addParticle(Particle &particle) {
+// Función para añadir una partícula al vector
+void Block::addParticle(ParticleRef particle) {
   this->particles.push_back(particle);
-  this->accelerations.push_back(0.0);  //Agrega una entrada 0 a accelerations
-  this->densities.push_back(0.0);      //Agrega una entrada 0 a densities
-}*/
+  this->accelerationX.push_back(0.0);
+  this->accelerationY.push_back(0.0);
+  this->accelerationZ.push_back(0.0);  //Agrega una entrada 0 a accelerations
+  this->density.push_back(0.0);      //Agrega una entrada 0 a densities
+}
 
 // Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un
 // bloque
