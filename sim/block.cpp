@@ -34,8 +34,8 @@ void Block::addParticle(ParticleRef particle) {
   this->particles.push_back(particle);
   this->accelerationX.push_back(0.0);
   this->accelerationY.push_back(0.0);
-  this->accelerationZ.push_back(0.0);  //Agrega una entrada 0 a accelerations
-  this->density.push_back(0.0);      //Agrega una entrada 0 a densities
+  this->accelerationZ.push_back(0.0);  // Agrega una entrada 0 a accelerations
+  this->density.push_back(0.0);        // Agrega una entrada 0 a densities
 }
 
 // Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un
