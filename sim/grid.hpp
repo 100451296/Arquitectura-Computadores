@@ -102,7 +102,7 @@ class Grid {
     void interactionsYGrid();
     void interactionsZGrid();
 
-    Grid(std::vector<Particle> & particles, float ppm, int num_particles)
+    Grid(std::vector<std::shared_ptr<Particle>> & particles, float ppm, int num_particles)
       : particles(), ppm(ppm), num_particles(num_particles), h(MULTIPLICADOR_RADIO / ppm),
         particle_mass(DENSIDAD_FLUIDO * std::pow(ppm, -3)),
         nx(std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h)),
@@ -111,9 +111,7 @@ class Grid {
         num_blocks(nx * ny * nz), sx((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / nx),
         sy((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / ny),
         sz((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / nz) {
-      for (auto & particle : particles) {
-        this->particles.push_back(std::make_shared<Particle>(particle));
-      }
+      for (auto & particle : particles) { this->particles.push_back(particle); }
       blocks.resize(nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz)));
       for (int x = 0; x < nx; ++x) {
         for (int y = 0; y < ny; ++y) {

@@ -21,19 +21,18 @@ int main(int argc, char * argv[]) {
 
   // Inicializa variables
   // int num_iterations = std::stoi(argv[1]);
-  std::string input_file_name  = argv[2];
-  std::string output_file_name = argv[3];
+  string input_file_name  = argv[2];
+  string output_file_name = argv[3];
   float ppm;
   int num_particles;
-  vector<Particle> particles;
+  vector<shared_ptr<Particle>> particles;
 
   readFile(input_file_name, ppm, num_particles, particles);
   printParameters(ppm, num_particles);
 
   Grid grid(particles, ppm, num_particles);
-  // grid.simulation(stoi(argv[1]));
-  grid.printFirst();
-  cout << "Main " << particles[0].posX << endl;
+  grid.simulation(stoi(argv[1]));
+  cout << "Main " << particles[0]->posX << endl;
 
   writeFile(output_file_name, ppm, num_particles, particles);
 

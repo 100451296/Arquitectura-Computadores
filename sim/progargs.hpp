@@ -6,6 +6,7 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -20,7 +21,7 @@ int leer_archivo_entrada(std::string input_file);
 int proargs_validations(int argc, std::string const & arg1, std::string const & arg2,
                         std::string const & arg3);
 int readFile(std::string const & input_file_name, float & ppm, int & num_particles,
-             std::vector<Particle> & particles);
+             std::vector<std::shared_ptr<Particle>> & refParticles);
 bool readHeader(std::ifstream & input_file, float & ppm, int & num_particles);
 bool readParticles(std::ifstream & input_file, std::vector<Particle> & particles,
                    int num_particles);
@@ -28,9 +29,10 @@ bool readParticle(std::ifstream & input_file, Particle & particle, int index);
 void printParameters(int ppm, int num_particles);
 
 int writeFile(std::string const & output_file_name, float ppm, int num_particles,
-              std::vector<Particle> const & particles);
+              std::vector<std::shared_ptr<Particle>> const & particles);
 bool writeHeader(std::ofstream & output_file, float ppm, int num_particles);
-bool writeParticles(std::ofstream & output_file, std::vector<Particle> const & particles);
-bool writeParticle(std::ofstream & output_file, Particle const & particle);
+bool writeParticles(std::ofstream & output_file,
+                    std::vector<std::shared_ptr<Particle>> const & particles);
+bool writeParticle(std::ofstream & output_file, std::shared_ptr<Particle> const & particle);
 
 #endif

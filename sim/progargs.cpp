@@ -105,8 +105,10 @@ int proargs_validations(int num_params, string const & num_iter, string const & 
   return 0;
 }
 
-int readFile(std::string const & input_file_name, float & ppm, int & num_particles,
-             std::vector<Particle> & particles) {
+int readFile(string const & input_file_name, float & ppm, int & num_particles,
+             vector<std::shared_ptr<Particle>> & refParticles) {
+  vector<Particle> particles;  // Inicializa vector de particulas
+
   std::ifstream input_file(input_file_name, std::ios::binary);
   if (!input_file.is_open()) {
     std::cerr << "Error al abrir el archivo de entrada" << std::endl;
@@ -123,6 +125,8 @@ int readFile(std::string const & input_file_name, float & ppm, int & num_particl
   if (!readParticles(input_file, particles, num_particles)) { return -1; }
 
   input_file.close();
+
+  for (auto & particle : particles) { refParticles.push_back(make_shared<Particle>(particle)); }
   return 0;
 }
 
@@ -163,7 +167,7 @@ bool readParticle(std::ifstream & input_file, Particle & particle, int index) {
 }
 
 int writeFile(std::string const & output_file_name, float ppm, int num_particles,
-              std::vector<Particle> const & particles) {
+              std::vector<std::shared_ptr<Particle>> const & particles) {
   std::ofstream output_file(output_file_name, std::ios::binary);
   if (!output_file.is_open()) {
     std::cerr << "Error al abrir el archivo de salida" << std::endl;
@@ -184,21 +188,21 @@ bool writeHeader(std::ofstream & output_file, float ppm, int num_particles) {
   return output_file.good();
 }
 
-bool writeParticles(std::ofstream & output_file, std::vector<Particle> const & particles) {
-  for (unsigned int i = 0; i < particles.size(); i++) {
-    if (!writeParticle(output_file, particles[i])) { return false; }
+bool writeParticles(std::ofstream & output_file,
+                    std::vector<std::shared_ptr<Particle>> const & particles) {
+  for (auto const & particle : particles) {
+    if (!writeParticle(output_file, particle)) { return false; }
   }
   return true;
 }
 
-bool writeParticle(std::ofstream & output_file, Particle const & particle) {
+bool writeParticle(std::ofstream & output_file, std::shared_ptr<Particle> const & particle) {
   float buffer[9] = {
-    static_cast<float>(particle.posX),       static_cast<float>(particle.posY),
-    static_cast<float>(particle.posZ),       static_cast<float>(particle.smoothVecX),
-    static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
-    static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
-    static_cast<float>(particle.velZ)};
-
+    static_cast<float>(particle->posX),       static_cast<float>(particle->posY),
+    static_cast<float>(particle->posZ),       static_cast<float>(particle->smoothVecX),
+    static_cast<float>(particle->smoothVecY), static_cast<float>(particle->smoothVecZ),
+    static_cast<float>(particle->velX),       static_cast<float>(particle->velY),
+    static_cast<float>(particle->velZ)};
   if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
     std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
     return false;
