@@ -31,7 +31,11 @@ int main(int argc, char * argv[]) {
   printParameters(ppm, num_particles);
 
   Grid grid(particles, ppm, num_particles);
-  grid.simulation(stoi(argv[1]));
+  // grid.simulation(stoi(argv[1]));
+  grid.printFirst();
+  cout << "Main " << particles[0].posX << endl;
+
+  writeFile(output_file_name, ppm, num_particles, particles);
 
   return 0;
 }

@@ -27,4 +27,10 @@ bool readParticles(std::ifstream & input_file, std::vector<Particle> & particles
 bool readParticle(std::ifstream & input_file, Particle & particle, int index);
 void printParameters(int ppm, int num_particles);
 
+int writeFile(std::string const & output_file_name, float ppm, int num_particles,
+              std::vector<Particle> const & particles);
+bool writeHeader(std::ofstream & output_file, float ppm, int num_particles);
+bool writeParticles(std::ofstream & output_file, std::vector<Particle> const & particles);
+bool writeParticle(std::ofstream & output_file, Particle const & particle);
+
 #endif

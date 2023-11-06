@@ -85,6 +85,7 @@ class Grid {
                     static_cast<unsigned int>(nz)};
 
     void printParticles();
+    void printFirst();
     void printPairs();
     void simulation(int interations);
 

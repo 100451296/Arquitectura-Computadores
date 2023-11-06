@@ -45,6 +45,20 @@ void Grid::printParticles() {
   }
 }
 
+void Grid::printFirst() {
+  std::cout << "Partículas en la cuadrícula:" << std::endl;
+  for (size_t i = 0; i < 2; ++i) {
+    std::cout << "ID: " << particles[0]->id << ", ";
+    std::cout << "Posición (" << particles[0]->posX << ", " << particles[0]->posY << ", "
+              << particles[0]->posZ << "), ";
+    std::cout << "Vector de suavizado (" << particles[0]->smoothVecX << ", "
+              << particles[0]->smoothVecY << ", " << particles[0]->smoothVecZ << "), ";
+    std::cout << "Velocidad (" << particles[0]->velX << ", " << particles[0]->velY << ", "
+              << particles[0]->velZ << ")" << std::endl;
+    particles[0]->posX = 0.0;
+  }
+}
+
 void Grid::resetBlocks() {
   for (int x = 0; x < nx; ++x) {
     for (int y = 0; y < ny; ++y) {

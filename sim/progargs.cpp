@@ -162,6 +162,51 @@ bool readParticle(std::ifstream & input_file, Particle & particle, int index) {
   return true;
 }
 
+int writeFile(std::string const & output_file_name, float ppm, int num_particles,
+              std::vector<Particle> const & particles) {
+  std::ofstream output_file(output_file_name, std::ios::binary);
+  if (!output_file.is_open()) {
+    std::cerr << "Error al abrir el archivo de salida" << std::endl;
+    return -1;
+  }
+
+  if (!writeHeader(output_file, ppm, num_particles)) { return -1; }
+
+  if (!writeParticles(output_file, particles)) { return -1; }
+
+  output_file.close();
+  return 0;
+}
+
+bool writeHeader(std::ofstream & output_file, float ppm, int num_particles) {
+  output_file.write(reinterpret_cast<char const *>(&ppm), sizeof(float));
+  output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
+  return output_file.good();
+}
+
+bool writeParticles(std::ofstream & output_file, std::vector<Particle> const & particles) {
+  for (unsigned int i = 0; i < particles.size(); i++) {
+    if (!writeParticle(output_file, particles[i])) { return false; }
+  }
+  return true;
+}
+
+bool writeParticle(std::ofstream & output_file, Particle const & particle) {
+  float buffer[9] = {
+    static_cast<float>(particle.posX),       static_cast<float>(particle.posY),
+    static_cast<float>(particle.posZ),       static_cast<float>(particle.smoothVecX),
+    static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
+    static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
+    static_cast<float>(particle.velZ)};
+
+  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
+    std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 void printParameters(int ppm, int num_particles) {
   // Calcula parametros y los imprime directamente
   std::cout << "Number of particles: " << num_particles << std::endl;
