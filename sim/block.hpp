@@ -22,7 +22,9 @@ class Block {
     std::vector<double> density;
 
     void addParticle(std::shared_ptr<Particle> particle);
+    void densityIncrease();
     void densityIncrease(Block & contiguousBlock);
+    void accelerationTransfer();
     void accelerationTransfer(Block & contiguousBlock);
     void collisionsX(unsigned int cx);
     void collisionsY(unsigned int cy);
@@ -40,6 +42,7 @@ class Block {
         std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>>
             ParejaParticulas);
     void lineal_transformate_density();
+    void lineal_transformate_density(Block & contiguousBlock);
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<unsigned int> Id);

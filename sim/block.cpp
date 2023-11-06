@@ -57,14 +57,17 @@ void Block::initDensityAcceleration() {
 }
 
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
-void Block::densityIncrease(Block & contiguousBlock) {
-  // Parte del bloque actual
+void Block::densityIncrease() {
   calculate_increm_density(this->particlePairs);
+  lineal_transformate_density();
+}
+
+void Block::densityIncrease(Block & contiguousBlock) {
   // Parte del bloque contiguo
   vector<std::pair<shared_ptr<Particle>, shared_ptr<Particle>>> aux =
       generarParejasEntreBloques(contiguousBlock);
   calculate_increm_density(aux);
-  lineal_transformate_density();
+  lineal_transformate_density(contiguousBlock);
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
@@ -86,11 +89,26 @@ void Block::calculate_increm_density(
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la densidad
+// en un mismo bloque
 void Block::lineal_transformate_density() {
   for (size_t i = 0; i < density.size(); i++) {
     if (density[i] != 0) {
       density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
                    (64 * numbers::pi * pow(data->long_suavizado, 9));
+    }
+  }
+}
+
+// Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la densidad
+// respecto a un bloque contiguo
+void Block::lineal_transformate_density(Block & contiguousBlock) {
+  for (size_t i = 0; i < density.size(); i++) {
+    if (density[i] != 0) {
+      density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
+                   (64 * numbers::pi * pow(data->long_suavizado, 9));
+    } else if (contiguousBlock.density[i] != 0) {
+      contiguousBlock.density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
+                                   (64 * numbers::pi * pow(data->long_suavizado, 9));
     }
   }
 }
@@ -154,11 +172,15 @@ void Block::accelerationTransferCalculations(
   }
 }
 
-// Funcion que se encarga de actualizar el vector de aceleraciones y el incremento
-void Block::accelerationTransfer(Block & contiguousBlock) {
-  // Parte del bloque actual
+// Funcion que se encarga de actualizar el vector de aceleraciones y el incremento en un mismo
+// bloque
+void Block::accelerationTransfer() {
   accelerationTransferCalculations(particlePairs);
-  // Parte del bloque contiguo
+}
+
+// Funcion que se encarga de actualizar el vector de aceleraciones y el incremento respecto a un
+// bloque contiguo
+void Block::accelerationTransfer(Block & contiguousBlock) {
   vector<std::pair<shared_ptr<Particle>, shared_ptr<Particle>>> aux =
       generarParejasEntreBloques(contiguousBlock);
   accelerationTransferCalculations(aux);
