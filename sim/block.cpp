@@ -1,9 +1,5 @@
 #include "block.hpp"
 
-#include <cmath>
-#include <iostream>
-#include <numbers>
-
 using namespace std;
 
 // METODOS de BLOCK
@@ -39,6 +35,15 @@ void Block::addParticle(shared_ptr<Particle> particle) {
   this->density.push_back(0.0);        // Agrega una entrada 0 a density
 }
 
+void Block::resetBlock() {
+  particles.clear();
+  particlePairs.clear();
+  accelerationX.clear();
+  accelerationY.clear();
+  accelerationZ.clear();
+  density.clear();
+}
+
 // Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un
 // bloque
 void Block::calculateDataCommon() {
@@ -57,7 +62,7 @@ void Block::initDensityAcceleration() {
 }
 
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
-void Block::densityIncrease() {
+void Block::densityIncreaseSingle() {
   calculate_increm_density(this->particlePairs);
   lineal_transformate_density();
 }
@@ -184,7 +189,7 @@ void Block::increm_aceleration_sum(std::vector<std::shared_ptr<double>> Accelera
 
 // Funcion que se encarga de actualizar el vector de aceleraciones y el incremento en un mismo
 // bloque
-void Block::accelerationTransfer() {
+void Block::accelerationTransferSingle() {
   accelerationTransferCalculations(particlePairs);
 }
 

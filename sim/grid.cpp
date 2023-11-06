@@ -28,6 +28,7 @@ void Grid::simulation(int iterations) {
     interactionsXGrid();
     interactionsYGrid();
     interactionsZGrid();
+    resetBlocks();
   }
 }
 
@@ -41,6 +42,14 @@ void Grid::printParticles() {
               << particles[i]->smoothVecY << ", " << particles[i]->smoothVecZ << "), ";
     std::cout << "Velocidad (" << particles[i]->velX << ", " << particles[i]->velY << ", "
               << particles[i]->velZ << ")" << std::endl;
+  }
+}
+
+void Grid::resetBlocks() {
+  for (int x = 0; x < nx; ++x) {
+    for (int y = 0; y < ny; ++y) {
+      for (int z = 0; z < nz; ++z) { blocks[x][y][z].resetBlock(); }
+    }
   }
 }
 
@@ -61,16 +70,14 @@ void Grid::positionateParticle() {
 
 void Grid::densityIncreaseGrid() {
   for (auto & pareja : parejas_unicas) {
-    pareja.first.densityIncrease(pareja.second);
-    // Aquí puedes trabajar con los bloques bloque1 y bloque2 según sea necesario
+    pareja.first.densityIncrease(pareja.second);  // Bloques contiguos
   }
 }
 
 void Grid::aceletarionTransferGrid() {
   for (auto & pareja : parejas_unicas) {
-    pareja.first.densityIncrease(pareja.second);
-    // Aquí puedes trabajar con los bloques bloque1 y bloque2 según sea necesario
-  }
+    pareja.first.accelerationTransfer(pareja.second);
+  }  // Bloques contiguos
 }
 
 void Grid::densityTransform() {
@@ -96,24 +103,24 @@ void Grid::collisionsXGrid() {
 void Grid::collisionsYGrid() {
   int cy = 0;
   for (int x = 0; x < nx; ++x) {
-    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].collisionsX(cy); }
+    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].collisionsY(cy); }
   }
 
   cy = ny - 1;
   for (int x = 0; x < nx; ++x) {
-    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].collisionsX(cy); }
+    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].collisionsY(cy); }
   }
 }
 
 void Grid::collisionsZGrid() {
   int cz = 0;
   for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].collisionsX(cz); }
+    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].collisionsZ(cz); }
   }
 
   cz = nz - 1;
   for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].collisionsX(cz); }
+    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].collisionsZ(cz); }
   }
 }
 
@@ -140,23 +147,23 @@ void Grid::interactionsXGrid() {
 void Grid::interactionsYGrid() {
   int cy = 0;
   for (int x = 0; x < nx; ++x) {
-    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].interactionsX(cy); }
+    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].interactionsY(cy); }
   }
 
   cy = ny - 1;
   for (int x = 0; x < nx; ++x) {
-    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].interactionsX(cy); }
+    for (int z = 0; z < nz; ++z) { blocks[x][cy][z].interactionsY(cy); }
   }
 }
 
 void Grid::interactionsZGrid() {
   int cz = 0;
   for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].interactionsX(cz); }
+    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].interactionsZ(cz); }
   }
 
   cz = nz - 1;
   for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].interactionsX(cz); }
+    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].interactionsZ(cz); }
   }
 }

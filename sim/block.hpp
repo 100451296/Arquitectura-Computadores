@@ -3,10 +3,11 @@
 
 #include "common.hpp"
 
+#include <cmath>
+#include <iostream>
 #include <memory>
+#include <numbers>
 #include <vector>
-
-int block();
 
 class Block {
     // Representa un bloque en la malla. Realizará todos los cálculos entre
@@ -22,9 +23,10 @@ class Block {
     std::vector<double> density;
 
     void addParticle(std::shared_ptr<Particle> particle);
-    void densityIncrease();
+    void resetBlock();
+    void densityIncreaseSingle();
     void densityIncrease(Block & contiguousBlock);
-    void accelerationTransfer();
+    void accelerationTransferSingle();
     void accelerationTransfer(Block & contiguousBlock);
     void collisionsX(unsigned int cx);
     void collisionsY(unsigned int cy);
@@ -46,7 +48,8 @@ class Block {
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<unsigned int> Id);
-    void increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration, std::vector<double> increm_aceleration);
+    void increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration,
+                                std::vector<double> increm_aceleration);
     double calculate_dist(double posX, double posY, double posZ);
     double max(double n1, double n2);
     void accelerationTransferCalculations(

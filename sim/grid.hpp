@@ -89,6 +89,7 @@ class Grid {
     void simulation(int interations);
 
     void positionateParticle();
+    void resetBlocks();
     void densityIncreaseGrid();
     void aceletarionTransferGrid();
     void densityTransform();

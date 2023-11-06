@@ -31,7 +31,7 @@ int main(int argc, char * argv[]) {
   printParameters(ppm, num_particles);
 
   Grid grid(particles, ppm, num_particles);
-  grid.simulation(2);
+  grid.simulation(stoi(argv[1]));
 
   return 0;
 }
