@@ -162,19 +162,26 @@ void Block::accelerationTransferCalculations(
       vector<unsigned int> Id = {pair.first->id, pair.second->id};
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Id);
-      std::vector<std::shared_ptr<double>> Acceleration = {std::make_shared<double>(accelerationX[pair.first->id]), std::make_shared<double>(accelerationY[pair.first->id]), std::make_shared<double>(accelerationZ[pair.first->id])};
+      std::vector<std::shared_ptr<double>> Acceleration = {
+        std::make_shared<double>(accelerationX[pair.first->id]),
+        std::make_shared<double>(accelerationY[pair.first->id]),
+        std::make_shared<double>(accelerationZ[pair.first->id])};
       increm_aceleration_sum(Acceleration, increm_aceleration);
-      Acceleration = {std::make_shared<double>(accelerationX[pair.second->id]), std::make_shared<double>(accelerationY[pair.second->id]), std::make_shared<double>(accelerationZ[pair.second->id])};
+      Acceleration = {std::make_shared<double>(accelerationX[pair.second->id]),
+                      std::make_shared<double>(accelerationY[pair.second->id]),
+                      std::make_shared<double>(accelerationZ[pair.second->id])};
       increm_aceleration_sum(Acceleration, increm_aceleration);
-
     }
   }
 }
-void Block::increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration, std::vector<double> increm_aceleration){
- *Acceleration[0] = *Acceleration[0] + increm_aceleration[0];
- *Acceleration[1] = *Acceleration[1] + increm_aceleration[1];
- *Acceleration[2] = *Acceleration[2] + increm_aceleration[2];
+
+void Block::increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration,
+                                   std::vector<double> increm_aceleration) {
+  *Acceleration[0] = *Acceleration[0] + increm_aceleration[0];
+  *Acceleration[1] = *Acceleration[1] + increm_aceleration[1];
+  *Acceleration[2] = *Acceleration[2] + increm_aceleration[2];
 }
+
 // Funcion que se encarga de actualizar el vector de aceleraciones y el incremento en un mismo
 // bloque
 void Block::accelerationTransfer() {
