@@ -108,10 +108,7 @@ void Block::lineal_transformate_density() {
 // respecto a un bloque contiguo
 void Block::lineal_transformate_density(Block & contiguousBlock) {
   for (size_t i = 0; i < density.size(); i++) {
-    if (density[i] != 0) {
-      density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
-                   (64 * numbers::pi * pow(data->long_suavizado, 9));
-    } else if (contiguousBlock.density[i] != 0) {
+    if (contiguousBlock.density[i] != 0) {
       contiguousBlock.density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
                                    (64 * numbers::pi * pow(data->long_suavizado, 9));
     }
