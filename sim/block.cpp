@@ -107,7 +107,7 @@ void Block::lineal_transformate_density() {
 // Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la densidad
 // respecto a un bloque contiguo
 void Block::lineal_transformate_density(Block & contiguousBlock) {
-  for (size_t i = 0; i < density.size(); i++) {
+  for (size_t i = 0; i < contiguousBlock.density.size(); i++) {
     if (contiguousBlock.density[i] != 0) {
       contiguousBlock.density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
                                    (64 * numbers::pi * pow(data->long_suavizado, 9));
