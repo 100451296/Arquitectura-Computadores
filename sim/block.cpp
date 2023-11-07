@@ -134,15 +134,12 @@ void Block::accelerationTransferCalculations(
       vector<unsigned int> Id = {pair.first->id, pair.second->id};
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Id);
-      std::vector<std::shared_ptr<double>> Acceleration = {
-        std::make_shared<double>(accelerationX[pair.first->id]),
-        std::make_shared<double>(accelerationY[pair.first->id]),
-        std::make_shared<double>(accelerationZ[pair.first->id])};
-      increm_aceleration_sum(Acceleration, increm_aceleration);
-      Acceleration = {std::make_shared<double>(accelerationX[pair.second->id]),
-                      std::make_shared<double>(accelerationY[pair.second->id]),
-                      std::make_shared<double>(accelerationZ[pair.second->id])};
-      increm_aceleration_sum(Acceleration, increm_aceleration);
+      accelerationX[pair.first->id] = accelerationX[pair.first->id]+ increm_aceleration[0];
+      accelerationY[pair.first->id] = accelerationY[pair.first->id] + increm_aceleration[1];
+      accelerationZ[pair.first->id] = accelerationZ[pair.first->id] + increm_aceleration[2];
+      accelerationX[pair.second->id] = accelerationX[pair.second->id] + increm_aceleration[0];
+      accelerationY[pair.second->id] = accelerationY[pair.second->id] + increm_aceleration[1];
+      accelerationZ[pair.second->id] = accelerationZ[pair.second->id] + increm_aceleration[2];
     }
   }
 }
@@ -155,17 +152,20 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
     ((position[0]) * (15 / (numbers::pi * pow(data->long_suavizado, 6))) *
          (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[0]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD * data->mass) /
+     (velocity[0]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD *
+         data->mass) /
         (density[Id[0]] * density[Id[1]]),
     ((position[1]) * (15 / (numbers::pi * pow(data->long_suavizado, 6))) *
          (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[1]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD * data->mass) /
+     (velocity[1]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD *
+         data->mass) /
         (density[Id[0]] * density[Id[1]]),
     ((position[2]) * (15 / (numbers::pi * pow(data->long_suavizado, 6))) *
          (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[2]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD * data->mass) /
+     (velocity[2]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD *
+         data->mass) /
         (density[Id[0]] * density[Id[1]])};
   return increm_aceleration;
 }
@@ -176,12 +176,6 @@ double Block::calculate_dist(double posX, double posY, double posZ) {
   return dist;
 }
 
-void Block::increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration,
-                                   std::vector<double> increm_aceleration) {
-  *Acceleration[0] = *Acceleration[0] + increm_aceleration[0];
-  *Acceleration[1] = *Acceleration[1] + increm_aceleration[1];
-  *Acceleration[2] = *Acceleration[2] + increm_aceleration[2];
-}
 
 // Funcion que se encarga de actualizar el vector de aceleraciones y el incremento en un mismo
 // bloque
@@ -343,5 +337,3 @@ void Block::interactionsZ(unsigned int cz) {
     }
   }
 }
-
-
