@@ -19,7 +19,6 @@ void Grid::simulation(int iterations) {
 
     positionateParticle();
     densityIncreaseGrid();
-    densityTransform();
     aceletarionTransferGrid();
     collisionsXGrid();
     collisionsYGrid();
@@ -83,23 +82,25 @@ void Grid::positionateParticle() {
 }
 
 void Grid::densityIncreaseGrid() {
+  for (int x = 0; x < nx; ++x) {
+    for (int y = 0; y < ny; ++y) {
+      for (int z = 0; z < nz; ++z) { blocks[x][y][z].densityIncreaseSingle(); }
+    }
+  }
   for (auto & pareja : parejas_unicas) {
     pareja.first.densityIncrease(pareja.second);  // Bloques contiguos
   }
 }
 
 void Grid::aceletarionTransferGrid() {
+  for (int x = 0; x < nx; ++x) {
+    for (int y = 0; y < ny; ++y) {
+      for (int z = 0; z < nz; ++z) { blocks[x][y][z].accelerationTransferSingle(); }
+    }
+  }
   for (auto & pareja : parejas_unicas) {
     pareja.first.accelerationTransfer(pareja.second);
   }  // Bloques contiguos
-}
-
-void Grid::densityTransform() {
-  for (int x = 0; x < nx; ++x) {
-    for (int y = 0; y < ny; ++y) {
-      for (int z = 0; z < nz; ++z) { blocks[x][y][z].lineal_transformate_density(); }
-    }
-  }
 }
 
 void Grid::collisionsXGrid() {
