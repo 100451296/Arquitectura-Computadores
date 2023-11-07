@@ -15,7 +15,7 @@ class Block {
 
   public:
     std::vector<std::shared_ptr<Particle>> particles;
-    std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> particlePairs;
+    std::vector<std::pair<int, int>> particlePairs;
     std::shared_ptr<DataCommon> data;
     std::vector<double> accelerationX;
     std::vector<double> accelerationY;
@@ -36,13 +36,13 @@ class Block {
     void interactionsY(unsigned int cy);
     void interactionsZ(unsigned int cz);
     void generarParejasBloque();
-    std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>>
+    std::vector<std::pair<int, int>>
         generarParejasEntreBloques(Block & otherBlock);
     void calculateDataCommon();
     void initDensityAcceleration();
     void calculate_increm_density(
-        std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>>
-            ParejaParticulas);
+        std::vector<std::pair<int, int>>
+            ParejaParticulas, Block & contiguousBlock);
     void lineal_transformate_density();
     void lineal_transformate_density(Block & contiguousBlock);
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
@@ -51,7 +51,7 @@ class Block {
     double calculate_dist(double posX, double posY, double posZ);
 
     void accelerationTransferCalculations(
-        std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> pair_vec);
+        std::vector<std::pair<int, int>> pair_vec, Block & contiguousBlock);
 };
 
 #endif
