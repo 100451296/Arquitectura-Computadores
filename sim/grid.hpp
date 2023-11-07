@@ -64,7 +64,7 @@ class Grid {
   public:
     std::vector<std::shared_ptr<Particle>> particles;     // AoS
     std::vector<std::vector<std::vector<Block>>> blocks;  // Matriz tridimensional de bloques
-    std::vector<std::pair<Block, Block>> parejas_unicas;  // Bloques contiguos
+    std::vector<std::pair<std::tuple<int, int, int>, std::tuple<int, int, int>>> parejas_unicas;
     float ppm;
     int num_particles;
     double h;
@@ -127,13 +127,14 @@ class Grid {
 
               if (x_contiguo >= 0 && x_contiguo < nx && y_contiguo >= 0 && y_contiguo < ny &&
                   z_contiguo >= 0 && z_contiguo < nz) {
-                parejas_unicas.push_back(
-                    std::make_pair(blocks[x][y][z], blocks[x_contiguo][y_contiguo][z_contiguo]));
+                parejas_unicas.push_back(std::make_pair(
+                    std::make_tuple(x, y, z), std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
               }
             }
           }
         }
       }
+      std::cout << parejas_unicas.size() << " Parejas unicas" << std::endl;
     }
 };
 

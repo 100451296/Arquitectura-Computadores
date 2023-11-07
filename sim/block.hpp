@@ -49,7 +49,7 @@ class Block {
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<unsigned int> Id);
     double calculate_dist(double posX, double posY, double posZ);
-    
+
     void accelerationTransferCalculations(
         std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> pair_vec);
 };

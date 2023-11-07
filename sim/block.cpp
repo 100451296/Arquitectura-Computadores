@@ -18,7 +18,7 @@ vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>>
     Block::generarParejasEntreBloques(Block & otherBlock) {
   // Generar pares entre el bloque actual y el bloque contiguo
   vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> aux;
-  for (size_t i = 0; i < particles.size(); ++i) {
+  for (size_t i = 0; i < this->particles.size(); ++i) {
     for (size_t j = 0; j < otherBlock.particles.size(); ++j) {
       aux.push_back(make_pair(particles[i], otherBlock.particles[j]));
     }
@@ -63,12 +63,15 @@ void Block::initDensityAcceleration() {
 
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
 void Block::densityIncreaseSingle() {
+  cout << "Tamaño " << this->particles.size() << endl;
+  generarParejasBloque();
   calculate_increm_density(this->particlePairs);
   lineal_transformate_density();
 }
 
 void Block::densityIncrease(Block & contiguousBlock) {
   // Parte del bloque contiguo
+  cout << "Tamaño " << this->particles.size() << endl;
   vector<std::pair<shared_ptr<Particle>, shared_ptr<Particle>>> aux =
       generarParejasEntreBloques(contiguousBlock);
   calculate_increm_density(aux);
@@ -88,6 +91,7 @@ void Block::calculate_increm_density(
     } else {
       increm_density_pair = 0;
     }
+    cout << "id " << pair.first->id << endl << endl << endl;
     density[pair.first->id]  = density[pair.first->id] + increm_density_pair;
     density[pair.second->id] = density[pair.second->id] + increm_density_pair;
   }
@@ -146,7 +150,6 @@ double Block::calculate_dist(double posX, double posY, double posZ) {
   return dist;
 }
 
-
 // Funcion que se encarga de actualizar el vector de aceleraciones y el incremento en un mismo
 // bloque
 void Block::accelerationTransferSingle() {
@@ -181,9 +184,9 @@ void Block::accelerationTransferCalculations(
       vector<unsigned int> Id = {pair.first->id, pair.second->id};
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Id);
-      accelerationX[pair.first->id] = accelerationX[pair.first->id]+ increm_aceleration[0];
-      accelerationY[pair.first->id] = accelerationY[pair.first->id] + increm_aceleration[1];
-      accelerationZ[pair.first->id] = accelerationZ[pair.first->id] + increm_aceleration[2];
+      accelerationX[pair.first->id]  = accelerationX[pair.first->id] + increm_aceleration[0];
+      accelerationY[pair.first->id]  = accelerationY[pair.first->id] + increm_aceleration[1];
+      accelerationZ[pair.first->id]  = accelerationZ[pair.first->id] + increm_aceleration[2];
       accelerationX[pair.second->id] = accelerationX[pair.second->id] + increm_aceleration[0];
       accelerationY[pair.second->id] = accelerationY[pair.second->id] + increm_aceleration[1];
       accelerationZ[pair.second->id] = accelerationZ[pair.second->id] + increm_aceleration[2];

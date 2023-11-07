@@ -76,19 +76,24 @@ void Grid::positionateParticle() {
     int k = std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
                                              (particle->posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
-    // cout << "Particula " << particle->id << " - Bloque " << i << "-" << j << "-" << k << endl;
     blocks[i][j][k].addParticle(particle);
   }
 }
 
 void Grid::densityIncreaseGrid() {
+  /*
   for (int x = 0; x < nx; ++x) {
     for (int y = 0; y < ny; ++y) {
       for (int z = 0; z < nz; ++z) { blocks[x][y][z].densityIncreaseSingle(); }
     }
   }
-  for (auto & pareja : parejas_unicas) {
-    pareja.first.densityIncrease(pareja.second);  // Bloques contiguos
+  */
+  // Imprimir todas las parejas
+  for (auto const & pareja : parejas_unicas) {
+    int x1, y1, z1, x2, y2, z2;
+    std::tie(x1, y1, z1) = pareja.first;
+    std::tie(x2, y2, z2) = pareja.second;
+    blocks[x1][y1][z1].densityIncrease(blocks[x2][y2][z2]);
   }
 }
 
@@ -98,9 +103,12 @@ void Grid::aceletarionTransferGrid() {
       for (int z = 0; z < nz; ++z) { blocks[x][y][z].accelerationTransferSingle(); }
     }
   }
-  for (auto & pareja : parejas_unicas) {
-    pareja.first.accelerationTransfer(pareja.second);
-  }  // Bloques contiguos
+  for (auto const & pareja : parejas_unicas) {
+    int x1, y1, z1, x2, y2, z2;
+    std::tie(x1, y1, z1) = pareja.first;
+    std::tie(x2, y2, z2) = pareja.second;
+    blocks[x1][y1][z1].accelerationTransfer(blocks[x2][y2][z2]);
+  }
 }
 
 void Grid::collisionsXGrid() {
