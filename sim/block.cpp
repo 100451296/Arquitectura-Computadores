@@ -114,36 +114,6 @@ void Block::lineal_transformate_density(Block & contiguousBlock) {
   }
 }
 
-// Metodo auxiliar que realiza los diferentes calculos para la aceleracion
-void Block::accelerationTransferCalculations(
-    vector<std::pair<shared_ptr<Particle>, shared_ptr<Particle>>> pair_vec) {
-  for (auto const & pair : pair_vec) {
-    if (pow(pair.first->posX - pair.second->posX, 2) +
-            pow(pair.first->posY - pair.second->posY, 2) +
-            pow(pair.first->posZ - pair.second->posZ, 2) <
-        pow(data->long_suavizado, 2)) {
-      double dist =
-          calculate_dist(pair.first->posX - pair.second->posX, pair.first->posY - pair.second->posY,
-                         pair.first->posZ - pair.second->posZ);
-      vector<double> position = {pair.first->posX - pair.second->posX,
-                                 pair.first->posY - pair.second->posY,
-                                 pair.first->posZ - pair.second->posZ};
-      vector<double> velocity = {pair.first->velX - pair.second->velX,
-                                 pair.first->velY - pair.second->velY,
-                                 pair.first->velZ - pair.second->velZ};
-      vector<unsigned int> Id = {pair.first->id, pair.second->id};
-      vector<double> increm_aceleration =
-          calculate_increm_aceleration(position, velocity, dist, Id);
-      accelerationX[pair.first->id] = accelerationX[pair.first->id]+ increm_aceleration[0];
-      accelerationY[pair.first->id] = accelerationY[pair.first->id] + increm_aceleration[1];
-      accelerationZ[pair.first->id] = accelerationZ[pair.first->id] + increm_aceleration[2];
-      accelerationX[pair.second->id] = accelerationX[pair.second->id] + increm_aceleration[0];
-      accelerationY[pair.second->id] = accelerationY[pair.second->id] + increm_aceleration[1];
-      accelerationZ[pair.second->id] = accelerationZ[pair.second->id] + increm_aceleration[2];
-    }
-  }
-}
-
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de aceleracion
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<unsigned int> Id) {
@@ -189,6 +159,36 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
   vector<std::pair<shared_ptr<Particle>, shared_ptr<Particle>>> aux =
       generarParejasEntreBloques(contiguousBlock);
   accelerationTransferCalculations(aux);
+}
+
+// Metodo auxiliar que realiza los diferentes calculos para la aceleracion
+void Block::accelerationTransferCalculations(
+    vector<std::pair<shared_ptr<Particle>, shared_ptr<Particle>>> pair_vec) {
+  for (auto const & pair : pair_vec) {
+    if (pow(pair.first->posX - pair.second->posX, 2) +
+            pow(pair.first->posY - pair.second->posY, 2) +
+            pow(pair.first->posZ - pair.second->posZ, 2) <
+        pow(data->long_suavizado, 2)) {
+      double dist =
+          calculate_dist(pair.first->posX - pair.second->posX, pair.first->posY - pair.second->posY,
+                         pair.first->posZ - pair.second->posZ);
+      vector<double> position = {pair.first->posX - pair.second->posX,
+                                 pair.first->posY - pair.second->posY,
+                                 pair.first->posZ - pair.second->posZ};
+      vector<double> velocity = {pair.first->velX - pair.second->velX,
+                                 pair.first->velY - pair.second->velY,
+                                 pair.first->velZ - pair.second->velZ};
+      vector<unsigned int> Id = {pair.first->id, pair.second->id};
+      vector<double> increm_aceleration =
+          calculate_increm_aceleration(position, velocity, dist, Id);
+      accelerationX[pair.first->id] = accelerationX[pair.first->id]+ increm_aceleration[0];
+      accelerationY[pair.first->id] = accelerationY[pair.first->id] + increm_aceleration[1];
+      accelerationZ[pair.first->id] = accelerationZ[pair.first->id] + increm_aceleration[2];
+      accelerationX[pair.second->id] = accelerationX[pair.second->id] + increm_aceleration[0];
+      accelerationY[pair.second->id] = accelerationY[pair.second->id] + increm_aceleration[1];
+      accelerationZ[pair.second->id] = accelerationZ[pair.second->id] + increm_aceleration[2];
+    }
+  }
 }
 
 // Debe actualizar la componente x del vector de aceleración para cada particula
@@ -290,8 +290,8 @@ void Block::interactionsX(unsigned int cx) {
       } else if (cx == data->nx - 1) {
         particles[i]->posX = LIMITE_SUPERIOR_RECINTO_X + dx;
       }
-      particles[i]->velX       = particles[i]->velX * -1;
-      particles[i]->smoothVecX = particles[i]->smoothVecX * -1;
+      particles[i]->velX       = -particles[i]->velX;
+      particles[i]->smoothVecX = -particles[i]->smoothVecX;
     }
   }
 }
@@ -311,8 +311,8 @@ void Block::interactionsY(unsigned int cy) {
       } else if (cy == data->ny - 1) {
         particles[i]->posY = LIMITE_SUPERIOR_RECINTO_Y + dy;
       }
-      particles[i]->velY       = particles[i]->velY * -1;
-      particles[i]->smoothVecY = particles[i]->smoothVecY * -1;
+      particles[i]->velY       = -particles[i]->velY;
+      particles[i]->smoothVecY = -particles[i]->smoothVecY;
     }
   }
 }
@@ -332,8 +332,8 @@ void Block::interactionsZ(unsigned int cz) {
       } else if (cz == data->nz - 1) {
         particles[i]->posZ = LIMITE_SUPERIOR_RECINTO_Z + dz;
       }
-      particles[i]->velZ       = particles[i]->velZ * -1;
-      particles[i]->smoothVecZ = particles[i]->smoothVecZ * -1;
+      particles[i]->velZ       = -particles[i]->velZ;
+      particles[i]->smoothVecZ = -particles[i]->smoothVecZ;
     }
   }
 }
