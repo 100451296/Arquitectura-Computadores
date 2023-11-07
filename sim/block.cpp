@@ -97,10 +97,8 @@ void Block::calculate_increm_density(
 // en un mismo bloque
 void Block::lineal_transformate_density() {
   for (size_t i = 0; i < density.size(); i++) {
-    if (density[i] != 0) {
-      density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
-                   (64 * numbers::pi * pow(data->long_suavizado, 9));
-    }
+    density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
+                 (64 * numbers::pi * pow(data->long_suavizado, 9));
   }
 }
 
@@ -108,14 +106,11 @@ void Block::lineal_transformate_density() {
 // respecto a un bloque contiguo
 void Block::lineal_transformate_density(Block & contiguousBlock) {
   for (size_t i = 0; i < contiguousBlock.density.size(); i++) {
-    if (density[i] != 0) {
-      density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
-                   (64 * numbers::pi * pow(data->long_suavizado, 9));
-    }
-    if (contiguousBlock.density[i] != 0) {
-      contiguousBlock.density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
-                                   (64 * numbers::pi * pow(data->long_suavizado, 9));
-    }
+    density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
+                 (64 * numbers::pi * pow(data->long_suavizado, 9));
+
+    contiguousBlock.density[i] = (density[i] + pow(data->long_suavizado, 6)) * 315 * data->mass /
+                                 (64 * numbers::pi * pow(data->long_suavizado, 9));
   }
 }
 
@@ -151,6 +146,7 @@ void Block::accelerationTransferCalculations(
     }
   }
 }
+
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de aceleracion
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<unsigned int> Id) {
@@ -179,6 +175,7 @@ double Block::calculate_dist(double posX, double posY, double posZ) {
   double dist = sqrt(max(pow(posX, 2) + pow(posY, 2) + pow(posZ, 2), pow(10, -12)));
   return dist;
 }
+
 void Block::increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration,
                                    std::vector<double> increm_aceleration) {
   *Acceleration[0] = *Acceleration[0] + increm_aceleration[0];
