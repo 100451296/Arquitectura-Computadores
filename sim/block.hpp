@@ -51,7 +51,7 @@ class Block {
     void increm_aceleration_sum(std::vector<std::shared_ptr<double>> Acceleration,
                                 std::vector<double> increm_aceleration);
     double calculate_dist(double posX, double posY, double posZ);
-    double max(double n1, double n2);
+    
     void accelerationTransferCalculations(
         std::vector<std::pair<std::shared_ptr<Particle>, std::shared_ptr<Particle>>> pair_vec);
 };

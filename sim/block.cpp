@@ -344,11 +344,4 @@ void Block::interactionsZ(unsigned int cz) {
   }
 }
 
-// Metodo que devuelve el valor maximo
-double Block::max(double n1, double n2) {
-  if (n1 > n2) {
-    return n1;
-  } else {
-    return n2;
-  }
-}
+
