@@ -152,20 +152,20 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
                                                    double dist, vector<unsigned int> Id) {
   vector<double> increm_aceleration;
   increm_aceleration = {
-    ((position[0]) * (15 / numbers::pi * pow(data->long_suavizado, 6)) *
+    ((position[0]) * (15 / (numbers::pi * pow(data->long_suavizado, 6))) *
          (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[0]) * (45 / numbers::pi * pow(data->long_suavizado, 6)) * VISCOSIDAD * data->mass) /
+     (velocity[0]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD * data->mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[1]) * (15 / numbers::pi * pow(data->long_suavizado, 6)) *
+    ((position[1]) * (15 / (numbers::pi * pow(data->long_suavizado, 6))) *
          (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[1]) * (45 / numbers::pi * pow(data->long_suavizado, 6)) * VISCOSIDAD * data->mass) /
+     (velocity[1]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD * data->mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[2]) * (15 / numbers::pi * pow(data->long_suavizado, 6)) *
+    ((position[2]) * (15 / (numbers::pi * pow(data->long_suavizado, 6))) *
          (3 * data->mass * PRESION_RIGIDEZ / 2) * ((pow(data->long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[2]) * (45 / numbers::pi * pow(data->long_suavizado, 6)) * VISCOSIDAD * data->mass) /
+     (velocity[2]) * (45 / (numbers::pi * pow(data->long_suavizado, 6))) * VISCOSIDAD * data->mass) /
         (density[Id[0]] * density[Id[1]])};
   return increm_aceleration;
 }
