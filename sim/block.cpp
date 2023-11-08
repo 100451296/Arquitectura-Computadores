@@ -6,8 +6,11 @@ using namespace std;
 
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
-  for (size_t i = 0; i < particles.size(); ++i) {
-    for (size_t j = i + 1; j < particles.size(); ++j) { particlePairs.push_back(make_pair(i, j)); }
+  for (size_t i = 0; i < particles.size(); i++) {
+    for (size_t j = i + 1; j < particles.size(); j++)
+    {
+      particlePairs.push_back(make_pair(i, j));
+    }
   }
 }
 
@@ -15,8 +18,8 @@ void Block::generarParejasBloque() {
 vector<std::pair<int, int>> Block::generarParejasEntreBloques(Block & otherBlock) {
   // Generar pares entre el bloque actual y el bloque contiguo
   vector<std::pair<int, int>> aux;
-  for (size_t i = 0; i < this->particles.size(); ++i) {
-    for (size_t j = 0; j < otherBlock.particles.size(); ++j) { aux.push_back(make_pair(i, j)); }
+  for (size_t i = 0; i < this->particles.size(); i++) {
+    for (size_t j = 0; j < otherBlock.particles.size(); j++) { aux.push_back(make_pair(i, j)); }
   }
   return aux;
 }
@@ -59,7 +62,7 @@ void Block::initDensityAcceleration() {
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
 void Block::densityIncreaseSingle() {
   generarParejasBloque();
-  calculate_increm_density(particlePairs, *this);
+  //calculate_increm_density(particlePairs,);
   lineal_transformate_density();
 }
 
@@ -80,6 +83,7 @@ cout << "Index1: " << pair.first << " Size1: " << particles.size() << " Index2: 
 << " Size2: " << contiguousBlock.particles.size() << endl;
 */
     aux_x = pow(
+
         particles[pair.first].get().posX - contiguousBlock.particles[pair.second].get().posX, 2);
     aux_y = pow(
         particles[pair.first].get().posY - contiguousBlock.particles[pair.second].get().posY, 2);
