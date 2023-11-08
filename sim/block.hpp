@@ -14,15 +14,15 @@ class Block {
     // partículas
 
   public:
-    std::vector<std::shared_ptr<Particle>> particles;
+    std::vector<std::reference_wrapper<Particle>> particles;
     std::vector<std::pair<int, int>> particlePairs;
-    std::shared_ptr<DataCommon> data;
+    DataCommon data;
     std::vector<double> accelerationX;
     std::vector<double> accelerationY;
     std::vector<double> accelerationZ;
     std::vector<double> density;
 
-    void addParticle(std::shared_ptr<Particle> particle);
+    void addParticle(Particle & particle);
     void resetBlock();
     void densityIncreaseSingle();
     void densityIncrease(Block & contiguousBlock);
@@ -36,13 +36,11 @@ class Block {
     void interactionsY(unsigned int cy);
     void interactionsZ(unsigned int cz);
     void generarParejasBloque();
-    std::vector<std::pair<int, int>>
-        generarParejasEntreBloques(Block & otherBlock);
+    std::vector<std::pair<int, int>> generarParejasEntreBloques(Block & otherBlock);
     void calculateDataCommon();
     void initDensityAcceleration();
-    void calculate_increm_density(
-        std::vector<std::pair<int, int>>
-            ParejaParticulas, Block & contiguousBlock);
+    void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas,
+                                  Block & contiguousBlock);
     void lineal_transformate_density();
     void lineal_transformate_density(Block & contiguousBlock);
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
@@ -50,8 +48,8 @@ class Block {
                                                      std::vector<unsigned int> Id);
     double calculate_dist(double posX, double posY, double posZ);
 
-    void accelerationTransferCalculations(
-        std::vector<std::pair<int, int>> pair_vec, Block & contiguousBlock);
+    void accelerationTransferCalculations(std::vector<std::pair<int, int>> pair_vec,
+                                          Block & contiguousBlock);
 };
 
 #endif

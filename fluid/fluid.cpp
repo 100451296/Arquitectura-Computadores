@@ -23,6 +23,7 @@ int main(int argc, char * argv[]) {
   // int num_iterations = std::stoi(argv[1]);
   string input_file_name  = argv[2];
   string output_file_name = argv[3];
+  /*
   float ppm;
   int num_particles;
   vector<shared_ptr<Particle>> particles;
@@ -33,8 +34,12 @@ int main(int argc, char * argv[]) {
   Grid grid(particles, ppm, num_particles);
   grid.simulation(stoi(argv[1]));
   cout << "Main " << particles[0]->posX << endl;
+  */
+  Grid grid;
+  grid.readFile(input_file_name);
+  grid.simulation(stoi(argv[1]));
 
-  writeFile(output_file_name, ppm, num_particles, particles);
+  // writeFile(output_file_name, ppm, num_particles, particles);
 
   return 0;
 }

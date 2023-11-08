@@ -7,6 +7,7 @@
 #include "common.hpp"
 
 #include <cmath>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <set>
@@ -62,7 +63,7 @@ struct Particles {
 
 class Grid {
   public:
-    std::vector<std::shared_ptr<Particle>> particles;     // AoS
+    std::vector<Particle> particles;                      // AoS
     std::vector<std::vector<std::vector<Block>>> blocks;  // Matriz tridimensional de bloques
     std::vector<std::pair<std::tuple<int, int, int>, std::tuple<int, int, int>>> parejas_unicas;
     float ppm;
@@ -77,17 +78,14 @@ class Grid {
     double sy;
     double sz;
 
-    DataCommon data{static_cast<double>(ppm),
-                    static_cast<double>(particle_mass),
-                    h,
-                    static_cast<unsigned int>(nx),
-                    static_cast<unsigned int>(ny),
-                    static_cast<unsigned int>(nz)};
+    DataCommon data;
 
     void printParticles();
     void printFirst();
     void printPairs();
     void simulation(int interations);
+
+    int readFile(std::string const & input_file_name);
 
     void positionateParticle();
     void resetBlocks();
@@ -101,9 +99,9 @@ class Grid {
     void interactionsXGrid();
     void interactionsYGrid();
     void interactionsZGrid();
-
-    Grid(std::vector<std::shared_ptr<Particle>> & particles, float ppm, int num_particles)
-      : particles(), ppm(ppm), num_particles(num_particles), h(MULTIPLICADOR_RADIO / ppm),
+    /*
+    Grid()
+      : particles(), ppm(), num_particles(), h(MULTIPLICADOR_RADIO / ppm),
         particle_mass(DENSIDAD_FLUIDO * std::pow(ppm, -3)),
         nx(std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h)),
         ny(std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h)),
@@ -134,8 +132,15 @@ class Grid {
           }
         }
       }
-      std::cout << parejas_unicas.size() << " Parejas unicas" << std::endl;
     }
+    */
+
+  private:
+    bool readHeader(std::ifstream & input_file);
+    bool readParticles(std::ifstream & input_file);
+    bool readParticle(std::ifstream & input_file, Particle & particle, int index);
+    void initGrid();
+    void initBlocks();
 };
 
 #endif

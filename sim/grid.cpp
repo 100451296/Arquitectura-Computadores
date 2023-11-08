@@ -2,20 +2,123 @@
 
 using namespace std;
 
-int grid() {
-  // Código de las pruebas unitarias
+// Método para inicializar la malla con valores predeterminados
+void Grid::initGrid() {
+  h             = MULTIPLICADOR_RADIO / ppm;
+  particle_mass = DENSIDAD_FLUIDO * std::pow(ppm, -3);
+  nx            = std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
+  ny            = std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h);
+  nz            = std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / h);
+  num_blocks    = nx * ny * nz;
+  sx            = (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / nx;
+  sy            = (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / ny;
+  sz            = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / nz;
+
+  data.ppm            = static_cast<double>(ppm);
+  data.mass           = static_cast<double>(particle_mass);
+  data.long_suavizado = h;
+  data.nx             = static_cast<unsigned int>(nx);
+  data.ny             = static_cast<unsigned int>(ny);
+  data.nz             = static_cast<unsigned int>(nz);
+  initBlocks();
+}
+
+void Grid::initBlocks() {
+  // Lógica para inicializar el vector tridimensional de bloques
+  blocks.resize(nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz)));
+  for (int x = 0; x < nx; ++x) {
+    for (int y = 0; y < ny; ++y) {
+      for (int z = 0; z < nz; ++z) {
+        blocks[x][y][z].data = data;
+        for (auto const & offset : offsets) {
+          int x_offset, y_offset, z_offset;
+          std::tie(x_offset, y_offset, z_offset) = offset;
+
+          int x_contiguo = x + x_offset;
+          int y_contiguo = y + y_offset;
+          int z_contiguo = z + z_offset;
+
+          if (x_contiguo >= 0 && x_contiguo < nx && y_contiguo >= 0 && y_contiguo < ny &&
+              z_contiguo >= 0 && z_contiguo < nz) {
+            parejas_unicas.push_back(std::make_pair(
+                std::make_tuple(x, y, z), std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
+          }
+        }
+      }
+    }
+  }
+}
+
+int Grid::readFile(string const & input_file_name) {
+  // vector<Particle> particles;  // Inicializa vector de particulas
+
+  std::ifstream input_file(input_file_name, std::ios::binary);
+  if (!input_file.is_open()) {
+    std::cerr << "Error al abrir el archivo de entrada" << std::endl;
+    return -1;
+  }
+
+  if (!readHeader(input_file)) { return -1; }
+
+  if (num_particles <= 0) {
+    std::cerr << "Número de partículas inválido" << std::endl;
+    return -1;
+  }
+
+  if (!readParticles(input_file)) { return -1; }
+
+  input_file.close();
+
+  // for (auto & particle : particles) { this.particles.push_back(make_shared<Particle>(particle));
+  // }
+  initGrid();
   return 0;
+}
+
+bool Grid::readHeader(std::ifstream & input_file) {
+  input_file.read(reinterpret_cast<char *>(&ppm), sizeof(float));
+  input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
+  return input_file.good();
+}
+
+bool Grid::readParticles(std::ifstream & input_file) {
+  particles.resize(num_particles);
+  for (int i = 0; i < num_particles; i++) {
+    if (!readParticle(input_file, particles[i], i)) { return false; }
+  }
+  return true;
+}
+
+bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int index) {
+  float buffer[9];
+  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * 9)) {
+    std::cerr << "Error al leer las partículas del archivo" << std::endl;
+    return false;
+  }
+
+  particle.id         = index;
+  particle.posX       = static_cast<double>(buffer[0]);
+  particle.posY       = static_cast<double>(buffer[1]);
+  particle.posZ       = static_cast<double>(buffer[2]);
+  particle.smoothVecX = static_cast<double>(buffer[3]);
+  particle.smoothVecY = static_cast<double>(buffer[4]);
+  particle.smoothVecZ = static_cast<double>(buffer[5]);
+  particle.velX       = static_cast<double>(buffer[6]);
+  particle.velY       = static_cast<double>(buffer[7]);
+  particle.velZ       = static_cast<double>(buffer[8]);
+
+  return true;
 }
 
 void Grid::simulation(int iterations) {
   for (int i = 0; i < iterations; i++) {
-    std::cout << "ID: " << particles[0]->id << ", ";
-    std::cout << "Posición (" << particles[0]->posX << ", " << particles[0]->posY << ", "
-              << particles[0]->posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[0]->smoothVecX << ", "
-              << particles[0]->smoothVecY << ", " << particles[0]->smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[0]->velX << ", " << particles[0]->velY << ", "
-              << particles[0]->velZ << ")" << std::endl;
+    std::cout << "ID: " << particles[0].id << ", ";
+    std::cout << "Posición (" << particles[0].posX << ", " << particles[0].posY << ", "
+              << particles[0].posZ << "), ";
+    std::cout << "Vector de suavizado (" << particles[0].smoothVecX << ", "
+              << particles[0].smoothVecY << ", " << particles[0].smoothVecZ << "), ";
+    std::cout << "Velocidad (" << particles[0].velX << ", " << particles[0].velY << ", "
+              << particles[0].velZ << ")" << std::endl;
 
     positionateParticle();
     densityIncreaseGrid();
@@ -34,27 +137,27 @@ void Grid::simulation(int iterations) {
 void Grid::printParticles() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < particles.size(); ++i) {
-    std::cout << "ID: " << particles[i]->id << ", ";
-    std::cout << "Posición (" << particles[i]->posX << ", " << particles[i]->posY << ", "
-              << particles[i]->posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[i]->smoothVecX << ", "
-              << particles[i]->smoothVecY << ", " << particles[i]->smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[i]->velX << ", " << particles[i]->velY << ", "
-              << particles[i]->velZ << ")" << std::endl;
+    std::cout << "ID: " << particles[i].id << ", ";
+    std::cout << "Posición (" << particles[i].posX << ", " << particles[i].posY << ", "
+              << particles[i].posZ << "), ";
+    std::cout << "Vector de suavizado (" << particles[i].smoothVecX << ", "
+              << particles[i].smoothVecY << ", " << particles[i].smoothVecZ << "), ";
+    std::cout << "Velocidad (" << particles[i].velX << ", " << particles[i].velY << ", "
+              << particles[i].velZ << ")" << std::endl;
   }
 }
 
 void Grid::printFirst() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < 2; ++i) {
-    std::cout << "ID: " << particles[0]->id << ", ";
-    std::cout << "Posición (" << particles[0]->posX << ", " << particles[0]->posY << ", "
-              << particles[0]->posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[0]->smoothVecX << ", "
-              << particles[0]->smoothVecY << ", " << particles[0]->smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[0]->velX << ", " << particles[0]->velY << ", "
-              << particles[0]->velZ << ")" << std::endl;
-    particles[0]->posX = 0.0;
+    std::cout << "ID: " << particles[0].id << ", ";
+    std::cout << "Posición (" << particles[0].posX << ", " << particles[0].posY << ", "
+              << particles[0].posZ << "), ";
+    std::cout << "Vector de suavizado (" << particles[0].smoothVecX << ", "
+              << particles[0].smoothVecY << ", " << particles[0].smoothVecZ << "), ";
+    std::cout << "Velocidad (" << particles[0].velX << ", " << particles[0].velY << ", "
+              << particles[0].velZ << ")" << std::endl;
+    particles[0].posX = 0.0;
   }
 }
 
@@ -70,24 +173,23 @@ void Grid::positionateParticle() {
   for (auto & particle : particles) {
     // Obtener índices de bloque
     int i = std::max(0, std::min(nx - 1, static_cast<int>(std::floor(
-                                             (particle->posX - LIMITE_INFERIOR_RECINTO_X) / sx))));
+                                             (particle.posX - LIMITE_INFERIOR_RECINTO_X) / sx))));
     int j = std::max(0, std::min(ny - 1, static_cast<int>(std::floor(
-                                             (particle->posY - LIMITE_INFERIOR_RECINTO_Y) / sy))));
+                                             (particle.posY - LIMITE_INFERIOR_RECINTO_Y) / sy))));
     int k = std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
-                                             (particle->posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
+                                             (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
     blocks[i][j][k].addParticle(particle);
   }
 }
 
 void Grid::densityIncreaseGrid() {
-  /*
   for (int x = 0; x < nx; ++x) {
     for (int y = 0; y < ny; ++y) {
       for (int z = 0; z < nz; ++z) { blocks[x][y][z].densityIncreaseSingle(); }
     }
   }
-  */
+
   // Imprimir todas las parejas
   for (auto const & pareja : parejas_unicas) {
     int x1, y1, z1, x2, y2, z2;
