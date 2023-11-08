@@ -14,7 +14,8 @@ class Block {
     // partículas
 
   public:
-    std::vector<std::reference_wrapper<Particle>> particles;
+    std::vector<Particle> & particles;
+    std::vector<int> particlesID;
     std::vector<std::pair<int, int>> particlePairs;
     DataCommon data;
     std::vector<double> accelerationX;
@@ -22,7 +23,19 @@ class Block {
     std::vector<double> accelerationZ;
     std::vector<double> density;
 
-    void addParticle(Particle & particle);
+    Block(std::vector<Particle> & particlesRef) : particles(particlesRef) { }
+
+    // Definir un operador de asignación personalizado
+    Block & operator=(Block const & other) {
+      if (this != &other) {
+        // Copiar los miembros necesarios
+        particles = other.particles;
+        // Copiar otros miembros si es necesario
+      }
+      return *this;
+    }
+
+    void addParticle(int id);
     void resetBlock();
     void densityIncreaseSingle();
     void densityIncrease(Block & contiguousBlock);

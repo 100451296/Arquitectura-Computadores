@@ -6,10 +6,9 @@ using namespace std;
 
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
-  for (size_t i = 0; i < particles.size(); i++) {
-    for (size_t j = i + 1; j < particles.size(); j++)
-    {
-      particlePairs.push_back(make_pair(i, j));
+  for (size_t i = 0; i < particlesID.size(); i++) {
+    for (size_t j = i + 1; j < particlesID.size(); j++) {
+      particlePairs.push_back(make_pair(particlesID[i], particlesID[j]));
     }
   }
 }
@@ -18,15 +17,17 @@ void Block::generarParejasBloque() {
 vector<std::pair<int, int>> Block::generarParejasEntreBloques(Block & otherBlock) {
   // Generar pares entre el bloque actual y el bloque contiguo
   vector<std::pair<int, int>> aux;
-  for (size_t i = 0; i < this->particles.size(); i++) {
-    for (size_t j = 0; j < otherBlock.particles.size(); j++) { aux.push_back(make_pair(i, j)); }
+  for (size_t i = 0; i < this->particlesID.size(); i++) {
+    for (size_t j = 0; j < otherBlock.particlesID.size(); j++) {
+      aux.push_back(make_pair(particlesID[i], otherBlock.particlesID[j]));
+    }
   }
   return aux;
 }
 
 // Función para añadir una partícula al vector
-void Block::addParticle(Particle & particle) {
-  this->particles.push_back(std::ref(particle));
+void Block::addParticle(int id) {
+  this->particlesID.push_back(id);
   this->accelerationX.push_back(0.0);  // Agrega una entrada 0 a accelerationX
   this->accelerationY.push_back(0.0);  // Agrega una entrada 0 a accelerationY
   this->accelerationZ.push_back(0.0);  // Agrega una entrada 0 a accelerationZ
@@ -62,7 +63,7 @@ void Block::initDensityAcceleration() {
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
 void Block::densityIncreaseSingle() {
   generarParejasBloque();
-  //calculate_increm_density(particlePairs,);
+  // calculate_increm_density(particlePairs,);
   lineal_transformate_density();
 }
 
@@ -77,18 +78,13 @@ void Block::densityIncrease(Block & contiguousBlock) {
 void Block::calculate_increm_density(vector<std::pair<int, int>> ParejaParticulas,
                                      Block & contiguousBlock) {
   double aux_x, aux_y, aux_z, increm_density_pair;
-  for (auto const & pair :
-       ParejaParticulas) { /*
-cout << "Index1: " << pair.first << " Size1: " << particles.size() << " Index2: " << pair.second
-<< " Size2: " << contiguousBlock.particles.size() << endl;
-*/
-    aux_x = pow(
+  for (auto const & pair : ParejaParticulas) {
+    cout << "Index1: " << pair.first << " Size1: " << particles.size() << " Index2: " << pair.second
+         << " Size2: " << contiguousBlock.particles.size() << endl;
 
-        particles[pair.first].get().posX - contiguousBlock.particles[pair.second].get().posX, 2);
-    aux_y = pow(
-        particles[pair.first].get().posY - contiguousBlock.particles[pair.second].get().posY, 2);
-    aux_z = pow(
-        particles[pair.first].get().posZ - contiguousBlock.particles[pair.second].get().posZ, 2);
+    aux_x = pow(particles[pair.first].posX - contiguousBlock.particles[pair.second].posX, 2);
+    aux_y = pow(particles[pair.first].posY - contiguousBlock.particles[pair.second].posY, 2);
+    aux_z = pow(particles[pair.first].posZ - contiguousBlock.particles[pair.second].posZ, 2);
     if (aux_x + aux_y + aux_z < pow(data.long_suavizado, 2)) {
       increm_density_pair = pow(pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
     } else {
@@ -169,44 +165,39 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
   for (auto const & pair : pair_vec) {
     cout << "Index1: " << pair.first << " Size1: " << particles.size()
          << " Index2: " << contiguousBlock.particles.size() << endl;
-    if (pow(particles[pair.first].get().posX - contiguousBlock.particles[pair.second].get().posX,
-            2) +
-            pow(particles[pair.first].get().posY -
-                    contiguousBlock.particles[pair.second].get().posY,
-                2) +
-            pow(particles[pair.first].get().posZ -
-                    contiguousBlock.particles[pair.second].get().posZ,
-                2) <
+    if (pow(particles[pair.first].posX - contiguousBlock.particles[pair.second].posX, 2) +
+            pow(particles[pair.first].posY - contiguousBlock.particles[pair.second].posY, 2) +
+            pow(particles[pair.first].posZ - contiguousBlock.particles[pair.second].posZ, 2) <
         pow(data.long_suavizado, 2)) {
-      double dist = calculate_dist(
-          particles[pair.first].get().posX - contiguousBlock.particles[pair.second].get().posX,
-          particles[pair.first].get().posY - contiguousBlock.particles[pair.second].get().posY,
-          particles[pair.first].get().posZ - contiguousBlock.particles[pair.second].get().posZ);
+      double dist =
+          calculate_dist(particles[pair.first].posX - contiguousBlock.particles[pair.second].posX,
+                         particles[pair.first].posY - contiguousBlock.particles[pair.second].posY,
+                         particles[pair.first].posZ - contiguousBlock.particles[pair.second].posZ);
       vector<double> position = {
-        particles[pair.first].get().posX - contiguousBlock.particles[pair.second].get().posX,
-        particles[pair.first].get().posY - contiguousBlock.particles[pair.second].get().posY,
-        particles[pair.first].get().posZ - contiguousBlock.particles[pair.second].get().posZ};
+        particles[pair.first].posX - contiguousBlock.particles[pair.second].posX,
+        particles[pair.first].posY - contiguousBlock.particles[pair.second].posY,
+        particles[pair.first].posZ - contiguousBlock.particles[pair.second].posZ};
       vector<double> velocity = {
-        particles[pair.first].get().velX - contiguousBlock.particles[pair.second].get().velX,
-        particles[pair.first].get().velY - contiguousBlock.particles[pair.second].get().velY,
-        particles[pair.first].get().velZ - contiguousBlock.particles[pair.second].get().velZ};
-      vector<unsigned int> Id = {particles[pair.first].get().id,
-                                 contiguousBlock.particles[pair.second].get().id};
+        particles[pair.first].velX - contiguousBlock.particles[pair.second].velX,
+        particles[pair.first].velY - contiguousBlock.particles[pair.second].velY,
+        particles[pair.first].velZ - contiguousBlock.particles[pair.second].velZ};
+      vector<unsigned int> Id = {particles[pair.first].id,
+                                 contiguousBlock.particles[pair.second].id};
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Id);
-      cout << "id: " << particles[pair.first].get().id << "size: " << accelerationX.size() << endl;
-      accelerationX[particles[pair.first].get().id] =
-          accelerationX[particles[pair.first].get().id] + increm_aceleration[0];
-      accelerationY[particles[pair.first].get().id] =
-          accelerationY[particles[pair.first].get().id] + increm_aceleration[1];
-      accelerationZ[particles[pair.first].get().id] =
-          accelerationZ[particles[pair.first].get().id] + increm_aceleration[2];
-      accelerationX[contiguousBlock.particles[pair.second].get().id] =
-          accelerationX[contiguousBlock.particles[pair.second].get().id] + increm_aceleration[0];
-      accelerationY[contiguousBlock.particles[pair.second].get().id] =
-          accelerationY[contiguousBlock.particles[pair.second].get().id] + increm_aceleration[1];
-      accelerationZ[contiguousBlock.particles[pair.second].get().id] =
-          accelerationZ[contiguousBlock.particles[pair.second].get().id] + increm_aceleration[2];
+      cout << "id: " << particles[pair.first].id << "size: " << accelerationX.size() << endl;
+      accelerationX[particles[pair.first].id] =
+          accelerationX[particles[pair.first].id] + increm_aceleration[0];
+      accelerationY[particles[pair.first].id] =
+          accelerationY[particles[pair.first].id] + increm_aceleration[1];
+      accelerationZ[particles[pair.first].id] =
+          accelerationZ[particles[pair.first].id] + increm_aceleration[2];
+      accelerationX[contiguousBlock.particles[pair.second].id] =
+          accelerationX[contiguousBlock.particles[pair.second].id] + increm_aceleration[0];
+      accelerationY[contiguousBlock.particles[pair.second].id] =
+          accelerationY[contiguousBlock.particles[pair.second].id] + increm_aceleration[1];
+      accelerationZ[contiguousBlock.particles[pair.second].id] =
+          accelerationZ[contiguousBlock.particles[pair.second].id] + increm_aceleration[2];
     }
   }
 }
@@ -215,7 +206,7 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
 void Block::collisionsX(unsigned int cx) {
   double cord_x, increm_x = 0;
   for (size_t i = 0; i < particles.size(); ++i) {
-    cord_x = particles[i].get().posX + particles[i].get().smoothVecX * PASO_TIEMPO;
+    cord_x = particles[i].posX + particles[i].smoothVecX * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -223,11 +214,11 @@ void Block::collisionsX(unsigned int cx) {
     }
     if (increm_x > pow(10, -10)) {
       if (cx == 0) {
-        accelerationX[i] = accelerationX[i] + COLISIONES_RIGIDEZ * increm_x -
-                           AMORTIGUAMIENTO * particles[i].get().velX;
+        accelerationX[i] =
+            accelerationX[i] + COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * particles[i].velX;
       } else if (cx == data.nx - 1) {
-        accelerationX[i] = accelerationX[i] - COLISIONES_RIGIDEZ * increm_x +
-                           AMORTIGUAMIENTO * particles[i].get().velX;
+        accelerationX[i] =
+            accelerationX[i] - COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * particles[i].velX;
       }
     }
   }
@@ -237,7 +228,7 @@ void Block::collisionsX(unsigned int cx) {
 void Block::collisionsY(unsigned int cy) {
   double cord_y, increm_y = 0;
   for (size_t i = 0; i < particles.size(); ++i) {
-    cord_y = particles[i].get().posY + particles[i].get().smoothVecY * PASO_TIEMPO;
+    cord_y = particles[i].posY + particles[i].smoothVecY * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
     } else if (cy == data.ny - 1) {
@@ -245,11 +236,11 @@ void Block::collisionsY(unsigned int cy) {
     }
     if (increm_y > pow(10, -10)) {
       if (cy == 0) {
-        accelerationY[i] = accelerationY[i] + COLISIONES_RIGIDEZ * increm_y -
-                           AMORTIGUAMIENTO * particles[i].get().velY;
+        accelerationY[i] =
+            accelerationY[i] + COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * particles[i].velY;
       } else if (cy == data.ny - 1) {
-        accelerationY[i] = accelerationY[i] - COLISIONES_RIGIDEZ * increm_y +
-                           AMORTIGUAMIENTO * particles[i].get().velY;
+        accelerationY[i] =
+            accelerationY[i] - COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * particles[i].velY;
       }
     }
   }
@@ -259,7 +250,7 @@ void Block::collisionsY(unsigned int cy) {
 void Block::collisionsZ(unsigned int cz) {
   double cord_z, increm_z = 0;
   for (size_t i = 0; i < particles.size(); ++i) {
-    cord_z = particles[i].get().posZ + particles[i].get().smoothVecZ * PASO_TIEMPO;
+    cord_z = particles[i].posZ + particles[i].smoothVecZ * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
     } else if (cz == data.nz - 1) {
@@ -267,11 +258,11 @@ void Block::collisionsZ(unsigned int cz) {
     }
     if (increm_z > pow(10, -10)) {
       if (cz == 0) {
-        accelerationZ[i] = accelerationZ[i] + COLISIONES_RIGIDEZ * increm_z -
-                           AMORTIGUAMIENTO * particles[i].get().velZ;
+        accelerationZ[i] =
+            accelerationZ[i] + COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * particles[i].velZ;
       } else if (cz == data.nz - 1) {
-        accelerationZ[i] = accelerationZ[i] - COLISIONES_RIGIDEZ * increm_z +
-                           AMORTIGUAMIENTO * particles[i].get().velZ;
+        accelerationZ[i] =
+            accelerationZ[i] - COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * particles[i].velZ;
       }
     }
   }
@@ -280,24 +271,18 @@ void Block::collisionsZ(unsigned int cz) {
 // Debe actualizar el movimiento de cada particula
 void Block::particleMotion() {
   for (size_t i = 0; i < particles.size(); i++) {
-    particles[i].get().posX = particles[i].get().posX +
-                              particles[i].get().smoothVecX * PASO_TIEMPO +
-                              accelerationX[i] * pow(PASO_TIEMPO, 2);
-    particles[i].get().posY = particles[i].get().posY +
-                              particles[i].get().smoothVecY * PASO_TIEMPO +
-                              accelerationY[i] * pow(PASO_TIEMPO, 2);
-    particles[i].get().posZ = particles[i].get().posZ +
-                              particles[i].get().smoothVecZ * PASO_TIEMPO +
-                              accelerationZ[i] * pow(PASO_TIEMPO, 2);
-    particles[i].get().velX =
-        particles[i].get().smoothVecX + ((accelerationX[i] * PASO_TIEMPO) / 2);
-    particles[i].get().velY =
-        particles[i].get().smoothVecY + ((accelerationY[i] * PASO_TIEMPO) / 2);
-    particles[i].get().velZ =
-        particles[i].get().smoothVecZ + ((accelerationZ[i] * PASO_TIEMPO) / 2);
-    particles[i].get().smoothVecX = particles[i].get().smoothVecX + accelerationX[i] * PASO_TIEMPO;
-    particles[i].get().smoothVecY = particles[i].get().smoothVecY + accelerationY[i] * PASO_TIEMPO;
-    particles[i].get().smoothVecZ = particles[i].get().smoothVecZ + accelerationZ[i] * PASO_TIEMPO;
+    particles[i].posX = particles[i].posX + particles[i].smoothVecX * PASO_TIEMPO +
+                        accelerationX[i] * pow(PASO_TIEMPO, 2);
+    particles[i].posY = particles[i].posY + particles[i].smoothVecY * PASO_TIEMPO +
+                        accelerationY[i] * pow(PASO_TIEMPO, 2);
+    particles[i].posZ = particles[i].posZ + particles[i].smoothVecZ * PASO_TIEMPO +
+                        accelerationZ[i] * pow(PASO_TIEMPO, 2);
+    particles[i].velX       = particles[i].smoothVecX + ((accelerationX[i] * PASO_TIEMPO) / 2);
+    particles[i].velY       = particles[i].smoothVecY + ((accelerationY[i] * PASO_TIEMPO) / 2);
+    particles[i].velZ       = particles[i].smoothVecZ + ((accelerationZ[i] * PASO_TIEMPO) / 2);
+    particles[i].smoothVecX = particles[i].smoothVecX + accelerationX[i] * PASO_TIEMPO;
+    particles[i].smoothVecY = particles[i].smoothVecY + accelerationY[i] * PASO_TIEMPO;
+    particles[i].smoothVecZ = particles[i].smoothVecZ + accelerationZ[i] * PASO_TIEMPO;
   }
 }
 
@@ -306,18 +291,18 @@ void Block::interactionsX(unsigned int cx) {
   double dx = 0;
   for (size_t i = 0; i < particles.size(); ++i) {
     if (cx == 0) {
-      dx = particles[i].get().posX - LIMITE_INFERIOR_RECINTO_X;
+      dx = particles[i].posX - LIMITE_INFERIOR_RECINTO_X;
     } else if (cx == data.nx - 1) {
-      dx = LIMITE_SUPERIOR_RECINTO_X - particles[i].get().posX;
+      dx = LIMITE_SUPERIOR_RECINTO_X - particles[i].posX;
     }
     if (dx < 0) {
       if (cx == 0) {
-        particles[i].get().posX = LIMITE_INFERIOR_RECINTO_X - dx;
+        particles[i].posX = LIMITE_INFERIOR_RECINTO_X - dx;
       } else if (cx == data.nx - 1) {
-        particles[i].get().posX = LIMITE_SUPERIOR_RECINTO_X + dx;
+        particles[i].posX = LIMITE_SUPERIOR_RECINTO_X + dx;
       }
-      particles[i].get().velX       = -particles[i].get().velX;
-      particles[i].get().smoothVecX = -particles[i].get().smoothVecX;
+      particles[i].velX       = -particles[i].velX;
+      particles[i].smoothVecX = -particles[i].smoothVecX;
     }
   }
 }
@@ -327,18 +312,18 @@ void Block::interactionsY(unsigned int cy) {
   double dy = 0;
   for (size_t i = 0; i < particles.size(); ++i) {
     if (cy == 0) {
-      dy = particles[i].get().posY - LIMITE_INFERIOR_RECINTO_Y;
+      dy = particles[i].posY - LIMITE_INFERIOR_RECINTO_Y;
     } else if (cy == data.ny - 1) {
-      dy = LIMITE_SUPERIOR_RECINTO_Y - particles[i].get().posY;
+      dy = LIMITE_SUPERIOR_RECINTO_Y - particles[i].posY;
     }
     if (dy < 0) {
       if (cy == 0) {
-        particles[i].get().posY = LIMITE_INFERIOR_RECINTO_Y - dy;
+        particles[i].posY = LIMITE_INFERIOR_RECINTO_Y - dy;
       } else if (cy == data.ny - 1) {
-        particles[i].get().posY = LIMITE_SUPERIOR_RECINTO_Y + dy;
+        particles[i].posY = LIMITE_SUPERIOR_RECINTO_Y + dy;
       }
-      particles[i].get().velY       = -particles[i].get().velY;
-      particles[i].get().smoothVecY = -particles[i].get().smoothVecY;
+      particles[i].velY       = -particles[i].velY;
+      particles[i].smoothVecY = -particles[i].smoothVecY;
     }
   }
 }
@@ -348,18 +333,18 @@ void Block::interactionsZ(unsigned int cz) {
   double dz = 0;
   for (size_t i = 0; i < particles.size(); ++i) {
     if (cz == 0) {
-      dz = particles[i].get().posZ - LIMITE_INFERIOR_RECINTO_Z;
+      dz = particles[i].posZ - LIMITE_INFERIOR_RECINTO_Z;
     } else if (cz == data.nz - 1) {
-      dz = LIMITE_SUPERIOR_RECINTO_Z - particles[i].get().posZ;
+      dz = LIMITE_SUPERIOR_RECINTO_Z - particles[i].posZ;
     }
     if (dz < 0) {
       if (cz == 0) {
-        particles[i].get().posZ = LIMITE_INFERIOR_RECINTO_Z - dz;
+        particles[i].posZ = LIMITE_INFERIOR_RECINTO_Z - dz;
       } else if (cz == data.nz - 1) {
-        particles[i].get().posZ = LIMITE_SUPERIOR_RECINTO_Z + dz;
+        particles[i].posZ = LIMITE_SUPERIOR_RECINTO_Z + dz;
       }
-      particles[i].get().velZ       = -particles[i].get().velZ;
-      particles[i].get().smoothVecZ = -particles[i].get().smoothVecZ;
+      particles[i].velZ       = -particles[i].velZ;
+      particles[i].smoothVecZ = -particles[i].smoothVecZ;
     }
   }
 }

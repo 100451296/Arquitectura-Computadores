@@ -25,7 +25,7 @@ void Grid::initGrid() {
 
 void Grid::initBlocks() {
   // Lógica para inicializar el vector tridimensional de bloques
-  blocks.resize(nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz)));
+  blocks.resize(nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz, Block(particles))));
   for (int x = 0; x < nx; ++x) {
     for (int y = 0; y < ny; ++y) {
       for (int z = 0; z < nz; ++z) {
@@ -179,7 +179,7 @@ void Grid::positionateParticle() {
     int k = std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
                                              (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
-    blocks[i][j][k].addParticle(particle);
+    blocks[i][j][k].addParticle(particle.id);
   }
 }
 
