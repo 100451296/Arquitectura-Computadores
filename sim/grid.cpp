@@ -162,7 +162,7 @@ void Grid::simulation(int iterations) {
     std::cout << "Llamada a densityIncreaseGrid()" << std::endl;
     densityIncreaseGrid();
     std::cout << "--------------------------------" << std::endl;
-
+    // for (auto & de : density) { cout << de << endl; }
     std::cout << "Llamada a aceletarionTransferGrid()" << std::endl;
     aceletarionTransferGrid();
     std::cout << "--------------------------------" << std::endl;

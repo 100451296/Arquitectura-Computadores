@@ -41,8 +41,7 @@ class Block {
       return *this;
     }
 
- 
-    void addParticle(int id);
+     void addParticle(int id);
     void resetBlock();
     void densityIncreaseSingle();
     void densityIncrease(Block & contiguousBlock);
@@ -68,8 +67,7 @@ class Block {
                                                      std::vector<unsigned int> Id);
     double calculate_dist(double posX, double posY, double posZ);
 
-    void accelerationTransferCalculations(std::vector<std::pair<int, int>> pair_vec,
-                                          Block & contiguousBlock);
+    void accelerationTransferCalculations(std::vector<std::pair<int, int>> pair_vec);
 };
 
 #endif
