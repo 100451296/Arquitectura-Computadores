@@ -57,14 +57,14 @@ void Block::densityIncrease(Block & contiguousBlock) {
   // Parte del bloque contiguo
   vector<std::pair<int, int>> aux;
   generarParejasEntreBloques(contiguousBlock, aux);
-  calculate_increm_density(aux, contiguousBlock);
-  lineal_transformate_density(contiguousBlock);
+  calculate_increm_density(aux);
+  // lineal_transformate_density(contiguousBlock);
 }
 
 void Block::prueba(Block & contiguousBlock) {
   vector<std::pair<int, int>> aux;
   generarParejasEntreBloques(contiguousBlock, aux);
-  calculate_increm_density(aux, contiguousBlock);
+
   for (auto const & pair : aux) {
     density[pair.first]  += 0.001;
     density[pair.second] += 0.0001;
@@ -72,8 +72,7 @@ void Block::prueba(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas,
-                                     Block & contiguousBlock) {
+void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
     aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
@@ -84,9 +83,8 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
     } else {
       increm_density_pair = 0;
     }
-    density[pair.first] = density[pair.first] + increm_density_pair;
-    contiguousBlock.density[pair.second] =
-        contiguousBlock.density[pair.second] + increm_density_pair;
+    density[pair.first]  += increm_density_pair;
+    density[pair.second] += increm_density_pair;
   }
 }
 

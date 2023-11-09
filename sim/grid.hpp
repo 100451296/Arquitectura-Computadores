@@ -114,6 +114,7 @@ class Grid {
     void initializeBlockVectors();
     void initDensityAcceleration();
     void populatePairs();
+    void printParameters();
 };
 
 #endif

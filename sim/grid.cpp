@@ -20,6 +20,8 @@ void Grid::initGrid() {
   data.nx             = static_cast<unsigned int>(nx);
   data.ny             = static_cast<unsigned int>(ny);
   data.nz             = static_cast<unsigned int>(nz);
+
+  printParameters();
   initBlocks();
   initDensityAcceleration();
 }
@@ -33,6 +35,16 @@ void Grid::initDensityAcceleration() {
   accelerationX.resize(particles.size(), ACELERACION_GRAVEDAD_X);
   accelerationY.resize(particles.size(), ACELERACION_GRAVEDAD_Y);
   accelerationZ.resize(particles.size(), ACELERACION_GRAVEDAD_Z);
+}
+
+void Grid::printParameters() {
+  std::cout << "Number of particles: " << num_particles << std::endl;
+  std::cout << "Particles per meter: " << ppm << std::endl;
+  std::cout << "Smoothing length: " << h << std::endl;
+  std::cout << "Particle mass: " << particle_mass << std::endl;
+  std::cout << "Grid size: " << nx << " x " << ny << " x " << nz << std::endl;
+  std::cout << "Number of blocks: " << num_blocks << std::endl;
+  std::cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
 }
 
 void Grid::initBlocks() {
@@ -150,7 +162,6 @@ void Grid::simulation(int iterations) {
     std::cout << "Llamada a densityIncreaseGrid()" << std::endl;
     densityIncreaseGrid();
     std::cout << "--------------------------------" << std::endl;
-    printParticles();
 
     std::cout << "Llamada a aceletarionTransferGrid()" << std::endl;
     aceletarionTransferGrid();

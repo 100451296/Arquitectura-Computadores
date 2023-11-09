@@ -59,8 +59,7 @@ class Block {
     void generarParejasEntreBloques(Block & otherBlock, std::vector<std::pair<int, int>> & aux);
     void calculateDataCommon();
     void initDensityAcceleration();
-    void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas,
-                                  Block & contiguousBlock);
+    void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas);
     void lineal_transformate_density();
     void lineal_transformate_density(Block & contiguousBlock);
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
