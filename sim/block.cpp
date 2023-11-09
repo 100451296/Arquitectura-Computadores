@@ -1,5 +1,6 @@
 #include "block.hpp"
 
+
 using namespace std;
 
 // METODOS de BLOCK
@@ -100,7 +101,7 @@ void Block::calculate_increm_density() {
 void Block::lineal_transformate_density() {
   for (auto & id : particlesID) {
     density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * numbers::pi * pow(data.long_suavizado, 9));
+                  (64 * M_PI* pow(data.long_suavizado, 9));
   }
 }
 
@@ -109,11 +110,11 @@ void Block::lineal_transformate_density() {
 void Block::lineal_transformate_density(Block & contiguousBlock) {
   for (auto & id : particlesID) {
     density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * numbers::pi * pow(data.long_suavizado, 9));
+                  (64 * M_PI * pow(data.long_suavizado, 9));
   }
   for (auto & id : contiguousBlock.particlesID) {
     density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * numbers::pi * pow(data.long_suavizado, 9));
+                  (64 * M_PI* pow(data.long_suavizado, 9));
   }
 }
 
@@ -122,20 +123,20 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
                                                    double dist, vector<unsigned int> Id) {
   vector<double> increm_aceleration;
   increm_aceleration = {
-    ((position[0]) * (15 / (numbers::pi * pow(data.long_suavizado, 6))) *
+    ((position[0]) * (15 / (M_PI* pow(data.long_suavizado, 6))) *
          (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[0]) * (45 / (numbers::pi * pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
+     (velocity[0]) * (45 / (M_PI* pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[1]) * (15 / (numbers::pi * pow(data.long_suavizado, 6))) *
+    ((position[1]) * (15 / (M_PI* pow(data.long_suavizado, 6))) *
          (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[1]) * (45 / (numbers::pi * pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
+     (velocity[1]) * (45 / (M_PI* pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[2]) * (15 / (numbers::pi * pow(data.long_suavizado, 6))) *
+    ((position[2]) * (15 / (M_PI* pow(data.long_suavizado, 6))) *
          (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[2]) * (45 / (numbers::pi * pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
+     (velocity[2]) * (45 / (M_PI* pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
         (density[Id[0]] * density[Id[1]])};
   return increm_aceleration;
 }
