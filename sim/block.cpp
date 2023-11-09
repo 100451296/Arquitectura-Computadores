@@ -49,7 +49,7 @@ void Block::initDensityAcceleration() {
 
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
 void Block::densityIncreaseSingle() {
-  // calculate_increm_density(particlePairs,);
+  calculate_increm_density();
   lineal_transformate_density();
 }
 
@@ -58,23 +58,29 @@ void Block::densityIncrease(Block & contiguousBlock) {
   vector<std::pair<int, int>> aux;
   generarParejasEntreBloques(contiguousBlock, aux);
   calculate_increm_density(aux);
-  // lineal_transformate_density(contiguousBlock);
-}
-
-void Block::prueba(Block & contiguousBlock) {
-  vector<std::pair<int, int>> aux;
-  generarParejasEntreBloques(contiguousBlock, aux);
-
-  for (auto const & pair : aux) {
-    density[pair.first]  += 0.001;
-    density[pair.second] += 0.0001;
-  }
+  lineal_transformate_density(contiguousBlock);
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
 void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
+    aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
+    aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
+    aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+    if (aux_x + aux_y + aux_z < std::pow(data.long_suavizado, 2)) {
+      increm_density_pair = std::pow(std::pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
+    } else {
+      increm_density_pair = 0;
+    }
+    density[pair.first]  += increm_density_pair;
+    density[pair.second] += increm_density_pair;
+  }
+}
+// Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
+void Block::calculate_increm_density() {
+  double aux_x, aux_y, aux_z, increm_density_pair;
+  for (auto const & pair : particlePairs) {
     aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
     aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
     aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
@@ -100,12 +106,12 @@ void Block::lineal_transformate_density() {
 // Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la
 // densidad respecto a un bloque contiguo
 void Block::lineal_transformate_density(Block & contiguousBlock) {
-  for (size_t i = 0; i < density.size(); i++) {
-    density[i] = (density[i] + pow(data.long_suavizado, 6)) * 315 * data.mass /
+  for (auto & id : particlesID) {
+    density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
                  (64 * numbers::pi * pow(data.long_suavizado, 9));
   }
-  for (size_t i = 0; i < contiguousBlock.density.size(); i++) {
-    contiguousBlock.density[i] = (contiguousBlock.density[i] + pow(data.long_suavizado, 6)) * 315 *
+  for (auto & id : contiguousBlock.particlesID) {
+    contiguousBlock.density[id] = (contiguousBlock.density[id] + pow(data.long_suavizado, 6)) * 315 *
                                  data.mass / (64 * numbers::pi * pow(data.long_suavizado, 9));
   }
 }
@@ -197,8 +203,8 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
 // Debe actualizar la componente x del vector de aceleración para cada particula
 void Block::collisionsX(unsigned int cx) {
   double cord_x, increm_x = 0;
-  for (size_t i = 0; i < particles.size(); ++i) {
-    cord_x = particles[i].posX + particles[i].smoothVecX * PASO_TIEMPO;
+  for (auto & id : particlesID) {
+    cord_x = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -206,11 +212,11 @@ void Block::collisionsX(unsigned int cx) {
     }
     if (increm_x > pow(10, -10)) {
       if (cx == 0) {
-        accelerationX[i] =
-            accelerationX[i] + COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * particles[i].velX;
+        accelerationX[id] =
+            accelerationX[id] + COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * particles[id].velX;
       } else if (cx == data.nx - 1) {
-        accelerationX[i] =
-            accelerationX[i] - COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * particles[i].velX;
+        accelerationX[id] =
+            accelerationX[id] - COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * particles[id].velX;
       }
     }
   }
@@ -219,8 +225,8 @@ void Block::collisionsX(unsigned int cx) {
 // Debe actualizar la componente y del vector de aceleración para cada particula
 void Block::collisionsY(unsigned int cy) {
   double cord_y, increm_y = 0;
-  for (size_t i = 0; i < particles.size(); ++i) {
-    cord_y = particles[i].posY + particles[i].smoothVecY * PASO_TIEMPO;
+  for (auto & id : particlesID) {
+    cord_y = particles[id].posY + particles[id].smoothVecY * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
     } else if (cy == data.ny - 1) {
@@ -228,11 +234,11 @@ void Block::collisionsY(unsigned int cy) {
     }
     if (increm_y > pow(10, -10)) {
       if (cy == 0) {
-        accelerationY[i] =
-            accelerationY[i] + COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * particles[i].velY;
+        accelerationY[id] =
+            accelerationY[id] + COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * particles[id].velY;
       } else if (cy == data.ny - 1) {
-        accelerationY[i] =
-            accelerationY[i] - COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * particles[i].velY;
+        accelerationY[id] =
+            accelerationY[id] - COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * particles[id].velY;
       }
     }
   }
@@ -241,8 +247,8 @@ void Block::collisionsY(unsigned int cy) {
 // Debe actualizar la componente z del vector de aceleración para cada particula
 void Block::collisionsZ(unsigned int cz) {
   double cord_z, increm_z = 0;
-  for (size_t i = 0; i < particles.size(); ++i) {
-    cord_z = particles[i].posZ + particles[i].smoothVecZ * PASO_TIEMPO;
+  for (auto & id : particlesID) {
+    cord_z = particles[id].posZ + particles[id].smoothVecZ * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
     } else if (cz == data.nz - 1) {
@@ -250,11 +256,11 @@ void Block::collisionsZ(unsigned int cz) {
     }
     if (increm_z > pow(10, -10)) {
       if (cz == 0) {
-        accelerationZ[i] =
-            accelerationZ[i] + COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * particles[i].velZ;
+        accelerationZ[id] =
+            accelerationZ[id] + COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * particles[id].velZ;
       } else if (cz == data.nz - 1) {
-        accelerationZ[i] =
-            accelerationZ[i] - COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * particles[i].velZ;
+        accelerationZ[id] =
+            accelerationZ[id] - COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * particles[id].velZ;
       }
     }
   }
@@ -262,39 +268,39 @@ void Block::collisionsZ(unsigned int cz) {
 
 // Debe actualizar el movimiento de cada particula
 void Block::particleMotion() {
-  for (size_t i = 0; i < particles.size(); i++) {
-    particles[i].posX = particles[i].posX + particles[i].smoothVecX * PASO_TIEMPO +
-                        accelerationX[i] * pow(PASO_TIEMPO, 2);
-    particles[i].posY = particles[i].posY + particles[i].smoothVecY * PASO_TIEMPO +
-                        accelerationY[i] * pow(PASO_TIEMPO, 2);
-    particles[i].posZ = particles[i].posZ + particles[i].smoothVecZ * PASO_TIEMPO +
-                        accelerationZ[i] * pow(PASO_TIEMPO, 2);
-    particles[i].velX       = particles[i].smoothVecX + ((accelerationX[i] * PASO_TIEMPO) / 2);
-    particles[i].velY       = particles[i].smoothVecY + ((accelerationY[i] * PASO_TIEMPO) / 2);
-    particles[i].velZ       = particles[i].smoothVecZ + ((accelerationZ[i] * PASO_TIEMPO) / 2);
-    particles[i].smoothVecX = particles[i].smoothVecX + accelerationX[i] * PASO_TIEMPO;
-    particles[i].smoothVecY = particles[i].smoothVecY + accelerationY[i] * PASO_TIEMPO;
-    particles[i].smoothVecZ = particles[i].smoothVecZ + accelerationZ[i] * PASO_TIEMPO;
+  for (auto & id : particlesID) {
+    particles[id].posX = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO +
+                        accelerationX[id] * pow(PASO_TIEMPO, 2);
+    particles[id].posY = particles[id].posY + particles[id].smoothVecY * PASO_TIEMPO +
+                        accelerationY[id] * pow(PASO_TIEMPO, 2);
+    particles[id].posZ = particles[id].posZ + particles[id].smoothVecZ * PASO_TIEMPO +
+                        accelerationZ[id] * pow(PASO_TIEMPO, 2);
+    particles[id].velX       = particles[id].smoothVecX + ((accelerationX[id] * PASO_TIEMPO) / 2);
+    particles[id].velY       = particles[id].smoothVecY + ((accelerationY[id] * PASO_TIEMPO) / 2);
+    particles[id].velZ       = particles[id].smoothVecZ + ((accelerationZ[id] * PASO_TIEMPO) / 2);
+    particles[id].smoothVecX = particles[id].smoothVecX + accelerationX[id] * PASO_TIEMPO;
+    particles[id].smoothVecY = particles[id].smoothVecY + accelerationY[id] * PASO_TIEMPO;
+    particles[id].smoothVecZ = particles[id].smoothVecZ + accelerationZ[id] * PASO_TIEMPO;
   }
 }
 
 // Debe actualizar la posicion, velocidad y vector de suavizado de cada particula eje x
 void Block::interactionsX(unsigned int cx) {
   double dx = 0;
-  for (size_t i = 0; i < particles.size(); ++i) {
+  for (auto & id : particlesID){
     if (cx == 0) {
-      dx = particles[i].posX - LIMITE_INFERIOR_RECINTO_X;
+      dx = particles[id].posX - LIMITE_INFERIOR_RECINTO_X;
     } else if (cx == data.nx - 1) {
-      dx = LIMITE_SUPERIOR_RECINTO_X - particles[i].posX;
+      dx = LIMITE_SUPERIOR_RECINTO_X - particles[id].posX;
     }
     if (dx < 0) {
       if (cx == 0) {
-        particles[i].posX = LIMITE_INFERIOR_RECINTO_X - dx;
+        particles[id].posX = LIMITE_INFERIOR_RECINTO_X - dx;
       } else if (cx == data.nx - 1) {
-        particles[i].posX = LIMITE_SUPERIOR_RECINTO_X + dx;
+        particles[id].posX = LIMITE_SUPERIOR_RECINTO_X + dx;
       }
-      particles[i].velX       = -particles[i].velX;
-      particles[i].smoothVecX = -particles[i].smoothVecX;
+      particles[id].velX       = -particles[id].velX;
+      particles[id].smoothVecX = -particles[id].smoothVecX;
     }
   }
 }
@@ -302,20 +308,20 @@ void Block::interactionsX(unsigned int cx) {
 // Debe actualizar la posicion, velocidad y vector de suavizado de cada particula eje y
 void Block::interactionsY(unsigned int cy) {
   double dy = 0;
-  for (size_t i = 0; i < particles.size(); ++i) {
+  for (auto & id : particlesID){
     if (cy == 0) {
-      dy = particles[i].posY - LIMITE_INFERIOR_RECINTO_Y;
+      dy = particles[id].posY - LIMITE_INFERIOR_RECINTO_Y;
     } else if (cy == data.ny - 1) {
-      dy = LIMITE_SUPERIOR_RECINTO_Y - particles[i].posY;
+      dy = LIMITE_SUPERIOR_RECINTO_Y - particles[id].posY;
     }
     if (dy < 0) {
       if (cy == 0) {
-        particles[i].posY = LIMITE_INFERIOR_RECINTO_Y - dy;
+        particles[id].posY = LIMITE_INFERIOR_RECINTO_Y - dy;
       } else if (cy == data.ny - 1) {
-        particles[i].posY = LIMITE_SUPERIOR_RECINTO_Y + dy;
+        particles[id].posY = LIMITE_SUPERIOR_RECINTO_Y + dy;
       }
-      particles[i].velY       = -particles[i].velY;
-      particles[i].smoothVecY = -particles[i].smoothVecY;
+      particles[id].velY       = -particles[id].velY;
+      particles[id].smoothVecY = -particles[id].smoothVecY;
     }
   }
 }
@@ -323,20 +329,20 @@ void Block::interactionsY(unsigned int cy) {
 // Debe actualizar la posicion, velocidad y vector de suavizado de cada particula eje z
 void Block::interactionsZ(unsigned int cz) {
   double dz = 0;
-  for (size_t i = 0; i < particles.size(); ++i) {
+  for (auto & id : particlesID) {
     if (cz == 0) {
-      dz = particles[i].posZ - LIMITE_INFERIOR_RECINTO_Z;
+      dz = particles[id].posZ - LIMITE_INFERIOR_RECINTO_Z;
     } else if (cz == data.nz - 1) {
-      dz = LIMITE_SUPERIOR_RECINTO_Z - particles[i].posZ;
+      dz = LIMITE_SUPERIOR_RECINTO_Z - particles[id].posZ;
     }
     if (dz < 0) {
       if (cz == 0) {
-        particles[i].posZ = LIMITE_INFERIOR_RECINTO_Z - dz;
+        particles[id].posZ = LIMITE_INFERIOR_RECINTO_Z - dz;
       } else if (cz == data.nz - 1) {
-        particles[i].posZ = LIMITE_SUPERIOR_RECINTO_Z + dz;
+        particles[id].posZ = LIMITE_SUPERIOR_RECINTO_Z + dz;
       }
-      particles[i].velZ       = -particles[i].velZ;
-      particles[i].smoothVecZ = -particles[i].smoothVecZ;
+      particles[id].velZ       = -particles[id].velZ;
+      particles[id].smoothVecZ = -particles[id].smoothVecZ;
     }
   }
 }

@@ -41,7 +41,7 @@ class Block {
       return *this;
     }
 
-    void prueba(Block & contiguousBlock);
+ 
     void addParticle(int id);
     void resetBlock();
     void densityIncreaseSingle();
@@ -60,6 +60,7 @@ class Block {
     void calculateDataCommon();
     void initDensityAcceleration();
     void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas);
+    void calculate_increm_density();
     void lineal_transformate_density();
     void lineal_transformate_density(Block & contiguousBlock);
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,

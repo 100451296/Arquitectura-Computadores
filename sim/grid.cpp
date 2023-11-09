@@ -205,16 +205,6 @@ void Grid::simulation(int iterations) {
   }
 }
 
-void Grid::prueba() {
-  // Imprimir todas las parejas
-  for (auto const & pareja : parejas_unicas) {
-    int x1, y1, z1, x2, y2, z2;
-    std::tie(x1, y1, z1) = pareja.first;
-    std::tie(x2, y2, z2) = pareja.second;
-    blocks[x1][y1][z1].prueba(blocks[x2][y2][z2]);
-  }
-}
-
 void Grid::printParticles() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < particles.size(); ++i) {
