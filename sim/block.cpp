@@ -91,9 +91,9 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 // Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
-  for (size_t i = 0; i < density.size(); i++) {
-    density[i] = (density[i] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                 (64 * numbers::pi * pow(data.long_suavizado, 9));
+  for (auto & id : particlesID) {
+    density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
+                  (64 * numbers::pi * pow(data.long_suavizado, 9));
   }
 }
 
