@@ -21,11 +21,41 @@ void Grid::initGrid() {
   data.ny             = static_cast<unsigned int>(ny);
   data.nz             = static_cast<unsigned int>(nz);
   initBlocks();
+  initDensityAcceleration();
+}
+
+void Grid::initDensityAcceleration() {
+  // Inicializa los vectores de densidad y aceleración con el tamaño adecuado
+  // basado en el número de partículas en el bloque
+
+  // Establece el tamaño de los vectores de densidad y aceleración
+  density.resize(particles.size(), 0.0);
+  accelerationX.resize(particles.size(), ACELERACION_GRAVEDAD_X);
+  accelerationY.resize(particles.size(), ACELERACION_GRAVEDAD_Y);
+  accelerationZ.resize(particles.size(), ACELERACION_GRAVEDAD_Z);
 }
 
 void Grid::initBlocks() {
-  // Lógica para inicializar el vector tridimensional de bloques
-  blocks.resize(nx, std::vector<std::vector<Block>>(ny, std::vector<Block>(nz, Block(particles))));
+  initializeBlockVectors();
+  populatePairs();
+}
+
+void Grid::initializeBlockVectors() {
+  for (int x = 0; x < nx; ++x) {
+    std::vector<std::vector<Block>> tempVector2;
+    for (int y = 0; y < ny; ++y) {
+      std::vector<Block> tempVector1;
+      for (int z = 0; z < nz; ++z) {
+        tempVector1.push_back(
+            Block(particles, accelerationX, accelerationY, accelerationZ, density));
+      }
+      tempVector2.push_back(tempVector1);
+    }
+    blocks.push_back(tempVector2);
+  }
+}
+
+void Grid::populatePairs() {
   for (int x = 0; x < nx; ++x) {
     for (int y = 0; y < ny; ++y) {
       for (int z = 0; z < nz; ++z) {
@@ -69,8 +99,6 @@ int Grid::readFile(string const & input_file_name) {
 
   input_file.close();
 
-  // for (auto & particle : particles) { this.particles.push_back(make_shared<Particle>(particle));
-  // }
   initGrid();
   return 0;
 }
@@ -111,26 +139,68 @@ bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int ind
 }
 
 void Grid::simulation(int iterations) {
+  printParticles();
   for (int i = 0; i < iterations; i++) {
-    std::cout << "ID: " << particles[0].id << ", ";
-    std::cout << "Posición (" << particles[0].posX << ", " << particles[0].posY << ", "
-              << particles[0].posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[0].smoothVecX << ", "
-              << particles[0].smoothVecY << ", " << particles[0].smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[0].velX << ", " << particles[0].velY << ", "
-              << particles[0].velZ << ")" << std::endl;
+    std::cout << "Iteración: " << i << std::endl;  // Línea añadida para imprimir el valor de i
 
+    std::cout << "Llamada a positionateParticle()" << std::endl;
     positionateParticle();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a densityIncreaseGrid()" << std::endl;
     densityIncreaseGrid();
+    std::cout << "--------------------------------" << std::endl;
+    printParticles();
+
+    std::cout << "Llamada a aceletarionTransferGrid()" << std::endl;
     aceletarionTransferGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a collisionsXGrid()" << std::endl;
     collisionsXGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a collisionsYGrid()" << std::endl;
     collisionsYGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a collisionsZGrid()" << std::endl;
     collisionsZGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a particleMotionGrid()" << std::endl;
     particleMotionGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a interactionsXGrid()" << std::endl;
     interactionsXGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a interactionsYGrid()" << std::endl;
     interactionsYGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a interactionsZGrid()" << std::endl;
     interactionsZGrid();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a printParticles()" << std::endl;
+    printParticles();
+    std::cout << "--------------------------------" << std::endl;
+
+    std::cout << "Llamada a resetBlocks()" << std::endl;
     resetBlocks();
+    std::cout << "--------------------------------" << std::endl;
+  }
+}
+
+void Grid::prueba() {
+  // Imprimir todas las parejas
+  for (auto const & pareja : parejas_unicas) {
+    int x1, y1, z1, x2, y2, z2;
+    std::tie(x1, y1, z1) = pareja.first;
+    std::tie(x2, y2, z2) = pareja.second;
+    blocks[x1][y1][z1].prueba(blocks[x2][y2][z2]);
   }
 }
 
@@ -179,6 +249,7 @@ void Grid::positionateParticle() {
     int k = std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
                                              (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
+    if (particle.id > particles.size()) { cout << "Error" << endl; }
     blocks[i][j][k].addParticle(particle.id);
   }
 }

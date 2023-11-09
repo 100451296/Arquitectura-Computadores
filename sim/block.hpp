@@ -18,23 +18,30 @@ class Block {
     std::vector<int> particlesID;
     std::vector<std::pair<int, int>> particlePairs;
     DataCommon data;
-    std::vector<double> accelerationX;
-    std::vector<double> accelerationY;
-    std::vector<double> accelerationZ;
-    std::vector<double> density;
+    std::vector<double> & accelerationX;
+    std::vector<double> & accelerationY;
+    std::vector<double> & accelerationZ;
+    std::vector<double> & density;
 
-    Block(std::vector<Particle> & particlesRef) : particles(particlesRef) { }
+    Block(std::vector<Particle> & particlesRef, std::vector<double> & accelerationXRef,
+          std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef,
+          std::vector<double> & densityRef)
+      : particles(particlesRef), accelerationX(accelerationXRef), accelerationY(accelerationYRef),
+        accelerationZ(accelerationZRef), density(densityRef) {
+      generarParejasBloque();
+    }
 
-    // Definir un operador de asignación personalizado
     Block & operator=(Block const & other) {
       if (this != &other) {
         // Copiar los miembros necesarios
-        particles = other.particles;
+        particles.clear();
+        for (auto const & particle : other.particles) { particles.push_back(particle); }
         // Copiar otros miembros si es necesario
       }
       return *this;
     }
 
+    void prueba(Block & contiguousBlock);
     void addParticle(int id);
     void resetBlock();
     void densityIncreaseSingle();
@@ -49,7 +56,7 @@ class Block {
     void interactionsY(unsigned int cy);
     void interactionsZ(unsigned int cz);
     void generarParejasBloque();
-    std::vector<std::pair<int, int>> generarParejasEntreBloques(Block & otherBlock);
+    void generarParejasEntreBloques(Block & otherBlock, std::vector<std::pair<int, int>> & aux);
     void calculateDataCommon();
     void initDensityAcceleration();
     void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas,
