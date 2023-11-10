@@ -13,6 +13,7 @@ void Block::generarParejasBloque() {
   }
 }
 
+
 // Metodo encargado de crear las parejas de particulas entre bloques contiguos
 void Block::generarParejasEntreBloques(Block & otherBlock, vector<std::pair<int, int>> & aux) {
   for (auto & id : particlesID) {
@@ -39,20 +40,21 @@ void Block::calculateDataCommon() {
 
 // Funcion inicializar la densidad y la aceleracion para cada particula
 void Block::initDensityAcceleration() {
-  for (size_t i = 0; i < particles.size(); ++i) {
-    density[i]       = 0;
-    accelerationX[i] = ACELERACION_GRAVEDAD_X;
-    accelerationY[i] = ACELERACION_GRAVEDAD_Y;
-    accelerationZ[i] = ACELERACION_GRAVEDAD_Z;
+  for (auto & id : particlesID) {
+    density[id]       = 0;
+    accelerationX[id] = ACELERACION_GRAVEDAD_X;
+    accelerationY[id] = ACELERACION_GRAVEDAD_Y;
+    accelerationZ[id] = ACELERACION_GRAVEDAD_Z;
   }
 }
 
-// Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
+// Funcion encargada de modificar el vector de densidades del propio bloque
 void Block::densityIncreaseSingle() {
-  calculate_increm_density();
+  calculate_increm_density_single();
   // lineal_transformate_density();
 }
 
+// Funcion encargada de modificar el vector de densidades del propio bloque con su contiguo
 void Block::densityIncrease(Block & contiguousBlock) {
   // Parte del bloque contiguo
   vector<std::pair<int, int>> aux;
@@ -65,6 +67,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
 void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
+    if (pair.first == 2496 || pair.second == 2496) { aux_x = 0; }
     aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
     aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
     aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
@@ -79,9 +82,10 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density() {
+void Block::calculate_increm_density_single() {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
+
     aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
     aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
     aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
@@ -99,23 +103,14 @@ void Block::calculate_increm_density() {
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & id : particlesID) {
+    if(id==2496){
+      density[id] = density[id];
+    }
     density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
                   (64 * M_PI * pow(data.long_suavizado, 9));
   }
 }
 
-// Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la
-// densidad respecto a un bloque contiguo
-void Block::lineal_transformate_density(Block & contiguousBlock) {
-  for (auto & id : particlesID) {
-    density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * M_PI * pow(data.long_suavizado, 9));
-  }
-  for (auto & id : contiguousBlock.particlesID) {
-    density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * M_PI * pow(data.long_suavizado, 9));
-  }
-}
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de aceleracion
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,

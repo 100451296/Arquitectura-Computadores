@@ -93,6 +93,8 @@ class Grid {
     int readFile(std::string const & input_file_name);
     int writeFile(std::string const & output_file_name);
 
+    
+    void generateParticlePairs();
     void positionateParticle();
     void resetBlocks();
     void densityIncreaseGrid();
@@ -105,6 +107,7 @@ class Grid {
     void interactionsXGrid();
     void interactionsYGrid();
     void interactionsZGrid();
+    
 
   private:
     bool readHeader(std::ifstream & input_file);
