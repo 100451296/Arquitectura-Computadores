@@ -5,9 +5,14 @@ add_executable(utest
 	utests.cpp
 )
 
-target_link_libraries(utest
-    gtest_main  # Enlazar con Google Test
-    sim         # Enlazar con tu biblioteca "sim" u otras dependencias
-)
+# Library dependencies
+target_link_libraries (utest
+PRIVATE
+sim
+GTest::gtest_main
+Microsoft.GSL::GSL)
 
 add_test(NAME utest COMMAND utest)
+# Discover all tests and add them to the test driver
+include(GoogleTest)
+gtest_discover_tests(utest)

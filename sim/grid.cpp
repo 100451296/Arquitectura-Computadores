@@ -1,4 +1,4 @@
-#include <grid.hpp>
+#include "grid.hpp"
 
 using namespace std;
 
@@ -53,9 +53,9 @@ void Grid::initBlocks() {
 }
 
 void Grid::initializeBlockVectors() {
-  for (int x = 0; x < nx; ++x) {
+  for (int x = 0; x < nx; x++) {
     std::vector<std::vector<Block>> tempVector2;
-    for (int y = 0; y < ny; ++y) {
+    for (int y = 0; y < ny; y++) {
       std::vector<Block> tempVector1;
       for (int z = 0; z < nz; ++z) {
         tempVector1.push_back(
@@ -68,8 +68,8 @@ void Grid::initializeBlockVectors() {
 }
 
 void Grid::populatePairs() {
-  for (int x = 0; x < nx; ++x) {
-    for (int y = 0; y < ny; ++y) {
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; ++z) {
         blocks[x][y][z].data = data;
         for (auto const & offset : offsets) {
@@ -150,6 +150,49 @@ bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int ind
   return true;
 }
 
+int Grid::writeFile(std::string const & output_file_name) {
+  std::ofstream output_file(output_file_name, std::ios::binary);
+  if (!output_file.is_open()) {
+    std::cerr << "Error al abrir el archivo de salida" << std::endl;
+    return -1;
+  }
+
+  if (!writeHeader(output_file)) { return -1; }
+
+  if (!writeParticles(output_file)) { return -1; }
+
+  output_file.close();
+  return 0;
+}
+
+bool Grid::writeHeader(std::ofstream & output_file) {
+  output_file.write(reinterpret_cast<char const *>(&ppm), sizeof(float));
+  output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
+  return output_file.good();
+}
+
+bool Grid::writeParticles(std::ofstream & output_file) {
+  for (auto const & particle : particles) {
+    if (!writeParticle(output_file, particle)) { return false; }
+  }
+  return true;
+}
+
+bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle) {
+  float buffer[9] = {
+    static_cast<float>(particle.posX),       static_cast<float>(particle.posY),
+    static_cast<float>(particle.posZ),       static_cast<float>(particle.smoothVecX),
+    static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
+    static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
+    static_cast<float>(particle.velZ)};
+  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
+    std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
 void Grid::simulation(int iterations) {
   printParticles();
   for (int i = 0; i < iterations; i++) {
@@ -162,7 +205,9 @@ void Grid::simulation(int iterations) {
     std::cout << "Llamada a densityIncreaseGrid()" << std::endl;
     densityIncreaseGrid();
     std::cout << "--------------------------------" << std::endl;
-    // for (auto & de : density) { cout << de << endl; }
+
+    linealDensityTransform();
+
     std::cout << "Llamada a aceletarionTransferGrid()" << std::endl;
     aceletarionTransferGrid();
     std::cout << "--------------------------------" << std::endl;
@@ -233,11 +278,12 @@ void Grid::printFirst() {
 }
 
 void Grid::resetBlocks() {
-  for (int x = 0; x < nx; ++x) {
-    for (int y = 0; y < ny; ++y) {
-      for (int z = 0; z < nz; ++z) { blocks[x][y][z].resetBlock(); }
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
+      for (int z = 0; z < nz; z++) { blocks[x][y][z].resetBlock(); }
     }
   }
+  blocks[0][0][0].initDensityAcceleration();
 }
 
 void Grid::positionateParticle() {
@@ -256,8 +302,8 @@ void Grid::positionateParticle() {
 }
 
 void Grid::densityIncreaseGrid() {
-  for (int x = 0; x < nx; ++x) {
-    for (int y = 0; y < ny; ++y) {
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; ++z) { blocks[x][y][z].densityIncreaseSingle(); }
     }
   }
@@ -271,9 +317,17 @@ void Grid::densityIncreaseGrid() {
   }
 }
 
+void Grid::linealDensityTransform() {
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
+      for (int z = 0; z < nz; ++z) { blocks[x][y][z].lineal_transformate_density(); }
+    }
+  }
+}
+
 void Grid::aceletarionTransferGrid() {
-  for (int x = 0; x < nx; ++x) {
-    for (int y = 0; y < ny; ++y) {
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; ++z) { blocks[x][y][z].accelerationTransferSingle(); }
     }
   }
@@ -287,43 +341,43 @@ void Grid::aceletarionTransferGrid() {
 
 void Grid::collisionsXGrid() {
   int cx = 0;
-  for (int y = 0; y < ny; ++y) {
+  for (int y = 0; y < ny; y++) {
     for (int z = 0; z < nz; ++z) { blocks[cx][y][z].collisionsX(cx); }
   }
 
   cx = nx - 1;
-  for (int y = 0; y < ny; ++y) {
+  for (int y = 0; y < ny; y++) {
     for (int z = 0; z < nz; ++z) { blocks[cx][y][z].collisionsX(cx); }
   }
 }
 
 void Grid::collisionsYGrid() {
   int cy = 0;
-  for (int x = 0; x < nx; ++x) {
+  for (int x = 0; x < nx; x++) {
     for (int z = 0; z < nz; ++z) { blocks[x][cy][z].collisionsY(cy); }
   }
 
   cy = ny - 1;
-  for (int x = 0; x < nx; ++x) {
+  for (int x = 0; x < nx; x++) {
     for (int z = 0; z < nz; ++z) { blocks[x][cy][z].collisionsY(cy); }
   }
 }
 
 void Grid::collisionsZGrid() {
   int cz = 0;
-  for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].collisionsZ(cz); }
+  for (int y = 0; y < ny; y++) {
+    for (int x = 0; x < nx; x++) { blocks[x][y][cz].collisionsZ(cz); }
   }
 
   cz = nz - 1;
-  for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].collisionsZ(cz); }
+  for (int y = 0; y < ny; y++) {
+    for (int x = 0; x < nx; x++) { blocks[x][y][cz].collisionsZ(cz); }
   }
 }
 
 void Grid::particleMotionGrid() {
-  for (int x = 0; x < nx; ++x) {
-    for (int y = 0; y < ny; ++y) {
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; ++z) { blocks[x][y][z].particleMotion(); }
     }
   }
@@ -331,36 +385,36 @@ void Grid::particleMotionGrid() {
 
 void Grid::interactionsXGrid() {
   int cx = 0;
-  for (int y = 0; y < ny; ++y) {
+  for (int y = 0; y < ny; y++) {
     for (int z = 0; z < nz; ++z) { blocks[cx][y][z].interactionsX(cx); }
   }
 
   cx = nx - 1;
-  for (int y = 0; y < ny; ++y) {
+  for (int y = 0; y < ny; y++) {
     for (int z = 0; z < nz; ++z) { blocks[cx][y][z].interactionsX(cx); }
   }
 }
 
 void Grid::interactionsYGrid() {
   int cy = 0;
-  for (int x = 0; x < nx; ++x) {
+  for (int x = 0; x < nx; x++) {
     for (int z = 0; z < nz; ++z) { blocks[x][cy][z].interactionsY(cy); }
   }
 
   cy = ny - 1;
-  for (int x = 0; x < nx; ++x) {
+  for (int x = 0; x < nx; x++) {
     for (int z = 0; z < nz; ++z) { blocks[x][cy][z].interactionsY(cy); }
   }
 }
 
 void Grid::interactionsZGrid() {
   int cz = 0;
-  for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].interactionsZ(cz); }
+  for (int y = 0; y < ny; y++) {
+    for (int x = 0; x < nx; x++) { blocks[x][y][cz].interactionsZ(cz); }
   }
 
   cz = nz - 1;
-  for (int y = 0; y < ny; ++y) {
-    for (int x = 0; x < nx; ++x) { blocks[x][y][cz].interactionsZ(cz); }
+  for (int y = 0; y < ny; y++) {
+    for (int x = 0; x < nx; x++) { blocks[x][y][cz].interactionsZ(cz); }
   }
 }

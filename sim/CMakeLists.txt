@@ -1,6 +1,9 @@
-#add_library(sim block.cpp block.hpp grid.cpp grid.hpp progargs.cpp progargs.hpp)
-
-# Crear biblioteca dinámica
-add_library(sim SHARED block.cpp grid.cpp progargs.cpp)
-target_include_directories(sim PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
+# Add to this list all files related to sim library
+add_library(sim
+progargs.hpp
+progargs.cpp
+grid.cpp
+grid.hpp
+block.cpp
+block.hpp
+)

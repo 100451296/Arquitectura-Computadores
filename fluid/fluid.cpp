@@ -38,6 +38,7 @@ int main(int argc, char * argv[]) {
   Grid grid;
   grid.readFile(input_file_name);
   grid.simulation(stoi(argv[1]));
+  grid.writeFile(output_file_name);
 
   // writeFile(output_file_name, ppm, num_particles, particles);
 

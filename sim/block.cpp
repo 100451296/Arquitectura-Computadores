@@ -1,6 +1,5 @@
 #include "block.hpp"
 
-
 using namespace std;
 
 // METODOS de BLOCK
@@ -40,7 +39,7 @@ void Block::calculateDataCommon() {
 
 // Funcion inicializar la densidad y la aceleracion para cada particula
 void Block::initDensityAcceleration() {
-  for (size_t i = 0; i < accelerationX.size(); ++i) {
+  for (size_t i = 0; i < particles.size(); ++i) {
     density[i]       = 0;
     accelerationX[i] = ACELERACION_GRAVEDAD_X;
     accelerationY[i] = ACELERACION_GRAVEDAD_Y;
@@ -51,7 +50,7 @@ void Block::initDensityAcceleration() {
 // Funcion encargada de modificar el vector de densidades del propio bloque y transformacion lineal
 void Block::densityIncreaseSingle() {
   calculate_increm_density();
-  lineal_transformate_density();
+  // lineal_transformate_density();
 }
 
 void Block::densityIncrease(Block & contiguousBlock) {
@@ -59,7 +58,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
   vector<std::pair<int, int>> aux;
   generarParejasEntreBloques(contiguousBlock, aux);
   calculate_increm_density(aux);
-  lineal_transformate_density(contiguousBlock);
+  // lineal_transformate_density(contiguousBlock);
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
@@ -101,7 +100,7 @@ void Block::calculate_increm_density() {
 void Block::lineal_transformate_density() {
   for (auto & id : particlesID) {
     density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * M_PI* pow(data.long_suavizado, 9));
+                  (64 * M_PI * pow(data.long_suavizado, 9));
   }
 }
 
@@ -114,7 +113,7 @@ void Block::lineal_transformate_density(Block & contiguousBlock) {
   }
   for (auto & id : contiguousBlock.particlesID) {
     density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * M_PI* pow(data.long_suavizado, 9));
+                  (64 * M_PI * pow(data.long_suavizado, 9));
   }
 }
 
@@ -123,20 +122,20 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
                                                    double dist, vector<unsigned int> Id) {
   vector<double> increm_aceleration;
   increm_aceleration = {
-    ((position[0]) * (15 / (M_PI* pow(data.long_suavizado, 6))) *
+    ((position[0]) * (15 / (M_PI * pow(data.long_suavizado, 6))) *
          (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[0]) * (45 / (M_PI* pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
+     (velocity[0]) * (45 / (M_PI * pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[1]) * (15 / (M_PI* pow(data.long_suavizado, 6))) *
+    ((position[1]) * (15 / (M_PI * pow(data.long_suavizado, 6))) *
          (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[1]) * (45 / (M_PI* pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
+     (velocity[1]) * (45 / (M_PI * pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
         (density[Id[0]] * density[Id[1]]),
-    ((position[2]) * (15 / (M_PI* pow(data.long_suavizado, 6))) *
+    ((position[2]) * (15 / (M_PI * pow(data.long_suavizado, 6))) *
          (3 * data.mass * PRESION_RIGIDEZ / 2) * ((pow(data.long_suavizado - dist, 2)) / dist) *
          (density[Id[0]] + density[Id[1]] - 2 * DENSIDAD_FLUIDO) +
-     (velocity[2]) * (45 / (M_PI* pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
+     (velocity[2]) * (45 / (M_PI * pow(data.long_suavizado, 6))) * VISCOSIDAD * data.mass) /
         (density[Id[0]] * density[Id[1]])};
   return increm_aceleration;
 }

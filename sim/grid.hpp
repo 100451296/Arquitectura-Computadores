@@ -91,12 +91,13 @@ class Grid {
     void prueba();
 
     int readFile(std::string const & input_file_name);
+    int writeFile(std::string const & output_file_name);
 
     void positionateParticle();
     void resetBlocks();
     void densityIncreaseGrid();
     void aceletarionTransferGrid();
-    void densityTransform();
+    void linealDensityTransform();
     void collisionsXGrid();
     void collisionsYGrid();
     void collisionsZGrid();
@@ -109,6 +110,11 @@ class Grid {
     bool readHeader(std::ifstream & input_file);
     bool readParticles(std::ifstream & input_file);
     bool readParticle(std::ifstream & input_file, Particle & particle, int index);
+
+    bool writeHeader(std::ofstream & output_file);
+    bool writeParticles(std::ofstream & output_file);
+    bool writeParticle(std::ofstream & output_file, Particle const & particle);
+
     void initGrid();
     void initBlocks();
     void initializeBlockVectors();
