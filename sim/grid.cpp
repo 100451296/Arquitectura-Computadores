@@ -343,7 +343,9 @@ void Grid::aceletarionTransferGrid() {
   }
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].accelerationTransferSingle(); }
+      for (int z = 0; z < nz; z++) {
+         blocks[x][y][z].accelerationTransferSingle();
+      }
     }
   }
 }
