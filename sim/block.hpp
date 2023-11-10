@@ -27,9 +27,7 @@ class Block {
           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef,
           std::vector<double> & densityRef)
       : particles(particlesRef), accelerationX(accelerationXRef), accelerationY(accelerationYRef),
-        accelerationZ(accelerationZRef), density(densityRef) {
-      
-    }
+        accelerationZ(accelerationZRef), density(densityRef) { }
 
     void addParticle(int id);
     void resetBlock();
@@ -45,7 +43,7 @@ class Block {
     void interactionsY(unsigned int cy);
     void interactionsZ(unsigned int cz);
     void generarParejasBloque();
-    
+
     void generarParejasEntreBloques(Block & otherBlock, std::vector<std::pair<int, int>> & aux);
     void calculateDataCommon();
     void initDensityAcceleration();
@@ -54,7 +52,7 @@ class Block {
     void lineal_transformate_density();
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,
-                                                     std::vector<unsigned int> Id);
+                                                     std::vector<int> Id);
     double calculate_dist(double posX, double posY, double posZ);
 
     void accelerationTransferCalculations(std::vector<std::pair<int, int>> pair_vec);

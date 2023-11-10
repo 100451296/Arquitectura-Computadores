@@ -196,7 +196,6 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
 void Grid::simulation(int iterations) {
   printParticles();
   for (int i = 0; i < iterations; i++) {
-
     std::cout << "Iteración: " << i << std::endl;  // Línea añadida para imprimir el valor de i
 
     std::cout << "Llamada a positionateParticle()" << std::endl;
@@ -263,16 +262,14 @@ void Grid::printParticles() {
               << particles[i].velZ << ")" << std::endl;
   }
 }
+
 void Grid::generateParticlePairs() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) {
-         blocks[x][y][z].generarParejasBloque();
-        }
+      for (int z = 0; z < nz; z++) { blocks[x][y][z].generarParejasBloque(); }
     }
   }
 }
-
 
 void Grid::printFirst() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
@@ -316,7 +313,7 @@ void Grid::positionateParticle() {
 }
 
 void Grid::densityIncreaseGrid() {
- for (auto const & pareja : parejas_unicas) {
+  for (auto const & pareja : parejas_unicas) {
     int x1, y1, z1, x2, y2, z2;
     std::tie(x1, y1, z1) = pareja.first;
     std::tie(x2, y2, z2) = pareja.second;
@@ -324,9 +321,7 @@ void Grid::densityIncreaseGrid() {
   }
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) {
-         blocks[x][y][z].densityIncreaseSingle();
-        }
+      for (int z = 0; z < nz; z++) { blocks[x][y][z].densityIncreaseSingle(); }
     }
   }
 }
@@ -334,25 +329,22 @@ void Grid::densityIncreaseGrid() {
 void Grid::linealDensityTransform() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) {
-        blocks[x][y][z].lineal_transformate_density();
-
-      }
+      for (int z = 0; z < nz; z++) { blocks[x][y][z].lineal_transformate_density(); }
     }
   }
 }
 
 void Grid::aceletarionTransferGrid() {
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].accelerationTransferSingle(); }
-    }
-  }
   for (auto const & pareja : parejas_unicas) {
     int x1, y1, z1, x2, y2, z2;
     std::tie(x1, y1, z1) = pareja.first;
     std::tie(x2, y2, z2) = pareja.second;
     blocks[x1][y1][z1].accelerationTransfer(blocks[x2][y2][z2]);
+  }
+  for (int x = 0; x < nx; x++) {
+    for (int y = 0; y < ny; y++) {
+      for (int z = 0; z < nz; z++) { blocks[x][y][z].accelerationTransferSingle(); }
+    }
   }
 }
 
