@@ -5,17 +5,17 @@ using namespace std;
 // Método para inicializar la malla con valores predeterminados
 void Grid::initGrid() {
   h             = MULTIPLICADOR_RADIO / ppm;
-  particle_mass = DENSIDAD_FLUIDO * std::pow(ppm, -3);
-  nx            = std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
-  ny            = std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h);
-  nz            = std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / h);
+  particle_mass = DENSIDAD_FLUIDO * pow(ppm, -3);
+  nx            = floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
+  ny            = floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h);
+  nz            = floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / h);
   num_blocks    = nx * ny * nz;
   sx            = (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / nx;
   sy            = (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / ny;
   sz            = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / nz;
 
   data.ppm            = static_cast<double>(ppm);
-  data.mass           = static_cast<double>(particle_mass);
+  data.mass           = particle_mass;
   data.long_suavizado = h;
   data.nx             = static_cast<unsigned int>(nx);
   data.ny             = static_cast<unsigned int>(ny);
@@ -116,8 +116,11 @@ int Grid::readFile(string const & input_file_name) {
 }
 
 bool Grid::readHeader(std::ifstream & input_file) {
-  input_file.read(reinterpret_cast<char *>(&ppm), sizeof(float));
+  float buffer;
+  input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
+
+  ppm = static_cast<double>(buffer);
   return input_file.good();
 }
 
@@ -194,7 +197,7 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
 }
 
 void Grid::simulation(int iterations) {
-  printParticles();
+  // printParticles();
   for (int i = 0; i < iterations; i++) {
     std::cout << "Iteración: " << i << std::endl;  // Línea añadida para imprimir el valor de i
 
@@ -241,7 +244,7 @@ void Grid::simulation(int iterations) {
     std::cout << "--------------------------------" << std::endl;
 
     std::cout << "Llamada a printParticles()" << std::endl;
-    printParticles();
+    // printParticles();
     std::cout << "--------------------------------" << std::endl;
 
     std::cout << "Llamada a resetBlocks()" << std::endl;
@@ -343,9 +346,7 @@ void Grid::aceletarionTransferGrid() {
   }
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) {
-         blocks[x][y][z].accelerationTransferSingle();
-      }
+      for (int z = 0; z < nz; z++) { blocks[x][y][z].accelerationTransferSingle(); }
     }
   }
 }

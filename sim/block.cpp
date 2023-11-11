@@ -105,15 +105,21 @@ void Block::lineal_transformate_density() {
       density[id] = density[id];
       cout << "id" << endl;
     }
-    density[id] = (density[id] + pow(data.long_suavizado, 6)) * 315 * data.mass /
-                  (64 * M_PI * pow(data.long_suavizado, 9));
+
+    double h_pow6      = pow(data.long_suavizado, 6);
+    double h_pow9      = pow(data.long_suavizado, 9);
+    double m           = data.mass;
+    double coeficiente = 315 / (64 * M_PI * h_pow9) * m;
+
+    density[id] = (density[id] + h_pow6) * coeficiente;
+
     // density[id] *= 0.1;
   }
 }
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<int> Id) {
-  if (Id[0] == 105 || Id[1] == 105) {
+  if (Id[0] == 2496 || Id[1] == 2496) {
     cout << "id";
     cout << endl;
   }
@@ -172,8 +178,8 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
   for (auto const & pair : pair_vec) {
     // Si las dos particulas estan cerca
     if ((pow(particles[pair.first].posX - particles[pair.second].posX, 2) +
-            pow(particles[pair.first].posY - particles[pair.second].posY, 2) +
-            pow(particles[pair.first].posZ - particles[pair.second].posZ, 2)) <
+         pow(particles[pair.first].posY - particles[pair.second].posY, 2) +
+         pow(particles[pair.first].posZ - particles[pair.second].posZ, 2)) <
         pow(data.long_suavizado, 2)) {
       // Calculo de distancia
       double dist = calculate_dist(particles[pair.first].posX - particles[pair.second].posX,
