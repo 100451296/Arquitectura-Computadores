@@ -6,6 +6,10 @@
 #define NZ 15
 #define NUM_PARTICLES 4800
 
+#define SMALL_PATH "../../files/small.fld"
+#define REPOS1_PATH "../../files/trz/small/repos-base-1.trz"
+#define DENSITY1_PATH "../../files/trz/small/denstransf-base-1.trz"
+
 class GridTest : public Grid {
   public:
     void readTraze(std::string const & input_file_name);
@@ -18,4 +22,5 @@ class GridTest : public Grid {
     void addParticleToBlock(int blockIndex, int64_t id);
     std::tuple<int, int, int> obtenerIndicesDesdeId(int identificador) const;
     int comparePositionate(Grid & grid);
+    int compareDensity(Grid & grid);
 };

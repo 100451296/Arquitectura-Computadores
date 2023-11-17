@@ -6,12 +6,10 @@
 // Define una prueba trivial que verifica la igualdad de dos números
 TEST(Positionate, TestGrid) {
   GridTest gridTest;
-  gridTest.readTraze("/home/edu/Escritorio/Uni/4Cuarto/1Cuatri/Arquitectura-Computadores/proyecto/"
-                     "Arquitectura-Computadores/files/trz/small/repos-base-1.trz");
+  gridTest.readTraze(REPOS1_PATH);
 
   Grid grid;
-  grid.readFile("/home/edu/Escritorio/Uni/4Cuarto/1Cuatri/Arquitectura-Computadores/proyecto/"
-                "Arquitectura-Computadores/files/small.fld");
+  grid.readFile(SMALL_PATH);
   grid.positionateParticle();
 
   int result = gridTest.comparePositionate(grid);
@@ -22,15 +20,15 @@ TEST(Positionate, TestGrid) {
 // Define una prueba trivial que verifica la igualdad de dos números
 TEST(DensityIncrease, TestGrid) {
   GridTest gridTest;
-  gridTest.readTraze("/home/edu/Escritorio/Uni/4Cuarto/1Cuatri/Arquitectura-Computadores/proyecto/"
-                     "Arquitectura-Computadores/files/trz/small/repos-base-1.trz");
+  gridTest.readTraze(DENSITY1_PATH);
 
   Grid grid;
-  grid.readFile("/home/edu/Escritorio/Uni/4Cuarto/1Cuatri/Arquitectura-Computadores/proyecto/"
-                "Arquitectura-Computadores/files/small.fld");
+  grid.readFile(SMALL_PATH);
   grid.positionateParticle();
+  grid.densityIncreaseGrid();
+  grid.linealDensityTransform();
 
-  int result = gridTest.comparePositionate(grid);
+  int result = gridTest.compareDensity(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }

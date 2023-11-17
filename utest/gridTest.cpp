@@ -114,10 +114,21 @@ int GridTest::comparePositionate(Grid & grid) {
   for (int x = 0; x < nx; ++x) {
     for (int y = 0; y < ny; ++y) {
       for (int z = 0; z < nz; ++z) {
-        std::is_permutation(blocks[x][y][z].particlesID.begin(), blocks[x][y][z].particlesID.end(),
-                            grid.blocks[x][y][z].particlesID.begin());
+        if (!std::is_permutation(blocks[x][y][z].particlesID.begin(),
+                                 blocks[x][y][z].particlesID.end(),
+                                 grid.blocks[x][y][z].particlesID.begin())) {
+          return -1;
+        }
       }
     }
   }
+  return 0;
+}
+
+int GridTest::compareDensity(Grid & grid) {
+  if (density.size() != grid.density.size()) { return -1; }
+
+  if (!std::is_permutation(density.begin(), density.end(), grid.density.begin())) { return -1; }
+
   return 0;
 }
