@@ -137,7 +137,6 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
     (pi_y * term1 * term2 * term3 * term4 + vi_y * term5) / term6,
     // Posicion Z
     (pi_z * term1 * term2 * term3 * term4 + vi_z * term5) / term6};
-
   return increment_acceleration;
 }
 
@@ -178,16 +177,16 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
                                  particles[pair.first].posY - particles[pair.second].posY,
                                  particles[pair.first].posZ - particles[pair.second].posZ};
       // Calculo vector velocidad
-      vector<double> velocity = {particles[pair.first].velX - particles[pair.second].velX,
-                                 particles[pair.first].velY - particles[pair.second].velY,
-                                 particles[pair.first].velZ - particles[pair.second].velZ};
+      vector<double> velocity = {particles[pair.second].velX - particles[pair.first].velX,
+                                 particles[pair.second].velY - particles[pair.first].velY,
+                                 particles[pair.second].velZ - particles[pair.first].velZ};
 
       vector<int> Id = {pair.first, pair.second};
 
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Id);
 
-      accelerationX[pair.first]  = accelerationY[pair.first] + increm_aceleration[0];
+      accelerationX[pair.first]  = accelerationX[pair.first] + increm_aceleration[0];
       accelerationY[pair.first]  = accelerationY[pair.first] + increm_aceleration[1];
       accelerationZ[pair.first]  = accelerationZ[pair.first] + increm_aceleration[2];
       accelerationX[pair.second] = accelerationX[pair.second] - increm_aceleration[0];
