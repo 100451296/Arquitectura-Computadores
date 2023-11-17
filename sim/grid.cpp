@@ -21,7 +21,6 @@ void Grid::initGrid() {
   data.ny             = static_cast<unsigned int>(ny);
   data.nz             = static_cast<unsigned int>(nz);
 
-  printParameters();
   initBlocks();
   initDensityAcceleration();
 }
@@ -197,7 +196,7 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
 }
 
 void Grid::simulation(int iterations) {
-  // printParticles();
+  printParameters();
   for (int i = 0; i < iterations; i++) {
     std::cout << "Iteración: " << i << std::endl;  // Línea añadida para imprimir el valor de i
 
@@ -309,7 +308,6 @@ void Grid::positionateParticle() {
     int k = std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
                                              (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
-    if (particle.id > particles.size()) { cout << "Error" << endl; }
     blocks[i][j][k].addParticle(particle.id);
   }
   generateParticlePairs();
