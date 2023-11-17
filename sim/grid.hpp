@@ -106,6 +106,8 @@ class Grid {
     void interactionsXGrid();
     void interactionsYGrid();
     void interactionsZGrid();
+    void initializeBlockVectors();
+    void initDensityAcceleration();
 
   private:
     bool readHeader(std::ifstream & input_file);
@@ -118,8 +120,7 @@ class Grid {
 
     void initGrid();
     void initBlocks();
-    void initializeBlockVectors();
-    void initDensityAcceleration();
+
     void populatePairs();
     void printParameters();
 };
