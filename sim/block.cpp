@@ -25,16 +25,10 @@ void Block::addParticle(int id) {
   particlesID.push_back(id);
 }
 
+// Funcion para resetear el bloque
 void Block::resetBlock() {
   particlesID.clear();
   particlePairs.clear();
-}
-
-// Funcion encargada de calcular la masa y longitud de suavizado de todas las particulas de un
-// bloque
-void Block::calculateDataCommon() {
-  data.mass           = DENSIDAD_FLUIDO / pow(data.ppm, 3);
-  data.long_suavizado = MULTIPLICADOR_RADIO / data.ppm;
 }
 
 // Funcion inicializar la densidad y la aceleracion para cada particula
@@ -49,8 +43,19 @@ void Block::initDensityAcceleration() {
 
 // Funcion encargada de modificar el vector de densidades del propio bloque
 void Block::densityIncreaseSingle() {
-  calculate_increm_density_single();
-  // lineal_transformate_density();
+  double aux_x, aux_y, aux_z, increm_density_pair;
+  for (auto const & pair : particlePairs) {
+    aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
+    aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
+    aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+    if (aux_x + aux_y + aux_z < std::pow(data.long_suavizado, 2)) {
+      increm_density_pair = std::pow(std::pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
+    } else {
+      increm_density_pair = 0;
+    }
+    density[pair.first]  += increm_density_pair;
+    density[pair.second] += increm_density_pair;
+  }
 }
 
 // Funcion encargada de modificar el vector de densidades del propio bloque con su contiguo
@@ -67,23 +72,6 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
     if (pair.first == 2496 || pair.second == 2496) { aux_x = 0; }
-    aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
-    aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
-    aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
-    if (aux_x + aux_y + aux_z < std::pow(data.long_suavizado, 2)) {
-      increm_density_pair = std::pow(std::pow(data.long_suavizado, 2) - (aux_x + aux_y + aux_z), 3);
-    } else {
-      increm_density_pair = 0;
-    }
-    density[pair.first]  += increm_density_pair;
-    density[pair.second] += increm_density_pair;
-  }
-}
-
-// Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density_single() {
-  double aux_x, aux_y, aux_z, increm_density_pair;
-  for (auto const & pair : particlePairs) {
     aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
     aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
     aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);

@@ -47,7 +47,6 @@ class Block {
     void calculateDataCommon();
     void initDensityAcceleration();
     void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas);
-    void calculate_increm_density_single();
     void lineal_transformate_density();
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,

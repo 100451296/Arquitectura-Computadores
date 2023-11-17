@@ -11,6 +11,18 @@ class TestBloque_MetodosBloque_Test : public testing::Test {
     std::vector<Block> blocks;
     std::vector<Particle> particles;
     std::vector<double> accelerationX, accelerationY, accelerationZ, density;
+    DataCommon data;
+    double ppm;
+    int num_particles;
+    double h;
+    double particle_mass;
+    int nx;
+    int ny;
+    int nz;
+    int num_blocks;
+    double sx;
+    double sy;
+    double sz;
     // Se ejecuta antes de cada prueba
     void SetUp() override;
 };
