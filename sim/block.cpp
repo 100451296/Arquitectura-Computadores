@@ -89,10 +89,7 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & id : particlesID) {
-    if (id == 2496) {
-      density[id] = density[id];
-      cout << "id" << endl;
-    }
+    if (id == 2496) { density[id] = density[id]; }
 
     double h_pow6      = pow(data.long_suavizado, 6);
     double h_pow9      = pow(data.long_suavizado, 9);
@@ -107,10 +104,7 @@ void Block::lineal_transformate_density() {
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<int> Id) {
-  if (Id[0] == 2496 || Id[1] == 2496) {
-    cout << "id";
-    cout << endl;
-  }
+  if (Id[0] == 2496 || Id[1] == 2496) { cout << endl; }
 
   double pi_x = position[0];
   double pi_y = position[1];
@@ -200,7 +194,11 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
 void Block::collisionsX(unsigned int cx) {
   double cord_x, increm_x = 0;
   for (auto & id : particlesID) {
-    cord_x = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO;
+    if (id == 4793) {
+      cord_x = 0;
+      cout << endl;
+    }
+    { cord_x = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO; }
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -208,11 +206,9 @@ void Block::collisionsX(unsigned int cx) {
     }
     if (increm_x > pow(10, -10)) {
       if (cx == 0) {
-        accelerationX[id] = accelerationX[id] + COLISIONES_RIGIDEZ * increm_x -
-                            AMORTIGUAMIENTO * particles[id].velX;
+        accelerationX[id] += COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * particles[id].velX;
       } else if (cx == data.nx - 1) {
-        accelerationX[id] = accelerationX[id] - COLISIONES_RIGIDEZ * increm_x +
-                            AMORTIGUAMIENTO * particles[id].velX;
+        accelerationX[id] -= COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * particles[id].velX;
       }
     }
   }

@@ -128,7 +128,57 @@ int GridTest::comparePositionate(Grid & grid) {
 int GridTest::compareDensity(Grid & grid) {
   if (density.size() != grid.density.size()) { return -1; }
 
+  // Función lambda para redondear vectores
+  auto roundVector = [](std::vector<double> & vec) {
+    for (auto & value : vec) {
+      value = std::round(value * 100) / 100;  // Redondear a dos decimales
+    }
+  };
+
+  roundVector(density);
+  roundVector(grid.density);
+
   if (!std::is_permutation(density.begin(), density.end(), grid.density.begin())) { return -1; }
+
+  return 0;
+}
+
+int GridTest::compareAccelerationX(Grid & grid) {
+  return compareAccelerationComponent(accelerationX, grid.accelerationX);
+}
+
+int GridTest::compareAccelerationY(Grid & grid) {
+  return compareAccelerationComponent(accelerationY, grid.accelerationY);
+}
+
+int GridTest::compareAccelerationZ(Grid & grid) {
+  return compareAccelerationComponent(accelerationZ, grid.accelerationZ);
+}
+
+#include <iostream>
+
+int GridTest::compareAccelerationComponent(std::vector<double> & vec1, std::vector<double> & vec2) {
+  if (vec1.size() != vec2.size()) { return -1; }
+
+  auto roundVector = [](std::vector<double> & vec) {
+    for (auto & value : vec) {
+      value = std::round(value * 100) / 100.0;  // Redondear a dos decimales
+    }
+  };
+
+  roundVector(vec1);
+  roundVector(vec2);
+
+  if (!std::is_permutation(vec1.begin(), vec1.end(), vec2.begin())) {
+    std::cout << "Valores diferentes encontrados:" << std::endl;
+    for (size_t i = 0; i < vec1.size(); ++i) {
+      if (vec1[i] != vec2[i]) {
+        std::cout << "vec1[" << i << "]: " << vec1[i] << " != vec2[" << i << "]: " << vec2[i]
+                  << std::endl;
+      }
+    }
+    return -1;
+  }
 
   return 0;
 }

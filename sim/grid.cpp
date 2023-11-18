@@ -168,7 +168,8 @@ int Grid::writeFile(std::string const & output_file_name) {
 }
 
 bool Grid::writeHeader(std::ofstream & output_file) {
-  output_file.write(reinterpret_cast<char const *>(&ppm), sizeof(float));
+  float ppm_float = static_cast<float>(ppm);
+  output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
   return output_file.good();
 }

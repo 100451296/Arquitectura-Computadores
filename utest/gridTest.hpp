@@ -1,14 +1,17 @@
 #include "../sim/block.hpp"
 #include "../sim/grid.hpp"
 
-#define NX 15
-#define NY 21
-#define NZ 15
-#define NUM_PARTICLES 4800
+#define NX 22
+#define NY 31
+#define NZ 22
+#define NUM_PARTICLES 15138
 
-#define SMALL_PATH "../../files/small.fld"
-#define REPOS1_PATH "../../files/trz/small/repos-base-1.trz"
-#define DENSITY1_PATH "../../files/trz/small/denstransf-base-1.trz"
+#define SMALL_PATH "../../files/large.fld"
+#define REPOS1_PATH "../../files/trz/large/repos-base-1.trz"
+#define DENSINC1_PATH "../../files/trz/large/densinc-base-1.trz"
+#define DENSTRANS1_PATH "../../files/trz/large/denstransf-base-1.trz"
+#define ACCTRANS1_PATH "../../files/trz/large/acctransf-base-1.trz"
+#define PARTCOL1_PATH "../../files/trz/large/partcol-base-1.trz"
 
 class GridTest : public Grid {
   public:
@@ -23,4 +26,10 @@ class GridTest : public Grid {
     std::tuple<int, int, int> obtenerIndicesDesdeId(int identificador) const;
     int comparePositionate(Grid & grid);
     int compareDensity(Grid & grid);
+    int compareAccelerationX(Grid & grid);
+    int compareAccelerationY(Grid & grid);
+    int compareAccelerationZ(Grid & grid);
+
+  private:
+    int compareAccelerationComponent(std::vector<double> & vec1, std::vector<double> & vec2);
 };

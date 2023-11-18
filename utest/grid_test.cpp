@@ -20,7 +20,22 @@ TEST(Positionate, TestGrid) {
 // Define una prueba trivial que verifica la igualdad de dos números
 TEST(DensityIncrease, TestGrid) {
   GridTest gridTest;
-  gridTest.readTraze(DENSITY1_PATH);
+  gridTest.readTraze(DENSINC1_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.positionateParticle();
+  grid.densityIncreaseGrid();
+
+  int result = gridTest.compareDensity(grid);
+  // Verifica que a sea igual a b
+  EXPECT_EQ(result, 0);
+}
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(LinearTransfrom, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(DENSTRANS1_PATH);
 
   Grid grid;
   grid.readFile(SMALL_PATH);
@@ -29,6 +44,43 @@ TEST(DensityIncrease, TestGrid) {
   grid.linealDensityTransform();
 
   int result = gridTest.compareDensity(grid);
+  // Verifica que a sea igual a b
+  EXPECT_EQ(result, 0);
+}
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(AccelerationTransfer, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(ACCTRANS1_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.positionateParticle();
+  grid.densityIncreaseGrid();
+  grid.linealDensityTransform();
+  grid.aceletarionTransferGrid();
+
+  EXPECT_EQ(gridTest.compareAccelerationX(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationY(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationZ(grid), 0);
+}
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(CollisionsGrid, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(PARTCOL1_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.positionateParticle();
+  grid.densityIncreaseGrid();
+  grid.linealDensityTransform();
+  grid.aceletarionTransferGrid();
+  grid.collisionsXGrid();
+  grid.collisionsYGrid();
+  grid.collisionsZGrid();
+
+  int result = gridTest.compareAccelerationX(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }
