@@ -3,6 +3,7 @@
 
 #include "common.hpp"
 
+#include <filesystem>
 #include <cmath>
 #include <fstream>
 #include <iostream>

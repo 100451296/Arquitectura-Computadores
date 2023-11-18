@@ -1,5 +1,6 @@
 #include "progargs.hpp"
 
+
 using namespace std;
 
 int comprobacion_num_param(int num_params) {
@@ -56,7 +57,7 @@ int comprobacion_archivo_lectura(string const & input) {
   En caso de que no se pueda, envia un mensaje de error y se devuelve -3 */
   ifstream entrada(input);
   if (!entrada.is_open()) {
-    cout << "Error: Cannot open " << input << "for reading" << endl;
+    cout << "Error: Cannot open " << input << " for reading" << endl;
     return -3;
   }
   return 0;
@@ -65,9 +66,14 @@ int comprobacion_archivo_lectura(string const & input) {
 int comprobacion_archivo_escritura(string const & output) {
   /*Esta comprobacion evalua si el archivo de salida no se puede abrir para escritura.
   En caso de que no es evalue, envia un mensaje de error y se devuelve -4*/
+  // Primero verifica si el archivo existe, en caso de que no, devuelve un error en lugar de crear un archivo nuevo
+    if (!filesystem::exists(output)) {
+        cout << "Error: Cannot open " << output << " for writing" << endl;
+        return -4;
+    }
   ofstream salida(output);
   if (!salida.is_open()) {
-    cout << "Error: Cannot open " << output << "for writing" << endl;
+    cout << "Error: Cannot open " << output << " for writing" << endl;
     return -4;
   }
   return 0;
@@ -96,7 +102,7 @@ int comparacion_cantidad_particulas(int num_particles, int particles_contadas) {
 int leer_archivo_entrada(const string& num_iter_file) { 
   ifstream fichero(num_iter_file, ios::binary); 
   if (!fichero) { 
-    cerr << "No se pudo abrir el archivo." << endl; 
+    cout << "No se pudo abrir el archivo." << endl; 
     return -1; } 
   // Cada particula equivale a 9 * 4 (tamaño de float) bytes
   const size_t size_of_particle = 9 * sizeof(float); 
@@ -110,10 +116,10 @@ int leer_archivo_entrada(const string& num_iter_file) {
     cout << "Fin del archivo alcanzado." << endl; 
     } 
   else if(fichero.fail()) { 
-    cerr << "Error de lectura del archivo antes de llegar al final." << endl;
+    cout << "Error de lectura del archivo antes de llegar al final." << endl;
   } fichero.close(); 
   if (particles_contadas != num_particles) { 
-    cerr << "El número de partículas contadas no coincide con el esperado." << endl; 
+    cout << "El número de partículas contadas no coincide con el esperado." << endl; 
     return -5; 
     } 
   return 0; 
@@ -129,112 +135,6 @@ int proargs_validations(string const & num_iter, string const & input,string con
   cout << "resultado:" << resultado << endl;
 
   return 0;
-}
-
-int readFile(string const & input_file_name, float & ppm, int & num_particles,
-             vector<std::shared_ptr<Particle>> & refParticles) {
-  vector<Particle> particles;  // Inicializa vector de particulas
-
-  std::ifstream input_file(input_file_name, std::ios::binary);
-  if (!input_file.is_open()) {
-    std::cerr << "Error al abrir el archivo de entrada" << std::endl;
-    return -1;
-  }
-
-  if (!readHeader(input_file, ppm, num_particles)) { return -1; }
-
-  if (num_particles <= 0) {
-    std::cerr << "Número de partículas inválido" << std::endl;
-    return -1;
-  }
-
-  if (!readParticles(input_file, particles, num_particles)) { return -1; }
-
-  input_file.close();
-
-  for (auto & particle : particles) { refParticles.push_back(make_shared<Particle>(particle)); }
-  return 0;
-}
-
-bool readHeader(std::ifstream & input_file, float & ppm, int & num_particles) {
-  input_file.read(reinterpret_cast<char *>(&ppm), sizeof(float));
-  input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
-  return input_file.good();
-}
-
-bool readParticles(std::ifstream & input_file, std::vector<Particle> & particles,
-                   int num_particles) {
-  particles.resize(num_particles);
-  for (int i = 0; i < num_particles; i++) {
-    if (!readParticle(input_file, particles[i], i)) { return false; }
-  }
-  return true;
-}
-
-bool readParticle(std::ifstream & input_file, Particle & particle, int index) {
-  float buffer[9];
-  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * 9)) {
-    std::cerr << "Error al leer las partículas del archivo" << std::endl;
-    return false;
-  }
-
-  particle.id         = index;
-  particle.posX       = static_cast<double>(buffer[0]);
-  particle.posY       = static_cast<double>(buffer[1]);
-  particle.posZ       = static_cast<double>(buffer[2]);
-  particle.smoothVecX = static_cast<double>(buffer[3]);
-  particle.smoothVecY = static_cast<double>(buffer[4]);
-  particle.smoothVecZ = static_cast<double>(buffer[5]);
-  particle.velX       = static_cast<double>(buffer[6]);
-  particle.velY       = static_cast<double>(buffer[7]);
-  particle.velZ       = static_cast<double>(buffer[8]);
-
-  return true;
-}
-
-int writeFile(std::string const & output_file_name, float ppm, int num_particles,
-              std::vector<std::shared_ptr<Particle>> const & particles) {
-  std::ofstream output_file(output_file_name, std::ios::binary);
-  if (!output_file.is_open()) {
-    std::cerr << "Error al abrir el archivo de salida" << std::endl;
-    return -1;
-  }
-
-  if (!writeHeader(output_file, ppm, num_particles)) { return -1; }
-
-  if (!writeParticles(output_file, particles)) { return -1; }
-
-  output_file.close();
-  return 0;
-}
-
-bool writeHeader(std::ofstream & output_file, float ppm, int num_particles) {
-  output_file.write(reinterpret_cast<char const *>(&ppm), sizeof(float));
-  output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
-  return output_file.good();
-}
-
-bool writeParticles(std::ofstream & output_file,
-                    std::vector<std::shared_ptr<Particle>> const & particles) {
-  for (auto const & particle : particles) {
-    if (!writeParticle(output_file, particle)) { return false; }
-  }
-  return true;
-}
-
-bool writeParticle(std::ofstream & output_file, std::shared_ptr<Particle> const & particle) {
-  float buffer[9] = {
-    static_cast<float>(particle->posX),       static_cast<float>(particle->posY),
-    static_cast<float>(particle->posZ),       static_cast<float>(particle->smoothVecX),
-    static_cast<float>(particle->smoothVecY), static_cast<float>(particle->smoothVecZ),
-    static_cast<float>(particle->velX),       static_cast<float>(particle->velY),
-    static_cast<float>(particle->velZ)};
-  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
-    std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
-    return false;
-  }
-
-  return true;
 }
 
 void printParameters(int ppm, int num_particles) {

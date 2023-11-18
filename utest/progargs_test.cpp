@@ -56,13 +56,13 @@ TEST(progargs_primer_argumento_test, primer_argumento_no_int) {
 // Tests para la funcion llamada comprobacion_pasos_tiempo
 TEST(progargs_pasos_tiempo_test, num_pasos_tiempo_correcto) {
     string param_num = "100";
-    int funcion = comprobacion_primer_argumento(param_num);
+    int funcion = comprobacion_pasos_tiempo(param_num);
     EXPECT_EQ(0, funcion);
 }
 
 TEST(progargs_pasos_tiempo_test, num_pasos_tiempo_incorrecto) {
     string param_num_negativo = "-300";
-    int funcion = comprobacion_primer_argumento(param_num_negativo);
+    int funcion = comprobacion_pasos_tiempo(param_num_negativo);
     EXPECT_EQ(-2, funcion);
 }
 
@@ -89,7 +89,7 @@ TEST(progargs_archivo_escritura_test, archivo_escritura_valido) {
 }
 
 TEST(progargs_archivo_escritura_test, archivo_escritura_no_valido) {
-    string archivo_no_valido = "final.fld";
+    string archivo_no_valido = "pepe.fld";
     int funcion = comprobacion_archivo_escritura(archivo_no_valido);
     EXPECT_EQ(-4, funcion);
 }
