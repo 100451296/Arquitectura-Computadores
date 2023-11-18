@@ -125,3 +125,18 @@ TEST(Interactions, TestGrid) {
 
   EXPECT_EQ(gridTest.compareParticles(grid), 0);
 }
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(Positionate2, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(REPOS2_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.simulation(1);
+  grid.positionateParticle();
+
+  int result = gridTest.comparePositionate(grid);
+  // Verifica que a sea igual a b
+  EXPECT_EQ(result, 0);
+}
