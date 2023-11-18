@@ -152,14 +152,12 @@ TEST_F(TestBloque_MetodosBloque_Test, DensityIncreaseSingle) {
   // Llamamos al método densityIncreaseSingle
   blocks[0].densityIncreaseSingle();
 
-  // Declaramos las variables
-  double aux_x, aux_y, aux_z;
-
   // Verificamos que la densidad se ha incrementado correctamente
   for (auto & pair : blocks[0].particlePairs) {
-    aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
-    aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
-    aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+    double aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
+    double aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
+    double aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+
     if (aux_x + aux_y + aux_z < std::pow(data.long_suavizado, 2)) {
       EXPECT_GT(blocks[0].density[pair.first], 0.0);
       EXPECT_GT(blocks[0].density[pair.second], 0.0);
@@ -169,4 +167,3 @@ TEST_F(TestBloque_MetodosBloque_Test, DensityIncreaseSingle) {
     }
   }
 }
-
