@@ -1,10 +1,10 @@
 #include "../sim/block.hpp"
 #include "../sim/grid.hpp"
 
-#define NX 22
-#define NY 31
-#define NZ 22
-#define NUM_PARTICLES 15138
+#define NX 15
+#define NY 21
+#define NZ 15
+#define NUM_PARTICLES 4800
 
 #define ROUND_MOTION 10000000
 
@@ -18,7 +18,7 @@
 #define INTERACTIONS_PATH "../../files/trz/small/boundint-base-1.trz"
 
 #define REPOS2_PATH "../../files/trz/small/repos-base-2.trz"
-#define DENSINC1_PATH "../../files/trz/small/densinc-base-1.trz"
+#define DENSINC2_PATH "../../files/trz/small/densinc-base-2.trz"
 #define DENSTRANS1_PATH "../../files/trz/small/denstransf-base-1.trz"
 #define ACCTRANS1_PATH "../../files/trz/small/acctransf-base-1.trz"
 #define PARTCOL1_PATH "../../files/trz/small/partcol-base-1.trz"

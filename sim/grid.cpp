@@ -253,8 +253,8 @@ void Grid::resetBlocks() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; z++) {
-        blocks[x][y][z].resetBlock();
         blocks[x][y][z].initDensityAcceleration();
+        blocks[x][y][z].resetBlock();
       }
     }
   }

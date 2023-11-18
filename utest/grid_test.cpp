@@ -140,3 +140,17 @@ TEST(Positionate2, TestGrid) {
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(DensityIncrease2, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(DENSINC2_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.simulation(1);
+  grid.positionateParticle();
+  grid.densityIncreaseGrid();
+
+  EXPECT_EQ(gridTest.compareDensity(grid), 0);
+}
