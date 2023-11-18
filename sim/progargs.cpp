@@ -10,7 +10,7 @@ int comprobacion_num_param(int num_params) {
     // el programa devolviendo -1
     //Se resta 1 a num_params porque no se cuenta el comando de ejecucion fluid
     num_params -= 1;
-    cout << "Error: Invalid number of arguments: " << num_params  << endl;
+    cerr << "Error: Invalid number of arguments: " << num_params  << endl;
     return -1;
   }
   return 0;
@@ -25,14 +25,14 @@ int comprobacion_primer_argumento(string const & num_iter) {
     if (primer_caracter) {
       // Si es el primer carácter, puede ser un número o un signo negativo
       if (!isdigit(c) && c != '-') {
-        cout << "Error: time steps must be numeric." << endl;
+        cerr << "Error: time steps must be numeric." << endl;
         return -1;
       }
       primer_caracter = false; // Ya no es el primer carácter
     } else {
       // Para los caracteres subsiguientes, deben ser dígitos
       if (!isdigit(c)) {
-        cout << "Error: time steps must be numeric." << endl;
+        cerr << "Error: time steps must be numeric." << endl;
         return -1;
       }
     }
@@ -46,7 +46,7 @@ int comprobacion_pasos_tiempo(string const & num_iter) {
   /*Esta comprobacion evalua si el numero de pasos de tiempo (primer argumento recibido) es un
   numero negativo. En caso de serlo, se genera un mensaje de error y se devuelve -2*/
   if (pasos < 0) {
-    cout << "Error: Invalid number of time steps." << endl;
+    cerr << "Error: Invalid number of time steps." << endl;
     return -2;
   }
   return 0;
@@ -57,7 +57,7 @@ int comprobacion_archivo_lectura(string const & input) {
   En caso de que no se pueda, envia un mensaje de error y se devuelve -3 */
   ifstream entrada(input);
   if (!entrada.is_open()) {
-    cout << "Error: Cannot open " << input << " for reading" << endl;
+    cerr << "Error: Cannot open " << input << " for reading" << endl;
     return -3;
   }
   return 0;
@@ -68,20 +68,21 @@ int comprobacion_archivo_escritura(string const & output) {
   En caso de que no es evalue, envia un mensaje de error y se devuelve -4*/
   // Primero verifica si el archivo existe, en caso de que no, devuelve un error en lugar de crear un archivo nuevo
     if (!filesystem::exists(output)) {
-        cout << "Error: Cannot open " << output << " for writing" << endl;
+        cerr << "Error: Cannot open " << output << " for writing" << endl;
         return -4;
     }
   ofstream salida(output);
   if (!salida.is_open()) {
-    cout << "Error: Cannot open " << output << " for writing" << endl;
+    cerr << "Error: Cannot open " << output << " for writing" << endl;
     return -4;
   }
   return 0;
 }
 
 int iniciacion_simulacion(int num_particulas) {
+  //Esta comprobacion evalua si el numero de particulas encontrado en la cabecera es 0 o un numero negativo
   if (num_particulas <= 0) {
-    cout << "Error: Invalid number of particles: " << num_particulas << endl;
+    cerr << "Error: Invalid number of particles: " << num_particulas << endl;
     return -5;
   }
   return 0;
@@ -92,8 +93,7 @@ int comparacion_cantidad_particulas(int num_particles, int particles_contadas) {
   de particulas leidas en el archivo de entrada. En caso de que no coincidan, envia un mensaje de
   error y se devuelve -5*/
   if (num_particles != particles_contadas) {
-    cout << "Error: Number of particles mismatch. Header: " << num_particles
-         << ", Found: " << particles_contadas << endl;
+    cerr << "Error: Number of particles mismatch. Header: " << num_particles << ", Found: " << particles_contadas << endl;
     return -5;
   }
   return 0;
@@ -102,26 +102,27 @@ int comparacion_cantidad_particulas(int num_particles, int particles_contadas) {
 int leer_archivo_entrada(const string& num_iter_file) { 
   ifstream fichero(num_iter_file, ios::binary); 
   if (!fichero) { 
-    cout << "No se pudo abrir el archivo." << endl; 
+    cerr << "No se pudo abrir el archivo." << endl; 
     return -1; } 
-  // Cada particula equivale a 9 * 4 (tamaño de float) bytes
+  float ppm;
+  int num_particles;
+  fichero.read(reinterpret_cast<char *>(&ppm), sizeof(float)); //Lectura del particulas per meter
+  fichero.read(reinterpret_cast<char *>(&num_particles), sizeof(int)); //Lectura del numero de particulas
+  int resultado = iniciacion_simulacion(num_particles);//Comprobacion de iniciacion_simulacion
+  if (resultado != 0){
+    cerr << "Error: Invalid number of particles: " << num_particles << endl;
+    return resultado;}
+  // Cada particula equivale a 9 * 4 (tamaño de float) bytes. A continuacion se va a comenzar con la lectura de particulas del archivo
   const size_t size_of_particle = 9 * sizeof(float); 
-  int num_particles, particles_contadas = 0; 
-  fichero.read(reinterpret_cast<char *>(&num_particles), sizeof(int));  
+  int particles_contadas = 0; 
   float particle_data[9]; 
   while (fichero.read(reinterpret_cast<char *>(&particle_data), size_of_particle)) { 
-    particles_contadas++; 
-    } 
-  if (fichero.eof()) { 
-    cout << "Fin del archivo alcanzado." << endl; 
-    } 
-  else if(fichero.fail()) { 
-    cout << "Error de lectura del archivo antes de llegar al final." << endl;
-  } fichero.close(); 
-  if (particles_contadas != num_particles) { 
-    cout << "El número de partículas contadas no coincide con el esperado." << endl; 
-    return -5; 
-    } 
+    particles_contadas++; } 
+  fichero.close(); 
+  int resultado_comp = comparacion_cantidad_particulas(num_particles, particles_contadas); //Comprobacion de la cantidad de particulas
+  if (resultado_comp != 0){
+    cerr << "Error: Number of particles mismatch. Header: " << num_particles << ", Found: " << particles_contadas << endl;
+    return resultado_comp; } 
   return 0; 
   }
 
@@ -131,47 +132,29 @@ int proargs_validations(string const & num_iter, string const & input,string con
   if (comprobacion_pasos_tiempo(num_iter) == -2) { return -3; }      // Numero de iteraciones
   if (comprobacion_archivo_lectura(input) == -3) { return -4; }      // Archivo de entrada
   if (comprobacion_archivo_escritura(output) == -4) { return -5; }   // Archivo de salida
-  int resultado = leer_archivo_entrada(input);
-  cout << "resultado:" << resultado << endl;
+  if (leer_archivo_entrada(input) == -5) { return -6; } //Numero de particulas 
 
   return 0;
 }
 
 void printParameters(int ppm, int num_particles) {
   // Calcula parametros y los imprime directamente
-  std::cout << "Number of particles: " << num_particles << std::endl;
-  std::cout << "Particles per meter: " << ppm << std::endl;
-  std::cout << "Smoothing length: " << MULTIPLICADOR_RADIO / static_cast<double>(ppm) << std::endl;
-  std::cout << "Particle mass: " << DENSIDAD_FLUIDO * std::pow(ppm, -3) << std::endl;
-  std::cout << "Grid size: "
-            << std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
-                          (MULTIPLICADOR_RADIO / ppm))
+  cout << "Number of particles: " << num_particles << endl;
+  cout << "Particles per meter: " << ppm << endl;
+  cout << "Smoothing length: " << MULTIPLICADOR_RADIO / static_cast<double>(ppm) << endl;
+  cout << "Particle mass: " << DENSIDAD_FLUIDO * pow(ppm, -3) << endl;
+  cout << "Grid size: "
+            << floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / (MULTIPLICADOR_RADIO / ppm))
             << " x "
-            << std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
-                          (MULTIPLICADOR_RADIO / ppm))
+            << floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / (MULTIPLICADOR_RADIO / ppm))
             << " x "
-            << std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
-                          (MULTIPLICADOR_RADIO / ppm))
-            << std::endl;
-  std::cout << "Number of blocks: "
-            << std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
-                          (MULTIPLICADOR_RADIO / ppm)) *
-                   std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
-                              (MULTIPLICADOR_RADIO / ppm)) *
-                   std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
-                              (MULTIPLICADOR_RADIO / ppm))
-            << std::endl;
-  std::cout << "Block size: "
-            << (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
-                   std::floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) /
-                              (MULTIPLICADOR_RADIO / ppm))
+            << floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / (MULTIPLICADOR_RADIO / ppm)) << endl;
+  cout << "Number of blocks: "
+            << floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / (MULTIPLICADOR_RADIO / ppm)) * floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / (MULTIPLICADOR_RADIO / ppm)) * floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / (MULTIPLICADOR_RADIO / ppm)) << endl;
+  cout << "Block size: "
+            << (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / (MULTIPLICADOR_RADIO / ppm))
             << " x "
-            << (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
-                   std::floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) /
-                              (MULTIPLICADOR_RADIO / ppm))
+            << (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / (MULTIPLICADOR_RADIO / ppm))
             << " x "
-            << (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
-                   std::floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) /
-                              (MULTIPLICADOR_RADIO / ppm))
-            << std::endl;
+            << (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / (MULTIPLICADOR_RADIO / ppm)) << endl;
 }

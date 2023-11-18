@@ -102,9 +102,15 @@ TEST(progargs_iniciacion_simulacion_test, num_particulas_valido) {
 }
 
 //Tests para la funcion llamada iniciacion_simulacion
-TEST(progargs_iniciacion_simulacion_test, num_particulas_no_valido) {
-    int num_particles_no_valido = 0;
-    int funcion = iniciacion_simulacion(num_particles_no_valido);
+TEST(progargs_iniciacion_simulacion_test, num_particulas_no_valido_zero) {
+    int num_particles_no_valido_cero = 0;
+    int funcion = iniciacion_simulacion(num_particles_no_valido_cero);
+    EXPECT_EQ(-5, funcion);
+}
+
+TEST(progargs_iniciacion_simulacion_test, num_particulas_no_valido_neg) {
+    int num_particles_no_valido_negativo = -100;
+    int funcion = iniciacion_simulacion(num_particles_no_valido_negativo);
     EXPECT_EQ(-5, funcion);
 }
 
