@@ -1,14 +1,15 @@
 #include "progargs.hpp"
 
 using namespace std;
-//Hola, cambio
 
 int comprobacion_num_param(int num_params) {
   // Esta comprobacion se encarga de evaluar el numero de argumentos que se reciben como entrada
   if (num_params != 4) {
     // En caso de no ser exactamente tres argumentos, se generara un mensaje de error y se termina
     // el programa devolviendo -1
-    cout << "Error: Invalid number of arguments: " << num_params << endl;
+    //Se resta 1 a num_params porque no se cuenta el comando de ejecucion fluid
+    num_params -= 1;
+    cout << "Error: Invalid number of arguments: " << num_params  << endl;
     return -1;
   }
   return 0;
@@ -17,14 +18,27 @@ int comprobacion_num_param(int num_params) {
 int comprobacion_primer_argumento(string const & num_iter) {
   /*Esta comprobacion evalua si el primer argumento recibido no es un numero entero.
   En caso de no serlo, muestra un mensaje de error y devuelve -1*/
+  bool primer_caracter = true; // Variable para identificar el primer carácter
+
   for (char c : num_iter) {
-    if (!isdigit(c)) {
-      cout << "Error: time steps must be numeric." << endl;
-      return -1;
+    if (primer_caracter) {
+      // Si es el primer carácter, puede ser un número o un signo negativo
+      if (!isdigit(c) && c != '-') {
+        cout << "Error: time steps must be numeric." << endl;
+        return -1;
+      }
+      primer_caracter = false; // Ya no es el primer carácter
+    } else {
+      // Para los caracteres subsiguientes, deben ser dígitos
+      if (!isdigit(c)) {
+        cout << "Error: time steps must be numeric." << endl;
+        return -1;
+      }
     }
   }
   return 0;
 }
+
 
 int comprobacion_pasos_tiempo(string const & num_iter) {
   int pasos = stoi(num_iter);
@@ -79,29 +93,40 @@ int comparacion_cantidad_particulas(int num_particles, int particles_contadas) {
   return 0;
 }
 
-int leer_archivo_entrada(string num_iter_file) {
-  ifstream fichero;
-  fichero.open(num_iter_file, ios::binary);
-  int num_particles, particles_contadas;
-  // Mueve el puntero del archivo. Nos saltamos el valor de ppm para la lectura
-  fichero.seekg(sizeof(float), ios::cur);
-  fichero.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
-  while (!fichero.eof()) {
-    // Desplazamos puntero cada 9 valores, contando asi una particula
-    fichero.seekg(9 * sizeof(float), ios::cur);
-    particles_contadas += 1;
+int leer_archivo_entrada(const string& num_iter_file) { 
+  ifstream fichero(num_iter_file, ios::binary); 
+  if (!fichero) { 
+    cerr << "No se pudo abrir el archivo." << endl; 
+    return -1; } 
+  // Cada particula equivale a 9 * 4 (tamaño de float) bytes
+  const size_t size_of_particle = 9 * sizeof(float); 
+  int num_particles, particles_contadas = 0; 
+  fichero.read(reinterpret_cast<char *>(&num_particles), sizeof(int));  
+  float particle_data[9]; 
+  while (fichero.read(reinterpret_cast<char *>(&particle_data), size_of_particle)) { 
+    particles_contadas++; 
+    } 
+  if (fichero.eof()) { 
+    cout << "Fin del archivo alcanzado." << endl; 
+    } 
+  else if(fichero.fail()) { 
+    cerr << "Error de lectura del archivo antes de llegar al final." << endl;
+  } fichero.close(); 
+  if (particles_contadas != num_particles) { 
+    cerr << "El número de partículas contadas no coincide con el esperado." << endl; 
+    return -5; 
+    } 
+  return 0; 
   }
-  if (comparacion_cantidad_particulas(num_particles, particles_contadas) == -5) { return -5; }
-  return 0;
-}
 
-int proargs_validations(int num_params, string const & num_iter, string const & input,
-                        string const & output) {
-  if (comprobacion_num_param(num_params) == -1) { return -1; }       // Numero de parametros
+
+int proargs_validations(string const & num_iter, string const & input,string const & output) {         
   if (comprobacion_primer_argumento(num_iter) == -1) { return -2; }  // Numero de iteraciones
   if (comprobacion_pasos_tiempo(num_iter) == -2) { return -3; }      // Numero de iteraciones
   if (comprobacion_archivo_lectura(input) == -3) { return -4; }      // Archivo de entrada
   if (comprobacion_archivo_escritura(output) == -4) { return -5; }   // Archivo de salida
+  int resultado = leer_archivo_entrada(input);
+  cout << "resultado:" << resultado << endl;
 
   return 0;
 }

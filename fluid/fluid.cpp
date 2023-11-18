@@ -10,16 +10,16 @@
 using namespace std;
 
 int main(int argc, char * argv[]) {
-  // Comprueba parametros
-  if (argc != 4) {
-    cout << "Error: Invalid number of arguments:" << argc << endl;
-    return -1;
-  }
-  if (int resultado = proargs_validations(argc, argv[1], argv[2], argv[3]) != 0) {
+  //Primero debemos comprobar el numero de parametros para que char argv no sea nulo y, por tanto, no se introduzcan parametros nulos en la funcion proargs_validation
+  if (comprobacion_num_param(argc) == -1) { return -1; } //Numero de parametros
+  string num_iter = argv[1];
+  string input = argv[2];
+  string output = argv[3];
+  int resultado = proargs_validations(num_iter,input, output);
+  if (resultado != 0){
     return resultado;
   }
-
-  // Inicializa variables
+   // Inicializa variables
   // int num_iterations = std::stoi(argv[1]);
   string input_file_name  = argv[2];
   string output_file_name = argv[3];

@@ -17,8 +17,8 @@ int comprobacion_archivo_lectura(std::string const & arg2);
 int comprobacion_archivo_escritura(std::string const & arg3);
 int iniciacion_simulacion(int num_particulas);
 int comparacion_cantidad_particulas(int num_particles, int particles_contadas);
-int leer_archivo_entrada(std::string input_file);
-int proargs_validations(int argc, std::string const & arg1, std::string const & arg2,
+int leer_archivo_entrada(const std::string& num_iter_file);
+int proargs_validations(std::string const & arg1, std::string const & arg2,
                         std::string const & arg3);
 int readFile(std::string const & input_file_name, float & ppm, int & num_particles,
              std::vector<std::shared_ptr<Particle>> & refParticles);
