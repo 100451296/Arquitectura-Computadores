@@ -226,11 +226,9 @@ void Block::collisionsY(unsigned int cy) {
     }
     if (increm_y > pow(10, -10)) {
       if (cy == 0) {
-        accelerationY[id] = accelerationY[id] + COLISIONES_RIGIDEZ * increm_y -
-                            AMORTIGUAMIENTO * particles[id].velY;
+        accelerationY[id] += COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * particles[id].velY;
       } else if (cy == data.ny - 1) {
-        accelerationY[id] = accelerationY[id] - COLISIONES_RIGIDEZ * increm_y +
-                            AMORTIGUAMIENTO * particles[id].velY;
+        accelerationY[id] -= COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * particles[id].velY;
       }
     }
   }
@@ -248,11 +246,9 @@ void Block::collisionsZ(unsigned int cz) {
     }
     if (increm_z > pow(10, -10)) {
       if (cz == 0) {
-        accelerationZ[id] = accelerationZ[id] + COLISIONES_RIGIDEZ * increm_z -
-                            AMORTIGUAMIENTO * particles[id].velZ;
+        accelerationZ[id] += COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * particles[id].velZ;
       } else if (cz == data.nz - 1) {
-        accelerationZ[id] = accelerationZ[id] - COLISIONES_RIGIDEZ * increm_z +
-                            AMORTIGUAMIENTO * particles[id].velZ;
+        accelerationZ[id] -= COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * particles[id].velZ;
       }
     }
   }

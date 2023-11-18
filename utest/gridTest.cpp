@@ -51,7 +51,6 @@ void GridTest::readParticlesInfo(std::ifstream & file, int numBlocks) {
 void GridTest::readBlockInfo(std::ifstream & file, int blockIndex) {
   int64_t numParticles;
   file.read(reinterpret_cast<char *>(&numParticles), sizeof(int64_t));
-  particles.resize(numParticles);
 
   for (int64_t particleIndex = 0; particleIndex < numParticles; particleIndex++) {
     readParticleInfo(file, blockIndex);
@@ -155,8 +154,6 @@ int GridTest::compareAccelerationZ(Grid & grid) {
   return compareAccelerationComponent(accelerationZ, grid.accelerationZ);
 }
 
-#include <iostream>
-
 int GridTest::compareAccelerationComponent(std::vector<double> & vec1, std::vector<double> & vec2) {
   if (vec1.size() != vec2.size()) { return -1; }
 
@@ -179,6 +176,90 @@ int GridTest::compareAccelerationComponent(std::vector<double> & vec1, std::vect
     }
     return -1;
   }
+
+  return 0;
+}
+
+int GridTest::compareParticles(Grid & grid) {
+  if (particles.size() != grid.particles.size()) {
+    std::cout << particles.size() << "||" << grid.particles.size() << std::endl;
+    return -1;
+  }
+
+  int check = 0;
+  for (size_t i = 0; i < particles.size(); ++i) {
+    if (particles[i].id != grid.particles[i].id ||
+        std::round(particles[i].posX * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].posX * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].posY * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].posY * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].posZ * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].posZ * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].smoothVecX * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].smoothVecX * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].smoothVecY * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].smoothVecY * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].smoothVecZ * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].smoothVecZ * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].velX * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].velX * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].velY * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].velY * ROUND_MOTION) / ROUND_MOTION ||
+        std::round(particles[i].velZ * ROUND_MOTION) / ROUND_MOTION !=
+            std::round(grid.particles[i].velZ * ROUND_MOTION) / ROUND_MOTION) {
+      std::cout << "Partícula diferente encontrada: ID " << particles[i].id
+                << " || posX: " << particles[i].posX << " || grid.posX: " << grid.particles[i].posX
+                << std::endl;
+
+      // Mostrar atributos diferentes junto con sus valores
+      if (particles[i].id != grid.particles[i].id) {
+        std::cout << "   - id: " << particles[i].id << " || grid.id: " << grid.particles[i].id
+                  << std::endl;
+      }
+      if (particles[i].posX != grid.particles[i].posX) {
+        std::cout << "   - posX: " << particles[i].posX
+                  << " || grid.posX: " << grid.particles[i].posX << std::endl;
+      }
+      if (particles[i].posY != grid.particles[i].posY) {
+        std::cout << "   - posY: " << particles[i].posY
+                  << " || grid.posY: " << grid.particles[i].posY << std::endl;
+      }
+      if (particles[i].posZ != grid.particles[i].posZ) {
+        std::cout << "   - posZ: " << particles[i].posZ
+                  << " || grid.posZ: " << grid.particles[i].posZ << std::endl;
+      }
+      if (particles[i].smoothVecX != grid.particles[i].smoothVecX) {
+        std::cout << "   - smoothVecX: " << particles[i].smoothVecX
+                  << " || grid.smoothVecX: " << grid.particles[i].smoothVecX << std::endl;
+      }
+      if (particles[i].smoothVecY != grid.particles[i].smoothVecY) {
+        std::cout << "   - smoothVecY: " << particles[i].smoothVecY
+                  << " || grid.smoothVecY: " << grid.particles[i].smoothVecY << std::endl;
+      }
+      if (particles[i].smoothVecZ != grid.particles[i].smoothVecZ) {
+        std::cout << "   - smoothVecZ: " << particles[i].smoothVecZ
+                  << " || grid.smoothVecZ: " << grid.particles[i].smoothVecZ << std::endl;
+      }
+      if (particles[i].velX != grid.particles[i].velX) {
+        std::cout << "   - velX: " << particles[i].velX
+                  << " || grid.velX: " << grid.particles[i].velX << std::endl;
+      }
+      if (particles[i].velY != grid.particles[i].velY) {
+        std::cout << "   - velY: " << particles[i].velY
+                  << " || grid.velY: " << grid.particles[i].velY << std::endl;
+      }
+      if (particles[i].velZ != grid.particles[i].velZ) {
+        std::cout << "   - velZ: " << particles[i].velZ
+                  << " || grid.velZ: " << grid.particles[i].velZ << std::endl;
+      }
+      std::cout << "***********************************************************************"
+                << std::endl;
+
+      // Al menos un atributo es diferente
+      check = 1;
+    }
+  }
+  if (check == 1) { return -1; }
 
   return 0;
 }

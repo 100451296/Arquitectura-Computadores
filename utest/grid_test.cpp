@@ -80,7 +80,48 @@ TEST(CollisionsGrid, TestGrid) {
   grid.collisionsYGrid();
   grid.collisionsZGrid();
 
-  int result = gridTest.compareAccelerationX(grid);
-  // Verifica que a sea igual a b
-  EXPECT_EQ(result, 0);
+  EXPECT_EQ(gridTest.compareAccelerationX(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationY(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationZ(grid), 0);
+}
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(Motion, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(MOTION_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.positionateParticle();
+  grid.densityIncreaseGrid();
+  grid.linealDensityTransform();
+  grid.aceletarionTransferGrid();
+  grid.collisionsXGrid();
+  grid.collisionsYGrid();
+  grid.collisionsZGrid();
+  grid.particleMotionGrid();
+
+  EXPECT_EQ(gridTest.compareParticles(grid), 0);
+}
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(Interactions, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(INTERACTIONS_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.positionateParticle();
+  grid.densityIncreaseGrid();
+  grid.linealDensityTransform();
+  grid.aceletarionTransferGrid();
+  grid.collisionsXGrid();
+  grid.collisionsYGrid();
+  grid.collisionsZGrid();
+  grid.particleMotionGrid();
+  grid.interactionsXGrid();
+  grid.interactionsYGrid();
+  grid.interactionsZGrid();
+
+  EXPECT_EQ(gridTest.compareParticles(grid), 0);
 }

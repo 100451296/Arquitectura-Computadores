@@ -197,59 +197,19 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
 }
 
 void Grid::simulation(int iterations) {
-  printParameters();
   for (int i = 0; i < iterations; i++) {
-    std::cout << "Iteración: " << i << std::endl;  // Línea añadida para imprimir el valor de i
-
-    std::cout << "Llamada a positionateParticle()" << std::endl;
     positionateParticle();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a densityIncreaseGrid()" << std::endl;
     densityIncreaseGrid();
-    std::cout << "--------------------------------" << std::endl;
-
     linealDensityTransform();
-
-    std::cout << "Llamada a aceletarionTransferGrid()" << std::endl;
     aceletarionTransferGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a collisionsXGrid()" << std::endl;
     collisionsXGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a collisionsYGrid()" << std::endl;
     collisionsYGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a collisionsZGrid()" << std::endl;
     collisionsZGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a particleMotionGrid()" << std::endl;
     particleMotionGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a interactionsXGrid()" << std::endl;
     interactionsXGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a interactionsYGrid()" << std::endl;
     interactionsYGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a interactionsZGrid()" << std::endl;
     interactionsZGrid();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a printParticles()" << std::endl;
-    // printParticles();
-    std::cout << "--------------------------------" << std::endl;
-
-    std::cout << "Llamada a resetBlocks()" << std::endl;
     resetBlocks();
-    std::cout << "--------------------------------" << std::endl;
   }
 }
 
