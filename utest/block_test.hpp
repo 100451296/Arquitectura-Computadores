@@ -8,9 +8,8 @@
 class TestBloque_MetodosBloque_Test : public testing::Test {
   protected:
     // Variables miembro
-    std::vector<Block> & blocks;
-    std::vector<Particle> & particles;
-    std::vector<int> particlesID;
+    std::vector<Block> blocks;
+    std::vector<Particle> particles;
     std::vector<std::pair<int, int>> particlePairs;
     std::vector<double> accelerationX, accelerationY, accelerationZ, density;
     DataCommon data;
