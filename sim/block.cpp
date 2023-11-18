@@ -104,8 +104,6 @@ void Block::lineal_transformate_density() {
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<int> Id) {
-  if (Id[0] == 2496 || Id[1] == 2496) { cout << endl; }
-
   double pi_x = position[0];
   double pi_y = position[1];
   double pi_z = position[2];
@@ -194,10 +192,6 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
 void Block::collisionsX(unsigned int cx) {
   double cord_x, increm_x = 0;
   for (auto & id : particlesID) {
-    if (id == 4793) {
-      cord_x = 0;
-      cout << endl;
-    }
     { cord_x = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO; }
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);

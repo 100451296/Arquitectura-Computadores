@@ -197,6 +197,7 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
 }
 
 void Grid::simulation(int iterations) {
+  printParameters();
   for (int i = 0; i < iterations; i++) {
     positionateParticle();
     densityIncreaseGrid();
