@@ -64,8 +64,8 @@ void Block::initDensityAcceleration() {
 // Funcion encargada de modificar el vector de densidades del propio bloque
 void Block::densityIncreaseSingle() {
   for (auto const & pair : particlePairs) {
-    const Particle& particle1 = particles[pair.first];
-    const Particle& particle2 = particles[pair.second];
+    Particle& particle1 = particles[pair.first];
+    Particle& particle2 = particles[pair.second];
 
     double dx = particle1.posX - particle2.posX;
     double dy = particle1.posY - particle2.posY;
@@ -92,7 +92,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
+/*void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
   for (auto const & pair : ParejaParticulas) {
     double aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
     double aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
@@ -103,7 +103,30 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
       density[pair.second] += increm_density_pair;
     }
   }
+}*/
+
+// Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
+void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
+  for (const auto & pair : ParejaParticulas) {
+    Particle& particle1 = particles[pair.first];
+    Particle& particle2 = particles[pair.second];
+
+    double dx = particle1.posX - particle2.posX;
+    double dy = particle1.posY - particle2.posY;
+    double dz = particle1.posZ - particle2.posZ;
+
+    double distanceSquared = dx * dx + dy * dy + dz * dz;
+
+    if (distanceSquared < data.h_square) {
+      double hSquareMinusDistSquared = data.h_square - distanceSquared;
+      double incremDensityPair = hSquareMinusDistSquared * hSquareMinusDistSquared * hSquareMinusDistSquared;
+
+      density[pair.first] += incremDensityPair;
+      density[pair.second] += incremDensityPair;
+    }
+  }
 }
+
 
 // Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la
 // densidad en un mismo bloque
