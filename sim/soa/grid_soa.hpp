@@ -31,39 +31,9 @@ std::vector<std::tuple<int, int, int>> const offsets = {
   {0,  0,  1}
 };
 
-int grid();
-
-// Definición de la estructura SoA
-struct Particles {
-    std::vector<unsigned int> id;
-    std::vector<double> posX;
-    std::vector<double> posY;
-    std::vector<double> posZ;
-    std::vector<double> smoothVecX;
-    std::vector<double> smoothVecY;
-    std::vector<double> smoothVecZ;
-    std::vector<double> velX;
-    std::vector<double> velY;
-    std::vector<double> velZ;
-
-    // Constructor para reservar espacio para un número dado de partículas
-    Particles(int numParticles = 0) {
-      id.resize(numParticles);
-      posX.resize(numParticles);
-      posY.resize(numParticles);
-      posZ.resize(numParticles);
-      smoothVecX.resize(numParticles);
-      smoothVecY.resize(numParticles);
-      smoothVecZ.resize(numParticles);
-      velX.resize(numParticles);
-      velY.resize(numParticles);
-      velZ.resize(numParticles);
-    }
-};
-
 class Grid {
   public:
-    std::vector<Particle> particles;                      // AoS
+    Particles particles;                                  // SoA
     std::vector<std::vector<std::vector<Block>>> blocks;  // Matriz tridimensional de bloques
     std::vector<std::pair<std::tuple<int, int, int>, std::tuple<int, int, int>>> parejas_unicas;
     std::vector<double> accelerationX;

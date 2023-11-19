@@ -31,8 +31,6 @@ std::vector<std::tuple<int, int, int>> const offsets = {
   {0,  0,  1}
 };
 
-int grid();
-
 // Definición de la estructura SoA
 struct Particles {
     std::vector<unsigned int> id;

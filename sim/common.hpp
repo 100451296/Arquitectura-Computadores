@@ -37,7 +37,9 @@ struct Particle {
     double velZ;
 } typedef Particle;
 
-struct ParticleData {
+// Definición de la estructura SoA
+struct Particles {
+    std::vector<unsigned int> id;
     std::vector<double> posX;
     std::vector<double> posY;
     std::vector<double> posZ;
@@ -47,7 +49,21 @@ struct ParticleData {
     std::vector<double> velX;
     std::vector<double> velY;
     std::vector<double> velZ;
-} typedef ParticleData;
+
+    // Constructor para reservar espacio para un número dado de partículas
+    Particles(int numParticles = 0) {
+      id.resize(numParticles);
+      posX.resize(numParticles);
+      posY.resize(numParticles);
+      posZ.resize(numParticles);
+      smoothVecX.resize(numParticles);
+      smoothVecY.resize(numParticles);
+      smoothVecZ.resize(numParticles);
+      velX.resize(numParticles);
+      velY.resize(numParticles);
+      velZ.resize(numParticles);
+    }
+};
 
 struct DataCommon {
     double ppm;
