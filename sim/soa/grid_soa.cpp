@@ -126,29 +126,34 @@ bool Grid::readHeader(std::ifstream & input_file) {
 
 bool Grid::readParticles(std::ifstream & input_file) {
   particles.resize(num_particles);
+
+  // Asegúrate de que particles.id tenga el mismo tamaño que particles.posX, etc.
+  particles.id.resize(num_particles);
+
   for (int i = 0; i < num_particles; i++) {
-    if (!readParticle(input_file, particles[i], i)) { return false; }
+    if (!readParticle(input_file, particles, i)) { return false; }
   }
   return true;
 }
 
-bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int index) {
+bool Grid::readParticle(std::ifstream & input_file, Particles & particles, int index) {
   float buffer[9];
   if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * 9)) {
     std::cerr << "Error al leer las partículas del archivo" << std::endl;
     return false;
   }
 
-  particle.id         = index;
-  particle.posX       = static_cast<double>(buffer[0]);
-  particle.posY       = static_cast<double>(buffer[1]);
-  particle.posZ       = static_cast<double>(buffer[2]);
-  particle.smoothVecX = static_cast<double>(buffer[3]);
-  particle.smoothVecY = static_cast<double>(buffer[4]);
-  particle.smoothVecZ = static_cast<double>(buffer[5]);
-  particle.velX       = static_cast<double>(buffer[6]);
-  particle.velY       = static_cast<double>(buffer[7]);
-  particle.velZ       = static_cast<double>(buffer[8]);
+  // Asegúrate de que particles.id tenga el mismo tamaño que particles.posX, etc.
+  particles.id[index]         = index;
+  particles.posX[index]       = static_cast<double>(buffer[0]);
+  particles.posY[index]       = static_cast<double>(buffer[1]);
+  particles.posZ[index]       = static_cast<double>(buffer[2]);
+  particles.smoothVecX[index] = static_cast<double>(buffer[3]);
+  particles.smoothVecY[index] = static_cast<double>(buffer[4]);
+  particles.smoothVecZ[index] = static_cast<double>(buffer[5]);
+  particles.velX[index]       = static_cast<double>(buffer[6]);
+  particles.velY[index]       = static_cast<double>(buffer[7]);
+  particles.velZ[index]       = static_cast<double>(buffer[8]);
 
   return true;
 }
@@ -176,19 +181,23 @@ bool Grid::writeHeader(std::ofstream & output_file) {
 }
 
 bool Grid::writeParticles(std::ofstream & output_file) {
-  for (auto const & particle : particles) {
-    if (!writeParticle(output_file, particle)) { return false; }
+  for (int i = 0; i < particles.id.size(); i++) {
+    if (!writeParticle(output_file, particles, i)) { return false; }
   }
   return true;
 }
 
-bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle) {
-  float buffer[9] = {
-    static_cast<float>(particle.posX),       static_cast<float>(particle.posY),
-    static_cast<float>(particle.posZ),       static_cast<float>(particle.smoothVecX),
-    static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
-    static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
-    static_cast<float>(particle.velZ)};
+bool Grid::writeParticle(std::ofstream & output_file, Particles const & particles, int index) {
+  float buffer[9] = {static_cast<float>(particles.posX[index]),
+                     static_cast<float>(particles.posY[index]),
+                     static_cast<float>(particles.posZ[index]),
+                     static_cast<float>(particles.smoothVecX[index]),
+                     static_cast<float>(particles.smoothVecY[index]),
+                     static_cast<float>(particles.smoothVecZ[index]),
+                     static_cast<float>(particles.velX[index]),
+                     static_cast<float>(particles.velY[index]),
+                     static_cast<float>(particles.velZ[index])};
+
   if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
     std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
     return false;
@@ -218,13 +227,13 @@ void Grid::simulation(int iterations) {
 void Grid::printParticles() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < particles.id.size(); ++i) {
-    std::cout << "ID: " << particles[i].id << ", ";
-    std::cout << "Posición (" << particles[i].posX << ", " << particles[i].posY << ", "
-              << particles[i].posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[i].smoothVecX << ", "
-              << particles[i].smoothVecY << ", " << particles[i].smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[i].velX << ", " << particles[i].velY << ", "
-              << particles[i].velZ << ")" << std::endl;
+    std::cout << "ID: " << particles.id[i] << ", ";
+    std::cout << "Posición (" << particles.posX[i] << ", " << particles.posY[i] << ", "
+              << particles.posZ[i] << "), ";
+    std::cout << "Vector de suavizado (" << particles.smoothVecX[i] << ", "
+              << particles.smoothVecY[i] << ", " << particles.smoothVecZ[i] << "), ";
+    std::cout << "Velocidad (" << particles.velX[i] << ", " << particles.velY[i] << ", "
+              << particles.velZ[i] << ")" << std::endl;
   }
 }
 
@@ -239,14 +248,14 @@ void Grid::generateParticlePairs() {
 void Grid::printFirst() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < 2; ++i) {
-    std::cout << "ID: " << particles[0].id << ", ";
-    std::cout << "Posición (" << particles[0].posX << ", " << particles[0].posY << ", "
-              << particles[0].posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[0].smoothVecX << ", "
-              << particles[0].smoothVecY << ", " << particles[0].smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[0].velX << ", " << particles[0].velY << ", "
-              << particles[0].velZ << ")" << std::endl;
-    particles[0].posX = 0.0;
+    std::cout << "ID: " << particles.id[0] << ", ";
+    std::cout << "Posición (" << particles.posX[0] << ", " << particles.posY[0] << ", "
+              << particles.posZ[0] << "), ";
+    std::cout << "Vector de suavizado (" << particles.smoothVecX[0] << ", "
+              << particles.smoothVecY[0] << ", " << particles.smoothVecZ[0] << "), ";
+    std::cout << "Velocidad (" << particles.velX[0] << ", " << particles.velY[0] << ", "
+              << particles.velZ[0] << ")" << std::endl;
+    particles.posX[0] = 0.0;
   }
 }
 
@@ -262,16 +271,19 @@ void Grid::resetBlocks() {
 }
 
 void Grid::positionateParticle() {
-  for (auto & particle : particles) {
+  for (size_t index = 0; index < particles.id.size(); ++index) {
     // Obtener índices de bloque
-    int i = std::max(0, std::min(nx - 1, static_cast<int>(std::floor(
-                                             (particle.posX - LIMITE_INFERIOR_RECINTO_X) / sx))));
-    int j = std::max(0, std::min(ny - 1, static_cast<int>(std::floor(
-                                             (particle.posY - LIMITE_INFERIOR_RECINTO_Y) / sy))));
-    int k = std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
-                                             (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
+    int i = std::max(
+        0, std::min(nx - 1, static_cast<int>(std::floor(
+                                (particles.posX[index] - LIMITE_INFERIOR_RECINTO_X) / sx))));
+    int j = std::max(
+        0, std::min(ny - 1, static_cast<int>(std::floor(
+                                (particles.posY[index] - LIMITE_INFERIOR_RECINTO_Y) / sy))));
+    int k = std::max(
+        0, std::min(nz - 1, static_cast<int>(std::floor(
+                                (particles.posZ[index] - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
-    blocks[i][j][k].addParticle(particle.id);
+    blocks[i][j][k].addParticle(particles.id[index]);
   }
   generateParticlePairs();
 }

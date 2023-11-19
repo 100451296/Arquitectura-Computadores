@@ -35,7 +35,7 @@ FetchContent_MakeAvailable(GSL)
 include_directories (PUBLIC .)
 
 # Process cmake from sim and fluid directories
-add_subdirectory(sim)
+add_subdirectory(sim) 
 add_subdirectory(fluid)
 
 # Unit tests and functional tests
