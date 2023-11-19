@@ -31,10 +31,10 @@ void Grid::initDensityAcceleration() {
   // basado en el número de partículas en el bloque
 
   // Establece el tamaño de los vectores de densidad y aceleración
-  density.resize(particles.size(), 0.0);
-  accelerationX.resize(particles.size(), ACELERACION_GRAVEDAD_X);
-  accelerationY.resize(particles.size(), ACELERACION_GRAVEDAD_Y);
-  accelerationZ.resize(particles.size(), ACELERACION_GRAVEDAD_Z);
+  density.resize(particles.id.size(), 0.0);
+  accelerationX.resize(particles.id.size(), ACELERACION_GRAVEDAD_X);
+  accelerationY.resize(particles.id.size(), ACELERACION_GRAVEDAD_Y);
+  accelerationZ.resize(particles.id.size(), ACELERACION_GRAVEDAD_Z);
 }
 
 void Grid::printParameters() {
@@ -217,7 +217,7 @@ void Grid::simulation(int iterations) {
 
 void Grid::printParticles() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
-  for (size_t i = 0; i < particles.size(); ++i) {
+  for (size_t i = 0; i < particles.id.size(); ++i) {
     std::cout << "ID: " << particles[i].id << ", ";
     std::cout << "Posición (" << particles[i].posX << ", " << particles[i].posY << ", "
               << particles[i].posZ << "), ";
