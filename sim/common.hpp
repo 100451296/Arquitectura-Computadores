@@ -50,18 +50,18 @@ struct Particles {
     std::vector<double> velY;
     std::vector<double> velZ;
 
-    // Constructor para reservar espacio para un número dado de partículas
-    Particles(int numParticles = 0) {
-      id.resize(numParticles);
-      posX.resize(numParticles);
-      posY.resize(numParticles);
-      posZ.resize(numParticles);
-      smoothVecX.resize(numParticles);
-      smoothVecY.resize(numParticles);
-      smoothVecZ.resize(numParticles);
-      velX.resize(numParticles);
-      velY.resize(numParticles);
-      velZ.resize(numParticles);
+    // Método para cambiar el tamaño de todos los vectores
+    void resize(int newSize) {
+      id.resize(newSize);
+      posX.resize(newSize);
+      posY.resize(newSize);
+      posZ.resize(newSize);
+      smoothVecX.resize(newSize);
+      smoothVecY.resize(newSize);
+      smoothVecZ.resize(newSize);
+      velX.resize(newSize);
+      velY.resize(newSize);
+      velZ.resize(newSize);
     }
 };
 
