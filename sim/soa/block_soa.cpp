@@ -45,9 +45,11 @@ void Block::initDensityAcceleration() {
 void Block::densityIncreaseSingle() {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
+
     aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
     aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
     aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
     } else {
