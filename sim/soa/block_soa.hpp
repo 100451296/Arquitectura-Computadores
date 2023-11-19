@@ -1,5 +1,5 @@
-#ifndef BLOCK
-#define BLOCK
+#ifndef BLOCK_SOA
+#define BLOCK_SOA
 
 #include "../common.hpp"
 
@@ -13,14 +13,14 @@ class Block {
     // partículas
 
   public:
-    Block(Particles particlesRef, std::vector<double> & accelerationXRef,
+    Block(Particles & particlesRef, std::vector<double> & accelerationXRef,
           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef,
           std::vector<double> & densityRef)
       : particles(particlesRef), particlesID(), particlePairs(), data(),
         accelerationX(accelerationXRef), accelerationY(accelerationYRef),
         accelerationZ(accelerationZRef), density(densityRef) { }
 
-    Particles particles;
+    Particles & particles;
     std::vector<int> particlesID;
     std::vector<std::pair<int, int>> particlePairs;
     DataCommon data;

@@ -3,7 +3,7 @@
 using namespace std;
 
 // Método para inicializar la malla con valores predeterminados
-void Grid::initGrid() {
+void GridSoA::initGrid() {
   h             = MULTIPLICADOR_RADIO / ppm;
   particle_mass = DENSIDAD_FLUIDO * pow(ppm, -3);
   nx            = floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
@@ -26,7 +26,7 @@ void Grid::initGrid() {
   initDensityAcceleration();
 }
 
-void Grid::initDensityAcceleration() {
+void GridSoA::initDensityAcceleration() {
   // Inicializa los vectores de densidad y aceleración con el tamaño adecuado
   // basado en el número de partículas en el bloque
 
@@ -37,7 +37,7 @@ void Grid::initDensityAcceleration() {
   accelerationZ.resize(particles.id.size(), ACELERACION_GRAVEDAD_Z);
 }
 
-void Grid::printParameters() {
+void GridSoA::printParameters() {
   std::cout << "Number of particles: " << num_particles << std::endl;
   std::cout << "Particles per meter: " << ppm << std::endl;
   std::cout << "Smoothing length: " << h << std::endl;
@@ -47,12 +47,12 @@ void Grid::printParameters() {
   std::cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
 }
 
-void Grid::initBlocks() {
+void GridSoA::initBlocks() {
   initializeBlockVectors();
   populatePairs();
 }
 
-void Grid::initializeBlockVectors() {
+void GridSoA::initializeBlockVectors() {
   for (int x = 0; x < nx; x++) {
     std::vector<std::vector<Block>> tempVector2;
     for (int y = 0; y < ny; y++) {
@@ -67,7 +67,7 @@ void Grid::initializeBlockVectors() {
   }
 }
 
-void Grid::populatePairs() {
+void GridSoA::populatePairs() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; z++) {
@@ -91,9 +91,7 @@ void Grid::populatePairs() {
   }
 }
 
-int Grid::readFile(string const & input_file_name) {
-  // vector<Particle> particles;  // Inicializa vector de particulas
-
+int GridSoA::readFile(string const & input_file_name) {
   std::ifstream input_file(input_file_name, std::ios::binary);
   if (!input_file.is_open()) {
     std::cerr << "Error al abrir el archivo de entrada" << std::endl;
@@ -112,10 +110,11 @@ int Grid::readFile(string const & input_file_name) {
   input_file.close();
 
   initGrid();
+
   return 0;
 }
 
-bool Grid::readHeader(std::ifstream & input_file) {
+bool GridSoA::readHeader(std::ifstream & input_file) {
   float buffer;
   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
@@ -124,7 +123,7 @@ bool Grid::readHeader(std::ifstream & input_file) {
   return input_file.good();
 }
 
-bool Grid::readParticles(std::ifstream & input_file) {
+bool GridSoA::readParticles(std::ifstream & input_file) {
   particles.resize(num_particles);
 
   // Asegúrate de que particles.id tenga el mismo tamaño que particles.posX, etc.
@@ -136,7 +135,7 @@ bool Grid::readParticles(std::ifstream & input_file) {
   return true;
 }
 
-bool Grid::readParticle(std::ifstream & input_file, Particles & particles, int index) {
+bool GridSoA::readParticle(std::ifstream & input_file, Particles & particles, int index) {
   float buffer[9];
   if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * 9)) {
     std::cerr << "Error al leer las partículas del archivo" << std::endl;
@@ -158,7 +157,7 @@ bool Grid::readParticle(std::ifstream & input_file, Particles & particles, int i
   return true;
 }
 
-int Grid::writeFile(std::string const & output_file_name) {
+int GridSoA::writeFile(std::string const & output_file_name) {
   std::ofstream output_file(output_file_name, std::ios::binary);
   if (!output_file.is_open()) {
     std::cerr << "Error al abrir el archivo de salida" << std::endl;
@@ -173,21 +172,21 @@ int Grid::writeFile(std::string const & output_file_name) {
   return 0;
 }
 
-bool Grid::writeHeader(std::ofstream & output_file) {
+bool GridSoA::writeHeader(std::ofstream & output_file) {
   float ppm_float = static_cast<float>(ppm);
   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
   return output_file.good();
 }
 
-bool Grid::writeParticles(std::ofstream & output_file) {
+bool GridSoA::writeParticles(std::ofstream & output_file) {
   for (size_t i = 0; i < particles.id.size(); i++) {
     if (!writeParticle(output_file, particles, i)) { return false; }
   }
   return true;
 }
 
-bool Grid::writeParticle(std::ofstream & output_file, Particles const & particles, int index) {
+bool GridSoA::writeParticle(std::ofstream & output_file, Particles const & particles, int index) {
   float buffer[9] = {static_cast<float>(particles.posX[index]),
                      static_cast<float>(particles.posY[index]),
                      static_cast<float>(particles.posZ[index]),
@@ -206,7 +205,7 @@ bool Grid::writeParticle(std::ofstream & output_file, Particles const & particle
   return true;
 }
 
-void Grid::simulation(int iterations) {
+void GridSoA::simulation(int iterations) {
   printParameters();
   for (int i = 0; i < iterations; i++) {
     positionateParticle();
@@ -224,7 +223,7 @@ void Grid::simulation(int iterations) {
   }
 }
 
-void Grid::printParticles() {
+void GridSoA::printParticles() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < particles.id.size(); ++i) {
     std::cout << "ID: " << particles.id[i] << ", ";
@@ -237,7 +236,7 @@ void Grid::printParticles() {
   }
 }
 
-void Grid::generateParticlePairs() {
+void GridSoA::generateParticlePairs() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; z++) { blocks[x][y][z].generarParejasBloque(); }
@@ -245,7 +244,7 @@ void Grid::generateParticlePairs() {
   }
 }
 
-void Grid::printFirst() {
+void GridSoA::printFirst() {
   std::cout << "Partículas en la cuadrícula:" << std::endl;
   for (size_t i = 0; i < 2; ++i) {
     std::cout << "ID: " << particles.id[0] << ", ";
@@ -259,7 +258,7 @@ void Grid::printFirst() {
   }
 }
 
-void Grid::resetBlocks() {
+void GridSoA::resetBlocks() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; z++) {
@@ -270,7 +269,7 @@ void Grid::resetBlocks() {
   }
 }
 
-void Grid::positionateParticle() {
+void GridSoA::positionateParticle() {
   for (size_t index = 0; index < particles.id.size(); ++index) {
     // Obtener índices de bloque
     int i = std::max(
@@ -288,7 +287,7 @@ void Grid::positionateParticle() {
   generateParticlePairs();
 }
 
-void Grid::densityIncreaseGrid() {
+void GridSoA::densityIncreaseGrid() {
   for (auto const & pareja : parejas_unicas) {
     int x1, y1, z1, x2, y2, z2;
     std::tie(x1, y1, z1) = pareja.first;
@@ -302,7 +301,7 @@ void Grid::densityIncreaseGrid() {
   }
 }
 
-void Grid::linealDensityTransform() {
+void GridSoA::linealDensityTransform() {
   for (int z = 0; z < nz; z++) {
     for (int y = 0; y < ny; y++) {
       for (int x = 0; x < nx; x++) { blocks[x][y][z].lineal_transformate_density(); }
@@ -310,7 +309,7 @@ void Grid::linealDensityTransform() {
   }
 }
 
-void Grid::aceletarionTransferGrid() {
+void GridSoA::aceletarionTransferGrid() {
   for (auto const & pareja : parejas_unicas) {
     int x1, y1, z1, x2, y2, z2;
     std::tie(x1, y1, z1) = pareja.first;
@@ -324,7 +323,7 @@ void Grid::aceletarionTransferGrid() {
   }
 }
 
-void Grid::collisionsXGrid() {
+void GridSoA::collisionsXGrid() {
   int cx = 0;
   for (int y = 0; y < ny; y++) {
     for (int z = 0; z < nz; z++) { blocks[cx][y][z].collisionsX(cx); }
@@ -336,7 +335,7 @@ void Grid::collisionsXGrid() {
   }
 }
 
-void Grid::collisionsYGrid() {
+void GridSoA::collisionsYGrid() {
   int cy = 0;
   for (int x = 0; x < nx; x++) {
     for (int z = 0; z < nz; z++) { blocks[x][cy][z].collisionsY(cy); }
@@ -348,7 +347,7 @@ void Grid::collisionsYGrid() {
   }
 }
 
-void Grid::collisionsZGrid() {
+void GridSoA::collisionsZGrid() {
   int cz = 0;
   for (int y = 0; y < ny; y++) {
     for (int x = 0; x < nx; x++) { blocks[x][y][cz].collisionsZ(cz); }
@@ -360,7 +359,7 @@ void Grid::collisionsZGrid() {
   }
 }
 
-void Grid::particleMotionGrid() {
+void GridSoA::particleMotionGrid() {
   for (int x = 0; x < nx; x++) {
     for (int y = 0; y < ny; y++) {
       for (int z = 0; z < nz; z++) { blocks[x][y][z].particleMotion(); }
@@ -368,7 +367,7 @@ void Grid::particleMotionGrid() {
   }
 }
 
-void Grid::interactionsXGrid() {
+void GridSoA::interactionsXGrid() {
   int cx = 0;
   for (int y = 0; y < ny; y++) {
     for (int z = 0; z < nz; z++) { blocks[cx][y][z].interactionsX(cx); }
@@ -380,7 +379,7 @@ void Grid::interactionsXGrid() {
   }
 }
 
-void Grid::interactionsYGrid() {
+void GridSoA::interactionsYGrid() {
   int cy = 0;
   for (int x = 0; x < nx; x++) {
     for (int z = 0; z < nz; z++) { blocks[x][cy][z].interactionsY(cy); }
@@ -392,7 +391,7 @@ void Grid::interactionsYGrid() {
   }
 }
 
-void Grid::interactionsZGrid() {
+void GridSoA::interactionsZGrid() {
   int cz = 0;
   for (int y = 0; y < ny; y++) {
     for (int x = 0; x < nx; x++) { blocks[x][y][cz].interactionsZ(cz); }

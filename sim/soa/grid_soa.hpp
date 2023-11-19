@@ -1,7 +1,7 @@
 // Grid Class
 
-#ifndef GRID
-#define GRID
+#ifndef GRID_SOA
+#define GRID_SOA
 
 #include "../common.hpp"
 #include "block_soa.hpp"
@@ -31,7 +31,7 @@ std::vector<std::tuple<int, int, int>> const offsets = {
   {0,  0,  1}
 };
 
-class Grid {
+class GridSoA {
   public:
     Particles particles;                                  // SoA
     std::vector<std::vector<std::vector<Block>>> blocks;  // Matriz tridimensional de bloques

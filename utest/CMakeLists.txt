@@ -1,7 +1,9 @@
 add_executable(utest
     grid_test.cpp
+    gridSoA_test.cpp
     progargs_test.cpp
     gridTest.cpp
+    gridTestSoA.cpp
 	utests.cpp
 )
 
@@ -9,6 +11,7 @@ add_executable(utest
 target_link_libraries (utest
 PRIVATE
 sim
+soa
 GTest::gtest_main
 Microsoft.GSL::GSL)
 

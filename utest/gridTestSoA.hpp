@@ -1,8 +1,8 @@
-#ifndef GRIDTEST
-#define GRIDTEST
+#ifndef GRIDTEST_SOA
+#define GRIDTEST_SOA
 
-#include "../sim/block.hpp"
-#include "../sim/grid.hpp"
+#include "../sim/soa/block_soa.hpp"
+#include "../sim/soa/grid_soa.hpp"
 
 #define NX 15
 #define NY 21
@@ -28,7 +28,7 @@
 #define MOTION_PATH "../../files/trz/small/motion-base-1.trz"
 #define INTERACTIONS_PATH "../../files/trz/small/boundint-base-1.trz"
 
-class GridTest : public Grid {
+class GridSoATest : public GridSoA {
   public:
     void readTraze(std::string const & input_file_name);
     int readHeader(std::ifstream & file);
@@ -40,12 +40,12 @@ class GridTest : public Grid {
     void addParticleToBlock(int blockIndex, int64_t id);
     std::tuple<int, int, int> obtenerIndicesDesdeId(int identificador) const;
     int compareAccelerationComponent(std::vector<double> & vec1, std::vector<double> & vec2);
-    int comparePositionate(Grid & grid);
-    int compareDensity(Grid & grid);
-    int compareAccelerationX(Grid & grid);
-    int compareAccelerationY(Grid & grid);
-    int compareAccelerationZ(Grid & grid);
-    int compareParticles(Grid & grid);
+    int comparePositionate(GridSoA & GridSoA);
+    int compareDensity(GridSoA & GridSoA);
+    int compareAccelerationX(GridSoA & GridSoA);
+    int compareAccelerationY(GridSoA & GridSoA);
+    int compareAccelerationZ(GridSoA & GridSoA);
+    int compareParticles(GridSoA & GridSoA);
 };
 
 #endif
