@@ -21,6 +21,9 @@
 #define LIMITE_INFERIOR_RECINTO_Y -0.08
 #define LIMITE_INFERIOR_RECINTO_Z -0.065
 
+#include <cmath>
+#include <vector>
+
 struct Particle {
     unsigned int id;
     double posX;
@@ -34,10 +37,23 @@ struct Particle {
     double velZ;
 } typedef Particle;
 
+struct ParticleData {
+    std::vector<double> posX;
+    std::vector<double> posY;
+    std::vector<double> posZ;
+    std::vector<double> smoothVecX;
+    std::vector<double> smoothVecY;
+    std::vector<double> smoothVecZ;
+    std::vector<double> velX;
+    std::vector<double> velY;
+    std::vector<double> velZ;
+} typedef ParticleData;
+
 struct DataCommon {
     double ppm;
     double mass;
     double long_suavizado;
+    double h_square;
     unsigned int nx;
     unsigned int ny;
     unsigned int nz;

@@ -1,4 +1,4 @@
-#include "block.hpp"
+#include "block_soa.hpp"
 
 using namespace std;
 

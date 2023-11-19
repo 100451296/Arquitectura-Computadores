@@ -1,7 +1,7 @@
 #ifndef BLOCK
 #define BLOCK
 
-#include "common.hpp"
+#include "../common.hpp"
 
 #include <iostream>
 #include <memory>

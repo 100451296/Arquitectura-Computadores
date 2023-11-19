@@ -1,4 +1,4 @@
-#include "grid.hpp"
+#include "grid_soa.hpp"
 
 using namespace std;
 
