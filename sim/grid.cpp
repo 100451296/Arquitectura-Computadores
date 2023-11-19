@@ -290,9 +290,9 @@ void Grid::densityIncreaseGrid() {
 }
 
 void Grid::linealDensityTransform() {
-  for (int x = 0; x < nx; x++) {
+  for (int z = 0; z < nz; z++) {
     for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].lineal_transformate_density(); }
+      for (int x = 0; x < nx; x++) { blocks[x][y][z].lineal_transformate_density(); }
     }
   }
 }

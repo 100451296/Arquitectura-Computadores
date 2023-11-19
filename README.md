@@ -19,3 +19,7 @@
 
 ## Clang
 Explicacion
+
+## Optimizaciones 
+### Almacenamiento de cáclulos recurrentes
+  - Si es posible almacenar los cálculos de cuadrados para evitar hacer lo mismos cálculos varias veces
