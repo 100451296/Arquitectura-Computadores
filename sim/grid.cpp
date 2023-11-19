@@ -21,6 +21,8 @@ void Grid::initGrid() {
   data.ny             = static_cast<unsigned int>(ny);
   data.nz             = static_cast<unsigned int>(nz);
   data.h_square       = pow(h, 2);
+  data.h_pow6      = pow(h, 6);
+  data.h_pow9      = pow(h, 9);
 
   initBlocks();
   initDensityAcceleration();

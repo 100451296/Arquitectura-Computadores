@@ -70,6 +70,8 @@ struct DataCommon {
     double mass;
     double long_suavizado;
     double h_square;
+    double h_pow6;
+    double h_pow9;
     unsigned int nx;
     unsigned int ny;
     unsigned int nz;

@@ -16,7 +16,12 @@ void Block::generarParejasBloque() {
 // Metodo encargado de crear las parejas de particulas entre bloques contiguos
 void Block::generarParejasEntreBloques(Block & otherBlock, vector<std::pair<int, int>> & aux) {
   for (auto & id : particlesID) {
-    for (auto & Cid : otherBlock.particlesID) { aux.push_back(make_pair(id, Cid)); }
+    std::transform(
+      otherBlock.particlesID.begin(),
+      otherBlock.particlesID.end(),
+      std::back_inserter(aux),
+      [&](int Cid) { return std::make_pair(id, Cid); }
+    );
   }
 }
 
@@ -41,20 +46,40 @@ void Block::initDensityAcceleration() {
   }
 }
 
+
+// Funcion encargada de modificar el vector de densidades del propio bloque
+/*void Block::densityIncreaseSingle() {
+  for (auto const & pair : particlePairs) {
+    double aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
+    double aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
+    double aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+    if (aux_x + aux_y + aux_z < data.h_square) {
+      double increm_density_pair   = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
+      density[pair.first]  += increm_density_pair;
+      density[pair.second] += increm_density_pair;
+    }
+  }
+}*/
+
 // Funcion encargada de modificar el vector de densidades del propio bloque
 void Block::densityIncreaseSingle() {
-  double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
-    aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
-    aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
-    aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
-    if (aux_x + aux_y + aux_z < data.h_square) {
-      increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
-    } else {
-      increm_density_pair = 0;
+    const Particle& particle1 = particles[pair.first];
+    const Particle& particle2 = particles[pair.second];
+
+    double dx = particle1.posX - particle2.posX;
+    double dy = particle1.posY - particle2.posY;
+    double dz = particle1.posZ - particle2.posZ;
+
+    double distanceSquared = dx * dx + dy * dy + dz * dz;
+
+    if (distanceSquared < data.h_square) {
+      double hSquareMinusDistSquared = data.h_square - distanceSquared;
+      double incremDensityPair = hSquareMinusDistSquared * hSquareMinusDistSquared * hSquareMinusDistSquared;
+
+      density[pair.first] += incremDensityPair;
+      density[pair.second] += incremDensityPair;
     }
-    density[pair.first]  += increm_density_pair;
-    density[pair.second] += increm_density_pair;
   }
 }
 
@@ -64,24 +89,19 @@ void Block::densityIncrease(Block & contiguousBlock) {
   vector<std::pair<int, int>> aux;
   generarParejasEntreBloques(contiguousBlock, aux);
   calculate_increm_density(aux);
-  // lineal_transformate_density(contiguousBlock);
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
 void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
-  double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
-    if (pair.first == 2496 || pair.second == 2496) { aux_x = 0; }
-    aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
-    aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
-    aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
+    double aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
+    double aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
+    double aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
     if (aux_x + aux_y + aux_z < data.h_square) {
-      increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
-    } else {
-      increm_density_pair = 0;
+      double increm_density_pair   = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
+      density[pair.first]  += increm_density_pair;
+      density[pair.second] += increm_density_pair;
     }
-    density[pair.first]  += increm_density_pair;
-    density[pair.second] += increm_density_pair;
   }
 }
 
@@ -89,19 +109,13 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & id : particlesID) {
-    if (id == 2496) { density[id] = density[id]; }
+    double coeficiente = 315 / (64 * M_PI * data.h_pow9) * data.mass;
 
-    double h_pow6      = pow(data.long_suavizado, 6);
-    double h_pow9      = pow(data.long_suavizado, 9);
-    double m           = data.mass;
-    double coeficiente = 315 / (64 * M_PI * h_pow9) * m;
-
-    density[id] = (density[id] + h_pow6) * coeficiente;
-
-    // density[id] *= 0.1;
+    density[id] = (density[id] + data.h_pow6) * coeficiente;
   }
 }
 
+// Metodo auxiliar que realiza los diferentes calculos del incremento de la aceleracion
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<int> Id) {
   double pi_x = position[0];
@@ -190,9 +204,9 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
 
 // Debe actualizar la componente x del vector de aceleración para cada particula
 void Block::collisionsX(unsigned int cx) {
-  double cord_x, increm_x = 0;
+  double increm_x = 0;
   for (auto & id : particlesID) {
-    { cord_x = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO; }
+    double cord_x = particles[id].posX + particles[id].smoothVecX * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -210,9 +224,9 @@ void Block::collisionsX(unsigned int cx) {
 
 // Debe actualizar la componente y del vector de aceleración para cada particula
 void Block::collisionsY(unsigned int cy) {
-  double cord_y, increm_y = 0;
+  double increm_y = 0;
   for (auto & id : particlesID) {
-    cord_y = particles[id].posY + particles[id].smoothVecY * PASO_TIEMPO;
+    double cord_y = particles[id].posY + particles[id].smoothVecY * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
     } else if (cy == data.ny - 1) {
@@ -230,9 +244,9 @@ void Block::collisionsY(unsigned int cy) {
 
 // Debe actualizar la componente z del vector de aceleración para cada particula
 void Block::collisionsZ(unsigned int cz) {
-  double cord_z, increm_z = 0;
+  double increm_z = 0;
   for (auto & id : particlesID) {
-    cord_z = particles[id].posZ + particles[id].smoothVecZ * PASO_TIEMPO;
+    double cord_z = particles[id].posZ + particles[id].smoothVecZ * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
     } else if (cz == data.nz - 1) {

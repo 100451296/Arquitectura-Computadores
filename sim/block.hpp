@@ -7,6 +7,7 @@
 #include <memory>
 #include <numbers>
 #include <vector>
+#include <algorithm>
 
 class Block {
     // Representa un bloque en la malla. Realizará todos los cálculos entre
