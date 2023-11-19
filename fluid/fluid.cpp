@@ -1,6 +1,5 @@
-#include "../sim/block.hpp"
-#include "../sim/grid.hpp"
 #include "../sim/progargs.hpp"
+#include "../sim/soa/grid_soa.hpp"
 
 #include <cmath>
 #include <fstream>

@@ -8,3 +8,5 @@ block.cpp
 block.hpp
 )
 
+# Asegúrate de que soa_library esté construida antes de agregarla a sim
+add_dependencies(sim soa)

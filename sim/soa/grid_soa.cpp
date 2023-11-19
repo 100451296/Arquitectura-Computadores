@@ -181,7 +181,7 @@ bool Grid::writeHeader(std::ofstream & output_file) {
 }
 
 bool Grid::writeParticles(std::ofstream & output_file) {
-  for (int i = 0; i < particles.id.size(); i++) {
+  for (size_t i = 0; i < particles.id.size(); i++) {
     if (!writeParticle(output_file, particles, i)) { return false; }
   }
   return true;
