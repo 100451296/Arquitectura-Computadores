@@ -2,6 +2,15 @@
 
 using namespace std;
 
+static constexpr double TenLessTwuelve = 1e-12;
+static constexpr double Epsilon = 1e-10;
+static constexpr double Two = 2;
+static constexpr double Three = 3;
+static constexpr double Six = 6;
+static constexpr double Fifteen = 15;
+static constexpr double FortyFive = 45;
+static constexpr double SixtyFour = 64;
+static constexpr double ThreeHundFifteen = 315;
 // METODOS de BLOCK
 
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
@@ -45,12 +54,12 @@ void Block::initDensityAcceleration() {
 void Block::densityIncreaseSingle() {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
-    aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], 2);
-    aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], 2);
-    aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], 2);
+    aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second],Two);
+    aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second],Two);
+    aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second],Two);
 
     if (aux_x + aux_y + aux_z < data.h_square) {
-      increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
+      increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
     } else {
       increm_density_pair = 0;
     }
@@ -72,11 +81,11 @@ void Block::densityIncrease(Block & contiguousBlock) {
 void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
-    aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], 2);
-    aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], 2);
-    aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], 2);
+    aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
+    aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
+    aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
     if (aux_x + aux_y + aux_z < data.h_square) {
-      increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
+      increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
     } else {
       increm_density_pair = 0;
     }

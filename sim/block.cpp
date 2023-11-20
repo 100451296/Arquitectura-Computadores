@@ -2,7 +2,6 @@
 
 using namespace std;
 
-// METODOS de BLOCK
 static constexpr double TenLessTwuelve = 1e-12;
 static constexpr double Epsilon = 1e-10;
 static constexpr double Two = 2;
@@ -12,6 +11,8 @@ static constexpr double Fifteen = 15;
 static constexpr double FortyFive = 45;
 static constexpr double SixtyFour = 64;
 static constexpr double ThreeHundFifteen = 315;
+
+// METODOS de BLOCK
 
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
