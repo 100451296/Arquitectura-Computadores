@@ -157,7 +157,7 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para la aceleracion
-void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
+void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) {
   for (auto const & pair : pair_vec) {
     // Si las dos particulas estan cerca
     if ((pow(particles[pair.first].posX - particles[pair.second].posX, 2) +
