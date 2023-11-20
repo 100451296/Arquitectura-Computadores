@@ -6,6 +6,7 @@
 #include "block.hpp"
 #include "common.hpp"
 
+#include <array>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -66,10 +67,10 @@ class Grid {
   private:
     bool readHeader(std::ifstream & input_file);
     bool readParticles(std::ifstream & input_file);
-    bool readParticle(std::ifstream & input_file, Particle & particle, int index);
+    static bool readParticle(std::ifstream & input_file, Particle & particle, int index);
 
     bool writeHeader(std::ofstream & output_file);
-    bool writeParticles(std::ofstream & output_file);
+    bool writeParticles(std::ofstream & output_file) const;
     static bool writeParticle(std::ofstream & output_file, Particle const & particle);
 
     void initGrid();

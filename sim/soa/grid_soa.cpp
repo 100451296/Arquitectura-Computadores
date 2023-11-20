@@ -55,13 +55,13 @@ void GridSoA::initDensityAcceleration() {
 }
 
 void GridSoA::printParameters() {
-  std::cout << "Number of particles: " << num_particles << std::endl;
-  std::cout << "Particles per meter: " << ppm << std::endl;
-  std::cout << "Smoothing length: " << h << std::endl;
-  std::cout << "Particle mass: " << particle_mass << std::endl;
-  std::cout << "Grid size: " << nx << " blockX " << ny << " blockX " << nz << std::endl;
-  std::cout << "Number of blocks: " << num_blocks << std::endl;
-  std::cout << "Block size: " << sx << " blockX " << sy << " blockX " << sz << std::endl;
+  std::cout << "Number of particles: " << num_particles << "\n";
+  std::cout << "Particles per meter: " << ppm << "\n";
+  std::cout << "Smoothing length: " << h << "\n";
+  std::cout << "Particle mass: " << particle_mass << "\n";
+  std::cout << "Grid size: " << nx << " blockX " << ny << " blockX " << nz << "\n";
+  std::cout << "Number of blocks: " << num_blocks << "\n";
+  std::cout << "Block size: " << sx << " blockX " << sy << " blockX " << sz << "\n";
 }
 
 void GridSoA::initBlocks() {
@@ -72,15 +72,18 @@ void GridSoA::initBlocks() {
 void GridSoA::initializeBlockVectors() {
   for (int blockX = 0; blockX < nx; blockX++) {
     std::vector<std::vector<Block>> tempVector2;
+    tempVector2.reserve(ny);  // Reserve capacity for the outer vector
     for (int blockY = 0; blockY < ny; blockY++) {
       std::vector<Block> tempVector1;
+      tempVector1.reserve(nz);  // Reserve capacity for the inner vector
       for (int blockZ = 0; blockZ < nz; blockZ++) {
-        tempVector1.push_back(
-            Block(particles, accelerationX, accelerationY, accelerationZ, density));
+        tempVector1.emplace_back(
+            Block(particles, density, accelerationX, accelerationY, accelerationZ));
       }
-      tempVector2.push_back(tempVector1);
+      tempVector2.emplace_back(
+          std::move(tempVector1));  // Use std::move to avoid unnecessary copies
     }
-    blocks.push_back(tempVector2);
+    blocks.emplace_back(std::move(tempVector2));  // Use std::move to avoid unnecessary copies
   }
 }
 
@@ -90,8 +93,7 @@ void GridSoA::populatePairs() {
       for (int blockZ = 0; blockZ < nz; blockZ++) {
         blocks[blockX][blockY][blockZ].data = data;
         for (auto const & offset : offsets) {
-          int x_offset, y_offset, z_offset;
-          std::tie(x_offset, y_offset, z_offset) = offset;
+          auto const & [x_offset, y_offset, z_offset] = offset;
 
           int const x_contiguo = blockX + x_offset;
           int const y_contiguo = blockY + y_offset;
@@ -99,9 +101,9 @@ void GridSoA::populatePairs() {
 
           if (x_contiguo >= 0 && x_contiguo < nx && y_contiguo >= 0 && y_contiguo < ny &&
               z_contiguo >= 0 && z_contiguo < nz) {
-            parejas_unicas.emplace_back(
-                std::make_pair(std::make_tuple(blockX, blockY, blockZ),
-                               std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
+            parejas_unicas.emplace_back(std::piecewise_construct,
+                                        std::forward_as_tuple(blockX, blockY, blockZ),
+                                        std::forward_as_tuple(x_contiguo, y_contiguo, z_contiguo));
           }
         }
       }
@@ -112,14 +114,16 @@ void GridSoA::populatePairs() {
 int GridSoA::readFile(string const & input_file_name) {
   std::ifstream input_file(input_file_name, std::ios::binary);
   if (!input_file.is_open()) {
-    std::cerr << "Error al abrir el archivo de entrada" << std::endl;
+    std::cerr << "Error al abrir el archivo de entrada"
+              << "\n";
     return -1;
   }
 
   if (!readHeader(input_file)) { return -1; }
 
   if (num_particles <= 0) {
-    std::cerr << "Número de partículas inválido" << std::endl;
+    std::cerr << "Número de partículas inválido"
+              << "\n";
     return -1;
   }
 
@@ -154,9 +158,9 @@ bool GridSoA::readParticles(std::ifstream & input_file) {
 }
 
 bool GridSoA::readParticle(std::ifstream & input_file, Particles & particles, int index) {
-  float buffer[particleAttr];
-  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * particleAttr)) {
-    std::cerr << "Error al leer las partículas del archivo" << std::endl;
+  std::array<float, particleAttr> buffer;
+  if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
+    std::cerr << "Error al leer las partículas del archivo\n";
     return false;
   }
 
@@ -177,7 +181,8 @@ bool GridSoA::readParticle(std::ifstream & input_file, Particles & particles, in
 int GridSoA::writeFile(std::string const & output_file_name) {
   std::ofstream output_file(output_file_name, std::ios::binary);
   if (!output_file.is_open()) {
-    std::cerr << "Error al abrir el archivo de salida" << std::endl;
+    std::cerr << "Error al abrir el archivo de salida"
+              << "\n";
     return -1;
   }
 
@@ -190,32 +195,33 @@ int GridSoA::writeFile(std::string const & output_file_name) {
 }
 
 bool GridSoA::writeHeader(std::ofstream & output_file) {
-  float ppm_float = static_cast<float>(ppm);
+  auto ppm_float = static_cast<float>(ppm);
   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
   return output_file.good();
 }
 
-bool GridSoA::writeParticles(std::ofstream & output_file) {
+bool GridSoA::writeParticles(std::ofstream & output_file) const {
   for (size_t i = 0; i < particles.id.size(); i++) {
-    if (!writeParticle(output_file, particles, i)) { return false; }
+    if (!writeParticle(output_file, particles, static_cast<int>(i))) { return false; }
   }
   return true;
 }
 
 bool GridSoA::writeParticle(std::ofstream & output_file, Particles const & particles, int index) {
-  float buffer[particleAttr] = {static_cast<float>(particles.posX[index]),
-                                static_cast<float>(particles.posY[index]),
-                                static_cast<float>(particles.posZ[index]),
-                                static_cast<float>(particles.smoothVecX[index]),
-                                static_cast<float>(particles.smoothVecY[index]),
-                                static_cast<float>(particles.smoothVecZ[index]),
-                                static_cast<float>(particles.velX[index]),
-                                static_cast<float>(particles.velY[index]),
-                                static_cast<float>(particles.velZ[index])};
+  std::array<float, particleAttr> buffer = {static_cast<float>(particles.posX[index]),
+                                            static_cast<float>(particles.posY[index]),
+                                            static_cast<float>(particles.posZ[index]),
+                                            static_cast<float>(particles.smoothVecX[index]),
+                                            static_cast<float>(particles.smoothVecY[index]),
+                                            static_cast<float>(particles.smoothVecZ[index]),
+                                            static_cast<float>(particles.velX[index]),
+                                            static_cast<float>(particles.velY[index]),
+                                            static_cast<float>(particles.velZ[index])};
 
-  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
-    std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
+  if (!output_file.write(reinterpret_cast<char const *>(buffer.data()), sizeof(float) * Nine)) {
+    std::cerr << "Error al escribir las partículas en el archivo"
+              << "\n";
     return false;
   }
 
@@ -241,7 +247,8 @@ void GridSoA::simulation(int iterations) {
 }
 
 void GridSoA::printParticles() {
-  std::cout << "Partículas en la cuadrícula:" << std::endl;
+  std::cout << "Partículas en la cuadrícula:"
+            << "\n";
   for (size_t i = 0; i < particles.id.size(); ++i) {
     std::cout << "ID: " << particles.id[i] << ", ";
     std::cout << "Posición (" << particles.posX[i] << ", " << particles.posY[i] << ", "
@@ -249,7 +256,8 @@ void GridSoA::printParticles() {
     std::cout << "Vector de suavizado (" << particles.smoothVecX[i] << ", "
               << particles.smoothVecY[i] << ", " << particles.smoothVecZ[i] << "), ";
     std::cout << "Velocidad (" << particles.velX[i] << ", " << particles.velY[i] << ", "
-              << particles.velZ[i] << ")" << std::endl;
+              << particles.velZ[i] << ")"
+              << "\n";
   }
 }
 
@@ -264,7 +272,8 @@ void GridSoA::generateParticlePairs() {
 }
 
 void GridSoA::printFirst() {
-  std::cout << "Partículas en la cuadrícula:" << std::endl;
+  std::cout << "Partículas en la cuadrícula:"
+            << "\n";
   for (size_t i = 0; i < 2; ++i) {
     std::cout << "ID: " << particles.id[0] << ", ";
     std::cout << "Posición (" << particles.posX[0] << ", " << particles.posY[0] << ", "
@@ -272,7 +281,8 @@ void GridSoA::printFirst() {
     std::cout << "Vector de suavizado (" << particles.smoothVecX[0] << ", "
               << particles.smoothVecY[0] << ", " << particles.smoothVecZ[0] << "), ";
     std::cout << "Velocidad (" << particles.velX[0] << ", " << particles.velY[0] << ", "
-              << particles.velZ[0] << ")" << std::endl;
+              << particles.velZ[0] << ")"
+              << "\n";
     particles.posX[0] = 0.0;
   }
 }
@@ -301,7 +311,7 @@ void GridSoA::positionateParticle() {
         0, std::min(nz - 1, static_cast<int>(std::floor(
                                 (particles.posZ[index] - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
-    blocks[index_i][index_j][index_k].addParticle(particles.id[index]);
+    blocks[index_i][index_j][index_k].addParticle(static_cast<int>(particles.id[index]));
   }
   generateParticlePairs();
 }

@@ -32,7 +32,7 @@ constexpr unsigned int VEL_X_INDEX        = 6;
 constexpr unsigned int VEL_Y_INDEX        = 7;
 constexpr unsigned int VEL_Z_INDEX        = 8;
 
-constexpr float INIT_BUFFER = 0.0f;
+constexpr float INIT_BUFFER = 0.0F;
 
 #include <cmath>
 #include <vector>

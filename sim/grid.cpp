@@ -95,8 +95,7 @@ void Grid::populatePairs() {
       for (int blockZ = 0; blockZ < nz; blockZ++) {
         blocks[blockX][blockY][blockZ].data = data;
         for (auto const & offset : offsets) {
-          int x_offset, y_offset, z_offset;
-          std::tie(x_offset, y_offset, z_offset) = offset;
+          auto const & [x_offset, y_offset, z_offset] = offset;
 
           int const x_contiguo = blockX + x_offset;
           int const y_contiguo = blockY + y_offset;
@@ -104,9 +103,9 @@ void Grid::populatePairs() {
 
           if (x_contiguo >= 0 && x_contiguo < nx && y_contiguo >= 0 && y_contiguo < ny &&
               z_contiguo >= 0 && z_contiguo < nz) {
-            parejas_unicas.emplace_back(
-                std::make_pair(std::make_tuple(blockX, blockY, blockZ),
-                               std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
+            parejas_unicas.emplace_back(std::piecewise_construct,
+                                        std::forward_as_tuple(blockX, blockY, blockZ),
+                                        std::forward_as_tuple(x_contiguo, y_contiguo, z_contiguo));
           }
         }
       }
@@ -158,10 +157,9 @@ bool Grid::readParticles(std::ifstream & input_file) {
 }
 
 bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int index) {
-  float buffer[particleAttr];
-  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * Nine)) {
-    std::cerr << "Error al leer las partículas del archivo"
-              << "\n";
+  std::array<float, particleAttr> buffer;
+  if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
+    std::cerr << "Error al leer las partículas del archivo\n";
     return false;
   }
 
@@ -202,7 +200,7 @@ bool Grid::writeHeader(std::ofstream & output_file) {
   return output_file.good();
 }
 
-bool Grid::writeParticles(std::ofstream & output_file) {
+bool Grid::writeParticles(std::ofstream & output_file) const {
   for (auto const & particle : particles) {
     if (!writeParticle(output_file, particle)) { return false; }
   }
@@ -308,7 +306,7 @@ void Grid::positionateParticle() {
         std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
                                          (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
-    blocks[index_i][index_j][index_k].addParticle(particle.id);
+    blocks[index_i][index_j][index_k].addParticle(static_cast<int>(particle.id));
   }
   generateParticlePairs();
 }

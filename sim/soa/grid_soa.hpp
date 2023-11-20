@@ -6,6 +6,7 @@
 #include "../common.hpp"
 #include "block_soa.hpp"
 
+#include <array>
 #include <cmath>
 #include <fstream>
 #include <iostream>
@@ -64,10 +65,10 @@ class GridSoA {
   private:
     bool readHeader(std::ifstream & input_file);
     bool readParticles(std::ifstream & input_file);
-    bool readParticle(std::ifstream & input_file, Particles & particles, int index);
+    static bool readParticle(std::ifstream & input_file, Particles & particles, int index);
 
     bool writeHeader(std::ofstream & output_file);
-    bool writeParticles(std::ofstream & output_file);
+    bool writeParticles(std::ofstream & output_file) const;
     static bool writeParticle(std::ofstream & output_file, Particles const & particles, int index);
 
     void initGrid();
