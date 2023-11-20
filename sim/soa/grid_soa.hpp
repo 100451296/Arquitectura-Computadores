@@ -14,23 +14,6 @@
 #include <tuple>
 #include <vector>
 
-// Offsets para buscar bloques contiguos
-std::vector<std::tuple<int, int, int>> const offsets = {
-  {1,  1,  1},
-  {1,  1,  0},
-  {1,  1, -1},
-  {1,  0,  1},
-  {1,  0,  0},
-  {1,  0, -1},
-  {1, -1,  1},
-  {1, -1,  0},
-  {1, -1, -1},
-  {0,  1,  1},
-  {0,  1,  0},
-  {0,  1, -1},
-  {0,  0,  1}
-};
-
 class GridSoA {
   public:
     Particles particles;                                  // SoA
@@ -40,6 +23,7 @@ class GridSoA {
     std::vector<double> accelerationY;
     std::vector<double> accelerationZ;
     std::vector<double> density;
+    static std::vector<std::tuple<int, int, int>> const offsets;
     double ppm;
     int num_particles;
     double h;
@@ -56,9 +40,7 @@ class GridSoA {
 
     void printParticles();
     void printFirst();
-    void printPairs();
-    void simulation(int interations);
-    void prueba();
+    void simulation(int iterations);
 
     int readFile(std::string const & input_file_name);
     int writeFile(std::string const & output_file_name);

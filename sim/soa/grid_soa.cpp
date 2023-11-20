@@ -2,6 +2,23 @@
 
 using namespace std;
 
+// Offsets para buscar bloques contiguos
+std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
+  {1,  1,  1},
+  {1,  1,  0},
+  {1,  1, -1},
+  {1,  0,  1},
+  {1,  0,  0},
+  {1,  0, -1},
+  {1, -1,  1},
+  {1, -1,  0},
+  {1, -1, -1},
+  {0,  1,  1},
+  {0,  1,  0},
+  {0,  1, -1},
+  {0,  0,  1}
+};
+
 // Método para inicializar la malla con valores predeterminados
 void GridSoA::initGrid() {
   h             = MULTIPLICADOR_RADIO / ppm;
@@ -27,10 +44,10 @@ void GridSoA::initGrid() {
 }
 
 void GridSoA::initDensityAcceleration() {
-  // Inicializa los vectores de densidad y aceleración con el tamaño adecuado
+  // Inicializa los vectores de densidad blockY aceleración con el tamaño adecuado
   // basado en el número de partículas en el bloque
 
-  // Establece el tamaño de los vectores de densidad y aceleración
+  // Establece el tamaño de los vectores de densidad blockY aceleración
   density.resize(particles.id.size(), 0.0);
   accelerationX.resize(particles.id.size(), ACELERACION_GRAVEDAD_X);
   accelerationY.resize(particles.id.size(), ACELERACION_GRAVEDAD_Y);
@@ -42,9 +59,9 @@ void GridSoA::printParameters() {
   std::cout << "Particles per meter: " << ppm << std::endl;
   std::cout << "Smoothing length: " << h << std::endl;
   std::cout << "Particle mass: " << particle_mass << std::endl;
-  std::cout << "Grid size: " << nx << " x " << ny << " x " << nz << std::endl;
+  std::cout << "Grid size: " << nx << " blockX " << ny << " blockX " << nz << std::endl;
   std::cout << "Number of blocks: " << num_blocks << std::endl;
-  std::cout << "Block size: " << sx << " x " << sy << " x " << sz << std::endl;
+  std::cout << "Block size: " << sx << " blockX " << sy << " blockX " << sz << std::endl;
 }
 
 void GridSoA::initBlocks() {
@@ -53,11 +70,11 @@ void GridSoA::initBlocks() {
 }
 
 void GridSoA::initializeBlockVectors() {
-  for (int x = 0; x < nx; x++) {
+  for (int blockX = 0; blockX < nx; blockX++) {
     std::vector<std::vector<Block>> tempVector2;
-    for (int y = 0; y < ny; y++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
       std::vector<Block> tempVector1;
-      for (int z = 0; z < nz; z++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
         tempVector1.push_back(
             Block(particles, accelerationX, accelerationY, accelerationZ, density));
       }
@@ -68,22 +85,23 @@ void GridSoA::initializeBlockVectors() {
 }
 
 void GridSoA::populatePairs() {
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) {
-        blocks[x][y][z].data = data;
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
+        blocks[blockX][blockY][blockZ].data = data;
         for (auto const & offset : offsets) {
           int x_offset, y_offset, z_offset;
           std::tie(x_offset, y_offset, z_offset) = offset;
 
-          int x_contiguo = x + x_offset;
-          int y_contiguo = y + y_offset;
-          int z_contiguo = z + z_offset;
+          int x_contiguo = blockX + x_offset;
+          int y_contiguo = blockY + y_offset;
+          int z_contiguo = blockZ + z_offset;
 
           if (x_contiguo >= 0 && x_contiguo < nx && y_contiguo >= 0 && y_contiguo < ny &&
               z_contiguo >= 0 && z_contiguo < nz) {
-            parejas_unicas.push_back(std::make_pair(
-                std::make_tuple(x, y, z), std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
+            parejas_unicas.push_back(
+                std::make_pair(std::make_tuple(blockX, blockY, blockZ),
+                               std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
           }
         }
       }
@@ -237,9 +255,11 @@ void GridSoA::printParticles() {
 }
 
 void GridSoA::generateParticlePairs() {
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].generarParejasBloque(); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
+        blocks[blockX][blockY][blockZ].generarParejasBloque();
+      }
     }
   }
 }
@@ -259,11 +279,11 @@ void GridSoA::printFirst() {
 }
 
 void GridSoA::resetBlocks() {
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) {
-        blocks[x][y][z].initDensityAcceleration();
-        blocks[x][y][z].resetBlock();
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
+        blocks[blockX][blockY][blockZ].initDensityAcceleration();
+        blocks[blockX][blockY][blockZ].resetBlock();
       }
     }
   }
@@ -294,17 +314,21 @@ void GridSoA::densityIncreaseGrid() {
     std::tie(x2, y2, z2) = pareja.second;
     blocks[x1][y1][z1].densityIncrease(blocks[x2][y2][z2]);
   }
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].densityIncreaseSingle(); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
+        blocks[blockX][blockY][blockZ].densityIncreaseSingle();
+      }
     }
   }
 }
 
 void GridSoA::linealDensityTransform() {
-  for (int z = 0; z < nz; z++) {
-    for (int y = 0; y < ny; y++) {
-      for (int x = 0; x < nx; x++) { blocks[x][y][z].lineal_transformate_density(); }
+  for (int blockZ = 0; blockZ < nz; blockZ++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockX = 0; blockX < nx; blockX++) {
+        blocks[blockX][blockY][blockZ].lineal_transformate_density();
+      }
     }
   }
 }
@@ -316,89 +340,93 @@ void GridSoA::aceletarionTransferGrid() {
     std::tie(x2, y2, z2) = pareja.second;
     blocks[x1][y1][z1].accelerationTransfer(blocks[x2][y2][z2]);
   }
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].accelerationTransferSingle(); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
+        blocks[blockX][blockY][blockZ].accelerationTransferSingle();
+      }
     }
   }
 }
 
 void GridSoA::collisionsXGrid() {
   int cx = 0;
-  for (int y = 0; y < ny; y++) {
-    for (int z = 0; z < nz; z++) { blocks[cx][y][z].collisionsX(cx); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[cx][blockY][blockZ].collisionsX(cx); }
   }
 
   cx = nx - 1;
-  for (int y = 0; y < ny; y++) {
-    for (int z = 0; z < nz; z++) { blocks[cx][y][z].collisionsX(cx); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[cx][blockY][blockZ].collisionsX(cx); }
   }
 }
 
 void GridSoA::collisionsYGrid() {
   int cy = 0;
-  for (int x = 0; x < nx; x++) {
-    for (int z = 0; z < nz; z++) { blocks[x][cy][z].collisionsY(cy); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].collisionsY(cy); }
   }
 
   cy = ny - 1;
-  for (int x = 0; x < nx; x++) {
-    for (int z = 0; z < nz; z++) { blocks[x][cy][z].collisionsY(cy); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].collisionsY(cy); }
   }
 }
 
 void GridSoA::collisionsZGrid() {
   int cz = 0;
-  for (int y = 0; y < ny; y++) {
-    for (int x = 0; x < nx; x++) { blocks[x][y][cz].collisionsZ(cz); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].collisionsZ(cz); }
   }
 
   cz = nz - 1;
-  for (int y = 0; y < ny; y++) {
-    for (int x = 0; x < nx; x++) { blocks[x][y][cz].collisionsZ(cz); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].collisionsZ(cz); }
   }
 }
 
 void GridSoA::particleMotionGrid() {
-  for (int x = 0; x < nx; x++) {
-    for (int y = 0; y < ny; y++) {
-      for (int z = 0; z < nz; z++) { blocks[x][y][z].particleMotion(); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockY = 0; blockY < ny; blockY++) {
+      for (int blockZ = 0; blockZ < nz; blockZ++) {
+        blocks[blockX][blockY][blockZ].particleMotion();
+      }
     }
   }
 }
 
 void GridSoA::interactionsXGrid() {
   int cx = 0;
-  for (int y = 0; y < ny; y++) {
-    for (int z = 0; z < nz; z++) { blocks[cx][y][z].interactionsX(cx); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[cx][blockY][blockZ].interactionsX(cx); }
   }
 
   cx = nx - 1;
-  for (int y = 0; y < ny; y++) {
-    for (int z = 0; z < nz; z++) { blocks[cx][y][z].interactionsX(cx); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[cx][blockY][blockZ].interactionsX(cx); }
   }
 }
 
 void GridSoA::interactionsYGrid() {
   int cy = 0;
-  for (int x = 0; x < nx; x++) {
-    for (int z = 0; z < nz; z++) { blocks[x][cy][z].interactionsY(cy); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].interactionsY(cy); }
   }
 
   cy = ny - 1;
-  for (int x = 0; x < nx; x++) {
-    for (int z = 0; z < nz; z++) { blocks[x][cy][z].interactionsY(cy); }
+  for (int blockX = 0; blockX < nx; blockX++) {
+    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].interactionsY(cy); }
   }
 }
 
 void GridSoA::interactionsZGrid() {
   int cz = 0;
-  for (int y = 0; y < ny; y++) {
-    for (int x = 0; x < nx; x++) { blocks[x][y][cz].interactionsZ(cz); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].interactionsZ(cz); }
   }
 
   cz = nz - 1;
-  for (int y = 0; y < ny; y++) {
-    for (int x = 0; x < nx; x++) { blocks[x][y][cz].interactionsZ(cz); }
+  for (int blockY = 0; blockY < ny; blockY++) {
+    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].interactionsZ(cz); }
   }
 }

@@ -14,23 +14,6 @@
 #include <tuple>
 #include <vector>
 
-// Offsets para buscar bloques contiguos
-std::vector<std::tuple<int, int, int>> const offsets = {
-  {1,  1,  1},
-  {1,  1,  0},
-  {1,  1, -1},
-  {1,  0,  1},
-  {1,  0,  0},
-  {1,  0, -1},
-  {1, -1,  1},
-  {1, -1,  0},
-  {1, -1, -1},
-  {0,  1,  1},
-  {0,  1,  0},
-  {0,  1, -1},
-  {0,  0,  1}
-};
-
 class Grid {
   public:
     std::vector<Particle> particles;                      // AoS
@@ -40,6 +23,7 @@ class Grid {
     std::vector<double> accelerationY;
     std::vector<double> accelerationZ;
     std::vector<double> density;
+    static std::vector<std::tuple<int, int, int>> const offsets;
     double ppm;
     int num_particles;
     double h;
@@ -57,7 +41,7 @@ class Grid {
     void printParticles();
     void printFirst();
     void printPairs();
-    void simulation(int interations);
+    void simulation(int iterations);
     void prueba();
 
     int readFile(std::string const & input_file_name);
