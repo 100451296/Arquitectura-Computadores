@@ -2,22 +2,13 @@
 
 using namespace std;
 
-static constexpr double TenLessTwuelve = 1e-12;
-static constexpr double Epsilon = 1e-10;
-static constexpr double Two = 2;
-static constexpr double Three = 3;
-static constexpr double Six = 6;
-static constexpr double Fifteen = 15;
-static constexpr double FortyFive = 45;
-static constexpr double SixtyFour = 64;
-static constexpr double ThreeHundFifteen = 315;
 // METODOS de BLOCK
 
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
   for (size_t i = 0; i < particlesID.size(); i++) {
     for (size_t j = i + 1; j < particlesID.size(); j++) {
-      particlePairs.push_back(make_pair(particlesID[i], particlesID[j]));
+      particlePairs.emplace_back(make_pair(particlesID[i], particlesID[j]));
     }
   }
 }
@@ -25,13 +16,13 @@ void Block::generarParejasBloque() {
 // Metodo encargado de crear las parejas de particulas entre bloques contiguos
 void Block::generarParejasEntreBloques(Block & otherBlock, vector<std::pair<int, int>> & aux) {
   for (auto & Bid : particlesID) {
-    for (auto & Cid : otherBlock.particlesID) { aux.push_back(make_pair(Bid, Cid)); }
+    for (auto & Cid : otherBlock.particlesID) { aux.emplace_back(make_pair(Bid, Cid)); }
   }
 }
 
 // Función para añadir una partícula al vector
 void Block::addParticle(int Bid) {
-  particlesID.push_back(Bid);
+  particlesID.emplace_back(Bid);
 }
 
 // Funcion para resetear el bloque
@@ -52,11 +43,11 @@ void Block::initDensityAcceleration() {
 
 // Funcion encargada de modificar el vector de densidades del propio bloque
 void Block::densityIncreaseSingle() {
-  double aux_x, aux_y, aux_z, increm_density_pair;
+  double increm_density_pair = 0;
   for (auto const & pair : particlePairs) {
-    aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second],Two);
-    aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second],Two);
-    aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second],Two);
+    double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second],Two);
+    double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second],Two);
+    double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second],Two);
 
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
@@ -78,12 +69,12 @@ void Block::densityIncrease(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
-  double aux_x, aux_y, aux_z, increm_density_pair;
+void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) const {
+  double increm_density_pair = 0;
   for (auto const & pair : ParejaParticulas) {
-    aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
-    aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
-    aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
+    double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
+    double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
+    double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
     } else {
@@ -98,34 +89,31 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & Bid : particlesID) {
-    double h_pow6      = pow(data.long_suavizado, 6);
-    double h_pow9      = pow(data.long_suavizado, 9);
-    double m           = data.mass;
-    double coeficiente = 315 / (64 * M_PI * h_pow9) * m;
+    double coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
 
-    (*density)[Bid] = ((*density)[Bid] + h_pow6) * coeficiente;
+    (*density)[Bid] = ((*density)[Bid] + data.h_pow6) * coeficiente;
   }
 }
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
                                                    double dist, vector<int> Bid) {
-  double pi_x = position[0];
-  double pi_y = position[1];
-  double pi_z = position[2];
+  const double pi_x = position[0];
+  const double pi_y = position[1];
+  const double pi_z = position[2];
 
-  double vi_x = velocity[0];
-  double vi_y = velocity[1];
-  double vi_z = velocity[2];
+  const double vi_x = velocity[0];
+  const double vi_y = velocity[1];
+  const double vi_z = velocity[2];
 
-  double rho_i = (*density)[Bid[0]];
-  double rho_j = (*density)[Bid[1]];
+  const double rho_i = (*density)[Bid[0]];
+  const double rho_j = (*density)[Bid[1]];
 
-  double term1 = 15 / (M_PI * pow(data.long_suavizado, 6));
-  double term2 = 3 * data.mass * PRESION_RIGIDEZ / 2;
-  double term3 = pow(data.long_suavizado - dist, 2) / dist;
-  double term4 = rho_i + rho_j - 2 * DENSIDAD_FLUIDO;
-  double term5 = 45 / (M_PI * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass;
-  double term6 = (*density)[Bid[0]] * (*density)[Bid[1]];
+  const double term1 = Fifteen / (M_PI * pow(data.long_suavizado, Six));
+  const double term2 = Three * data.mass * PRESION_RIGIDEZ / Two;
+  const double term3 = pow(data.long_suavizado - dist, Two) / dist;
+  const double term4 = rho_i + rho_j - Two * DENSIDAD_FLUIDO;
+  const double term5 = FortyFive / (M_PI * pow(data.long_suavizado, Six)) * VISCOSIDAD * data.mass;
+  const double term6 = (*density)[Bid[0]] * (*density)[Bid[1]];
 
   vector<double> increment_acceleration = {
     // Posicion X
@@ -139,7 +127,7 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
 
 // Metodo auxiliar que realiza los diferentes calculos para la distancia
 double Block::calculate_dist(double posX, double posY, double posZ) {
-  double dist = sqrt(max(pow(posX, 2) + pow(posY, 2) + pow(posZ, 2), pow(10, -12)));
+  double dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
   return dist;
 }
 
@@ -164,7 +152,7 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
     if ((pow((*particles).posX[pair.first] - (*particles).posX[pair.second], 2) +
          pow((*particles).posY[pair.first] - (*particles).posY[pair.second], 2) +
          pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], 2)) <
-        pow(data.long_suavizado, 2)) {
+        pow(data.long_suavizado, Two)) {
       // Calculo de distancia
       double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
                                    (*particles).posY[pair.first] - (*particles).posY[pair.second],
@@ -203,7 +191,7 @@ void Block::collisionsX(unsigned int cx) {
     } else if (cx == data.nx - 1) {
       increm_x = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_X - cord_x);
     }
-    if (increm_x > EPSILON) {
+    if (increm_x > Epsilon) {
       if (cx == 0) {
         (*accelerationX)[Bid] += COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * (*particles).velX[Bid];
       } else if (cx == data.nx - 1) {
@@ -223,7 +211,7 @@ void Block::collisionsY(unsigned int cy) {
     } else if (cy == data.ny - 1) {
       increm_y = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_Y - cord_y);
     }
-    if (increm_y > EPSILON) {
+    if (increm_y > Epsilon) {
       if (cy == 0) {
         (*accelerationY)[Bid] += COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * (*particles).velY[Bid];
       } else if (cy == data.ny - 1) {
@@ -243,7 +231,7 @@ void Block::collisionsZ(unsigned int cz) {
     } else if (cz == data.nz - 1) {
       increm_z = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_Z - cord_z);
     }
-    if (increm_z > EPSILON) {
+    if (increm_z > Epsilon) {
       if (cz == 0) {
         (*accelerationZ)[Bid] += COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * (*particles).velZ[Bid];
       } else if (cz == data.nz - 1) {
@@ -257,14 +245,14 @@ void Block::collisionsZ(unsigned int cz) {
 void Block::particleMotion() {
   for (auto & Bid : particlesID) {
     (*particles).posX[Bid] = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO +
-                          (*accelerationX)[Bid] * pow(PASO_TIEMPO, 2);
+                          (*accelerationX)[Bid] * pow(PASO_TIEMPO, Two);
     (*particles).posY[Bid] = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO +
-                          (*accelerationY)[Bid] * pow(PASO_TIEMPO, 2);
+                          (*accelerationY)[Bid] * pow(PASO_TIEMPO, Two);
     (*particles).posZ[Bid] = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO +
-                          (*accelerationZ)[Bid] * pow(PASO_TIEMPO, 2);
-    (*particles).velX[Bid] = (*particles).smoothVecX[Bid] + (((*accelerationX)[Bid] * PASO_TIEMPO) / 2);
-    (*particles).velY[Bid] = (*particles).smoothVecY[Bid] + (((*accelerationY)[Bid] * PASO_TIEMPO) / 2);
-    (*particles).velZ[Bid] = (*particles).smoothVecZ[Bid] + (((*accelerationZ)[Bid] * PASO_TIEMPO) / 2);
+                          (*accelerationZ)[Bid] * pow(PASO_TIEMPO, Two);
+    (*particles).velX[Bid] = (*particles).smoothVecX[Bid] + (((*accelerationX)[Bid] * PASO_TIEMPO) / Two);
+    (*particles).velY[Bid] = (*particles).smoothVecY[Bid] + (((*accelerationY)[Bid] * PASO_TIEMPO) / Two);
+    (*particles).velZ[Bid] = (*particles).smoothVecZ[Bid] + (((*accelerationZ)[Bid] * PASO_TIEMPO) / Two);
     (*particles).smoothVecX[Bid] = (*particles).smoothVecX[Bid] + (*accelerationX)[Bid] * PASO_TIEMPO;
     (*particles).smoothVecY[Bid] = (*particles).smoothVecY[Bid] + (*accelerationY)[Bid] * PASO_TIEMPO;
     (*particles).smoothVecZ[Bid] = (*particles).smoothVecZ[Bid] + (*accelerationZ)[Bid] * PASO_TIEMPO;
