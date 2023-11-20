@@ -15,21 +15,21 @@ class Block {
   public:
     static constexpr double EPSILON = 1e-10;
 
-    Block(Particles & particlesRef, std::vector<double> & accelerationXRef,
-          std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef,
-          std::vector<double> & densityRef)
-      : particles(particlesRef), particlesID(), particlePairs(), data(),
-        accelerationX(accelerationXRef), accelerationY(accelerationYRef),
-        accelerationZ(accelerationZRef), density(densityRef) { }
+    Block(Particles & particlesRef, std::vector<double> & densityRef,std::vector<double> & accelerationXRef,
+          std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef
+          )
+      : particles(&particlesRef), particlesID(), data(),
+        accelerationX(&accelerationXRef), accelerationY(&accelerationYRef),
+        accelerationZ(&accelerationZRef), density(&densityRef) { }
 
-    Particles & particles;
+    Particles * particles;
     std::vector<int> particlesID;
     std::vector<std::pair<int, int>> particlePairs;
     DataCommon data;
-    std::vector<double> & accelerationX;
-    std::vector<double> & accelerationY;
-    std::vector<double> & accelerationZ;
-    std::vector<double> & density;
+    std::vector<double> * accelerationX;
+    std::vector<double> * accelerationY;
+    std::vector<double> * accelerationZ;
+    std::vector<double> * density;
 
     void addParticle(int id);
     void resetBlock();

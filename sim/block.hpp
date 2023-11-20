@@ -15,20 +15,12 @@ class Block {
 
   public:
     
-
-   /*/ Block(std::vector<Particle> & particlesRef, std::vector<double> & densityRef,
-          std::vector<double> & accelerationXRef, std::vector<double> & accelerationYRef,
-          std::vector<double> & accelerationZRef)
-      : particles(&particlesRef), particlesID(), particlePairs(), data(),
-        accelerationX(&accelerationXRef), accelerationY(&accelerationYRef),
-        accelerationZ(&accelerationZRef), density(&densityRef) { }
-*/
-Block(std::vector<Particle> & particlesRef, std::vector<double> & densityRef,
+    Block(std::vector<Particle> & particlesRef, std::vector<double> & densityRef,
       std::vector<double> & accelerationXRef, std::vector<double> & accelerationYRef,
       std::vector<double> & accelerationZRef)
-  : particles(&particlesRef), particlesID(), data(),
-    accelerationX(&accelerationXRef), accelerationY(&accelerationYRef),
-    accelerationZ(&accelerationZRef), density(&densityRef) { }
+    : particles(&particlesRef), particlesID(), data(),
+      accelerationX(&accelerationXRef), accelerationY(&accelerationYRef),
+      accelerationZ(&accelerationZRef), density(&densityRef) { }
 
     std::vector<Particle> * particles;
     std::vector<int> particlesID;
