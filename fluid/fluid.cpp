@@ -1,5 +1,5 @@
 #include "../sim/progargs.hpp"
-#include "../sim/soa/grid_soa.hpp"
+#include "../sim/grid.hpp"
 
 #include <cmath>
 #include <fstream>
@@ -20,7 +20,7 @@ int main(int argc, char * argv[]) {
   string input_file_name  = argv[2];
   string output_file_name = argv[3];
 
-  GridSoA grid;
+  Grid grid;
   grid.readFile(input_file_name);
   grid.simulation(stoi(argv[1]));
   grid.writeFile(output_file_name);
