@@ -2,13 +2,13 @@
 #define COMMON
 
 constexpr double MULTIPLICADOR_RADIO = 1.695;
-constexpr double DENSIDAD_FLUIDO = 1e3;
-constexpr double PRESION_RIGIDEZ = 3.0;
-constexpr double COLISIONES_RIGIDEZ = 3e4;
-constexpr double AMORTIGUAMIENTO = 128.0;
-constexpr double VISCOSIDAD = 0.4;
-constexpr double TAMANO_PARTICULA = 2e-4;
-constexpr double PASO_TIEMPO = 1e-3;
+constexpr double DENSIDAD_FLUIDO     = 1e3;
+constexpr double PRESION_RIGIDEZ     = 3.0;
+constexpr double COLISIONES_RIGIDEZ  = 3e4;
+constexpr double AMORTIGUAMIENTO     = 128.0;
+constexpr double VISCOSIDAD          = 0.4;
+constexpr double TAMANO_PARTICULA    = 2e-4;
+constexpr double PASO_TIEMPO         = 1e-3;
 
 constexpr double ACELERACION_GRAVEDAD_X = 0.0;
 constexpr double ACELERACION_GRAVEDAD_Y = -9.8;
@@ -20,6 +20,19 @@ constexpr double LIMITE_SUPERIOR_RECINTO_Z = 0.065;
 constexpr double LIMITE_INFERIOR_RECINTO_X = -0.065;
 constexpr double LIMITE_INFERIOR_RECINTO_Y = -0.08;
 constexpr double LIMITE_INFERIOR_RECINTO_Z = -0.065;
+
+constexpr unsigned int particleAttr       = 9;
+constexpr unsigned int POS_X_INDEX        = 0;
+constexpr unsigned int POS_Y_INDEX        = 1;
+constexpr unsigned int POS_Z_INDEX        = 2;
+constexpr unsigned int SMOOTH_VEC_X_INDEX = 3;
+constexpr unsigned int SMOOTH_VEC_Y_INDEX = 4;
+constexpr unsigned int SMOOTH_VEC_Z_INDEX = 5;
+constexpr unsigned int VEL_X_INDEX        = 6;
+constexpr unsigned int VEL_Y_INDEX        = 7;
+constexpr unsigned int VEL_Z_INDEX        = 8;
+
+constexpr float INIT_BUFFER = 0.0f;
 
 #include <cmath>
 #include <vector>

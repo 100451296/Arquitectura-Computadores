@@ -68,7 +68,7 @@ class GridSoA {
 
     bool writeHeader(std::ofstream & output_file);
     bool writeParticles(std::ofstream & output_file);
-    bool writeParticle(std::ofstream & output_file, Particles const & particles, int index);
+    static bool writeParticle(std::ofstream & output_file, Particles const & particles, int index);
 
     void initGrid();
     void initBlocks();

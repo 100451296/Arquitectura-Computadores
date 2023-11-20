@@ -70,7 +70,7 @@ class Grid {
 
     bool writeHeader(std::ofstream & output_file);
     bool writeParticles(std::ofstream & output_file);
-    bool writeParticle(std::ofstream & output_file, Particle const & particle);
+    static bool writeParticle(std::ofstream & output_file, Particle const & particle);
 
     void initGrid();
     void initBlocks();
