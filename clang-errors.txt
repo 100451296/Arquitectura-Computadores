@@ -1,0 +1,470 @@
+------------------------ /usr/share/modules/modulefiles ------------------------
+dot  gcc/12.1.0  module-git  module-info  modules  null  use.own  
+cmake version 3.27.8
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+-- The CXX compiler identification is GNU 12.1.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/gcc-12.1.0/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- The C compiler identification is GNU 12.1.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/gcc-12.1.0/bin/gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Found Python3: /usr/bin/python3.9 (found version "3.9.2") found components: Interpreter 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE  
+-- Configuring done (15.1s)
+-- Generating done (1.2s)
+-- Build files have been written to: /home/alumnos/a0451296/proyecto/build
+[ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/block_soa.cpp.o
+[ 15%] Building CXX object ftest/CMakeFiles/ftest.dir/test1.cpp.o
+[ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/grid_soa.cpp.o
+[ 15%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[ 19%] Linking CXX executable ftest
+[ 19%] Built target ftest
+/home/alumnos/a0451296/proyecto/sim/soa/../common.hpp:35:31: error: floating point literal has suffix 'f', which is not uppercase [readability-uppercase-literal-suffix,-warnings-as-errors]
+   35 | constexpr float INIT_BUFFER = 0.0f;
+      |                               ^  ~
+      |                                  F
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:11:21: error: use emplace_back instead of push_back [modernize-use-emplace,-warnings-as-errors]
+   11 |       particlePairs.push_back(make_pair(particlesID[i], particlesID[j]));
+      |                     ^~~~~~~~~~~~~~~~~~~                               ~
+      |                     emplace_back
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:19:53: error: use emplace_back instead of push_back [modernize-use-emplace,-warnings-as-errors]
+   19 |     for (auto & Cid : otherBlock.particlesID) { aux.push_back(make_pair(Bid, Cid)); }
+      |                                                     ^~~~~~~~~~~~~~~~~~~         ~
+      |                                                     emplace_back
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:46:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
+   46 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:46:10: error: variable 'aux_x' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   46 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |          ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:46:17: error: variable 'aux_y' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   46 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |                 ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:46:24: error: variable 'aux_z' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   46 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |                        ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:46:31: error: variable 'increm_density_pair' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   46 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |                               ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:72:13: error: method 'calculate_increm_density' can be made const [readability-make-member-function-const,-warnings-as-errors]
+   72 | void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
+      |             ^
+      |                                                                                         const
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:72:71: error: the parameter 'ParejaParticulas' is copied for each invocation but only used as a const reference; consider making it a const reference [performance-unnecessary-value-param,-warnings-as-errors]
+   72 | void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
+      |                                                                       ^
+      |                                      const                           &
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:73:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
+   73 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:73:10: error: variable 'aux_x' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   73 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |          ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:73:17: error: variable 'aux_y' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   73 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |                 ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:73:24: error: variable 'aux_z' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   73 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |                        ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:73:31: error: variable 'increm_density_pair' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   73 |   double aux_x, aux_y, aux_z, increm_density_pair;
+      |                               ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:92:5: error: variable 'h_pow6' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+   92 |     double h_pow6      = pow(data.long_suavizado, 6);
+      |     ^
+      |            const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:92:51: error: 6 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+   92 |     double h_pow6      = pow(data.long_suavizado, 6);
+      |                                                   ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:93:5: error: variable 'h_pow9' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+   93 |     double h_pow9      = pow(data.long_suavizado, 9);
+      |     ^
+      |            const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:93:51: error: 9 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+   93 |     double h_pow9      = pow(data.long_suavizado, 9);
+      |                                                   ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:94:5: error: variable 'm' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+   94 |     double m           = data.mass;
+      |     ^
+      |            const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:94:12: error: variable name 'm' is too short, expected at least 3 characters [readability-identifier-length,-warnings-as-errors]
+   94 |     double m           = data.mass;
+      |            ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:95:5: error: variable 'coeficiente' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+   95 |     double coeficiente = 315 / (64 * M_PI * h_pow9) * m;
+      |     ^
+      |            const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:95:26: error: 315 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+   95 |     double coeficiente = 315 / (64 * M_PI * h_pow9) * m;
+      |                          ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:95:33: error: 64 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+   95 |     double coeficiente = 315 / (64 * M_PI * h_pow9) * m;
+      |                                 ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:101:23: error: function 'calculate_increm_aceleration' exceeds recommended size/complexity thresholds [readability-function-size,-warnings-as-errors]
+  101 | vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
+      |                       ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:101:23: note: 27 lines including whitespace and comments (threshold 25)
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:101:23: error: method 'calculate_increm_aceleration' can be made const [readability-make-member-function-const,-warnings-as-errors]
+  101 | vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
+      |                       ^
+  102 |                                                    double dist, vector<int> Bid) {
+      |                                                                                  const
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:103:3: error: variable 'pi_x' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  103 |   double pi_x = position[0];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:104:3: error: variable 'pi_y' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  104 |   double pi_y = position[1];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:105:3: error: variable 'pi_z' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  105 |   double pi_z = position[2];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:107:3: error: variable 'vi_x' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  107 |   double vi_x = velocity[0];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:108:3: error: variable 'vi_y' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  108 |   double vi_y = velocity[1];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:109:3: error: variable 'vi_z' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  109 |   double vi_z = velocity[2];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:111:3: error: variable 'rho_i' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  111 |   double rho_i = (*density)[Bid[0]];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:112:3: error: variable 'rho_j' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  112 |   double rho_j = (*density)[Bid[1]];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:114:3: error: variable 'term1' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  114 |   double term1 = 15 / (M_PI * pow(data.long_suavizado, 6));
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:114:18: error: 15 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  114 |   double term1 = 15 / (M_PI * pow(data.long_suavizado, 6));
+      |                  ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:114:56: error: 6 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  114 |   double term1 = 15 / (M_PI * pow(data.long_suavizado, 6));
+      |                                                        ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:115:3: error: variable 'term2' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  115 |   double term2 = 3 * data.mass * PRESION_RIGIDEZ / 2;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:116:3: error: variable 'term3' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  116 |   double term3 = pow(data.long_suavizado - dist, 2) / dist;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:117:3: error: variable 'term4' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  117 |   double term4 = rho_i + rho_j - 2 * DENSIDAD_FLUIDO;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:118:3: error: variable 'term5' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  118 |   double term5 = 45 / (M_PI * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:118:18: error: 45 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  118 |   double term5 = 45 / (M_PI * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass;
+      |                  ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:118:56: error: 6 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  118 |   double term5 = 45 / (M_PI * pow(data.long_suavizado, 6)) * VISCOSIDAD * data.mass;
+      |                                                        ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:119:3: error: variable 'term6' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  119 |   double term6 = (*density)[Bid[0]] * (*density)[Bid[1]];
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:132:15: error: method 'calculate_dist' can be made static [readability-convert-member-functions-to-static,-warnings-as-errors]
+  132 | double Block::calculate_dist(double posX, double posY, double posZ) {
+      |               ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:133:3: error: variable 'dist' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  133 |   double dist = sqrt(max(pow(posX, 2) + pow(posY, 2) + pow(posZ, 2), pow(10, -12)));
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:133:74: error: 10 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  133 |   double dist = sqrt(max(pow(posX, 2) + pow(posY, 2) + pow(posZ, 2), pow(10, -12)));
+      |                                                                          ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:133:79: error: 12 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  133 |   double dist = sqrt(max(pow(posX, 2) + pow(posY, 2) + pow(posZ, 2), pow(10, -12)));
+      |                                                                               ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:152:13: error: function 'accelerationTransferCalculations' exceeds recommended size/complexity thresholds [readability-function-size,-warnings-as-errors]
+  152 | void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
+      |             ^
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:152:13: note: 33 lines including whitespace and comments (threshold 25)
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:152:74: error: the parameter 'pair_vec' is copied for each invocation but only used as a const reference; consider making it a const reference [performance-unnecessary-value-param,-warnings-as-errors]
+  152 | void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
+      |                                                                          ^
+      |                                              const                      &
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:160:7: error: variable 'dist' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  160 |       double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
+      |       ^
+      |              const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:164:7: error: variable 'position' of type 'vector<double>' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  164 |       vector<double> position = {(*particles).posX[pair.first] - (*particles).posX[pair.second],
+      |       ^
+      |                      const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:168:7: error: variable 'velocity' of type 'vector<double>' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  168 |       vector<double> velocity = {(*particles).velX[pair.second] - (*particles).velX[pair.first],
+      |       ^
+      |                      const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:172:7: error: variable 'Bid' of type 'vector<int>' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  172 |       vector<int> Bid = {pair.first, pair.second};
+      |       ^
+      |                   const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:189:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
+  189 |   double cord_x, increm_x = 0;
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:189:10: error: variable 'cord_x' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+  189 |   double cord_x, increm_x = 0;
+      |          ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:209:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
+  209 |   double cord_y, increm_y = 0;
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:209:10: error: variable 'cord_y' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+  209 |   double cord_y, increm_y = 0;
+      |          ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:229:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
+  229 |   double cord_z, increm_z = 0;
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:229:10: error: variable 'cord_z' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+  229 |   double cord_z, increm_z = 0;
+      |          ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:18:37: error: 4 adjacent parameters of 'Block' of similar type ('std::vector<double> &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+   18 |     Block(Particles & particlesRef, std::vector<double> & densityRef,std::vector<double> & accelerationXRef,
+      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   19 |           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:18:59: note: the first parameter in the range is 'densityRef'
+   18 |     Block(Particles & particlesRef, std::vector<double> & densityRef,std::vector<double> & accelerationXRef,
+      |                                                           ^~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:19:73: note: the last parameter in the range is 'accelerationZRef'
+   19 |           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef
+      |                                                                         ^~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:21:35: error: initializer for member 'particlesID' is redundant [readability-redundant-member-init,-warnings-as-errors]
+   21 |       : particles(&particlesRef), particlesID(), data(),
+      |                                   ^~~~~~~~~~~~~
+73208 warnings generated.
+Suppressed 73136 warnings (73136 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+62 warnings treated as errors
+gmake[2]: *** [sim/soa/CMakeFiles/soa.dir/build.make:76: sim/soa/CMakeFiles/soa.dir/block_soa.cpp.o] Error 1
+gmake[2]: *** Se espera a que terminen otras tareas....
+/home/alumnos/a0451296/proyecto/sim/soa/../common.hpp:35:31: error: floating point literal has suffix 'f', which is not uppercase [readability-uppercase-literal-suffix,-warnings-as-errors]
+   35 | constexpr float INIT_BUFFER = 0.0f;
+      |                               ^  ~
+      |                                  F
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:18:37: error: 4 adjacent parameters of 'Block' of similar type ('std::vector<double> &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+   18 |     Block(Particles & particlesRef, std::vector<double> & densityRef,std::vector<double> & accelerationXRef,
+      |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   19 |           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:18:59: note: the first parameter in the range is 'densityRef'
+   18 |     Block(Particles & particlesRef, std::vector<double> & densityRef,std::vector<double> & accelerationXRef,
+      |                                                           ^~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:19:73: note: the last parameter in the range is 'accelerationZRef'
+   19 |           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef
+      |                                                                         ^~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:21:35: error: initializer for member 'particlesID' is redundant [readability-redundant-member-init,-warnings-as-errors]
+   21 |       : particles(&particlesRef), particlesID(), data(),
+      |                                   ^~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:4:25: error: unused variable 'Nine' [clang-diagnostic-unused-const-variable]
+    4 | static constexpr double Nine = 9;
+      |                         ^~~~
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:6:55: error: initialization of 'offsets' with static storage duration may throw an exception that cannot be caught [cert-err58-cpp,-warnings-as-errors]
+    6 | std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
+      |                                                       ^
+/usr/lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/stl_vector.h:625:7: note: possibly throwing constructor declared here
+  625 |       vector(initializer_list<value_type> __l,
+      |       ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:57:15: error: method 'printParameters' can be made const [readability-make-member-function-const,-warnings-as-errors]
+   57 | void GridSoA::printParameters() {
+      |               ^
+      |                                 const
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:58:60: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   58 |   std::cout << "Number of particles: " << num_particles << std::endl;
+      |                                                            ^~~~~~~~~
+      |                                                            '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:59:50: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   59 |   std::cout << "Particles per meter: " << ppm << std::endl;
+      |                                                  ^~~~~~~~~
+      |                                                  '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:60:45: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   60 |   std::cout << "Smoothing length: " << h << std::endl;
+      |                                             ^~~~~~~~~
+      |                                             '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:61:54: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   61 |   std::cout << "Particle mass: " << particle_mass << std::endl;
+      |                                                      ^~~~~~~~~
+      |                                                      '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:62:79: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   62 |   std::cout << "Grid size: " << nx << " blockX " << ny << " blockX " << nz << std::endl;
+      |                                                                               ^~~~~~~~~
+      |                                                                               '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:63:54: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   63 |   std::cout << "Number of blocks: " << num_blocks << std::endl;
+      |                                                      ^~~~~~~~~
+      |                                                      '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:64:80: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   64 |   std::cout << "Block size: " << sx << " blockX " << sy << " blockX " << sz << std::endl;
+      |                                                                                ^~~~~~~~~
+      |                                                                                '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:78:9: error: 'push_back' is called inside a loop; consider pre-allocating the container capacity before the loop [performance-inefficient-vector-operation,-warnings-as-errors]
+   77 |       for (int blockZ = 0; blockZ < nz; blockZ++) {
+   78 |         tempVector1.push_back(
+      |         ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:78:21: error: use emplace_back instead of push_back [modernize-use-emplace,-warnings-as-errors]
+   78 |         tempVector1.push_back(
+      |                     ^~~~~~~~~~
+      |                     emplace_back(
+   79 |             Block(particles, accelerationX, accelerationY, accelerationZ, density));
+      |             ~~~~~~                                                               ~
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:93:11: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
+   93 |           int x_offset, y_offset, z_offset;
+      |           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:93:15: error: variable 'x_offset' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   93 |           int x_offset, y_offset, z_offset;
+      |               ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:93:25: error: variable 'y_offset' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   93 |           int x_offset, y_offset, z_offset;
+      |                         ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:93:35: error: variable 'z_offset' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
+   93 |           int x_offset, y_offset, z_offset;
+      |                                   ^
+note: this fix will not be applied because it overlaps with another fix
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:103:17: error: unnecessary temporary object created while calling emplace_back [modernize-use-emplace,-warnings-as-errors]
+  103 |                 std::make_pair(std::make_tuple(blockX, blockY, blockZ),
+      |                 ^~~~~~~~~~~~~~~
+  104 |                                std::make_tuple(x_contiguo, y_contiguo, z_contiguo)));
+      |                                                                                   ~
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:115:60: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  115 |     std::cerr << "Error al abrir el archivo de entrada" << std::endl;
+      |                                                            ^~~~~~~~~
+      |                                                            '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:122:56: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  122 |     std::cerr << "Número de partículas inválido" << std::endl;
+      |                                                     ^~~~~~~~~
+      |                                                     '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:137:19: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  137 |   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
+      |                   ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:138:19: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  138 |   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
+      |                   ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:156:15: error: method 'readParticle' can be made static [readability-convert-member-functions-to-static,-warnings-as-errors]
+  156 | bool GridSoA::readParticle(std::ifstream & input_file, Particles & particles, int index) {
+      |               ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:157:3: error: do not declare C-style arrays, use std::array<> instead [cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays,-warnings-as-errors]
+  157 |   float buffer[particleAttr];
+      |   ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:158:24: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  158 |   if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * particleAttr)) {
+      |                        ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:159:65: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  159 |     std::cerr << "Error al leer las partículas del archivo" << std::endl;
+      |                                                                ^~~~~~~~~
+      |                                                                '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:180:59: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  180 |     std::cerr << "Error al abrir el archivo de salida" << std::endl;
+      |                                                           ^~~~~~~~~
+      |                                                           '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:193:3: error: use auto when initializing with a cast to avoid duplicating the type name [modernize-use-auto,-warnings-as-errors]
+  193 |   float ppm_float = static_cast<float>(ppm);
+      |   ^~~~~
+      |   auto
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:194:21: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  194 |   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
+      |                     ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:195:21: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  195 |   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
+      |                     ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:199:15: error: method 'writeParticles' can be made const [readability-make-member-function-const,-warnings-as-errors]
+  199 | bool GridSoA::writeParticles(std::ofstream & output_file) {
+      |               ^
+      |                                                           const
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:201:48: error: narrowing conversion from 'size_t' (aka 'unsigned long') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions,-warnings-as-errors]
+  201 |     if (!writeParticle(output_file, particles, i)) { return false; }
+      |                                                ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:207:3: error: do not declare C-style arrays, use std::array<> instead [cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays,-warnings-as-errors]
+  207 |   float buffer[particleAttr] = {static_cast<float>(particles.posX[index]),
+      |   ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:217:26: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  217 |   if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
+      |                          ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:217:82: error: 9 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  217 |   if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
+      |                                                                                  ^
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:218:71: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  218 |     std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
+      |                                                                      ^~~~~~~~~
+      |                                                                      '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:244:52: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  244 |   std::cout << "Partículas en la cuadrícula:" << std::endl;
+      |                                                  ^~~~~~~~~
+      |                                                  '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:252:46: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  252 |               << particles.velZ[i] << ")" << std::endl;
+      |                                              ^~~~~~~~~
+      |                                              '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:267:52: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  267 |   std::cout << "Partículas en la cuadrícula:" << std::endl;
+      |                                                  ^~~~~~~~~
+      |                                                  '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:275:46: error: do not use 'std::endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  275 |               << particles.velZ[0] << ")" << std::endl;
+      |                                              ^~~~~~~~~
+      |                                              '\n'
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:294:5: error: variable 'index_i' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  294 |     int index_i = std::max(
+      |     ^
+      |         const 
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:297:5: error: variable 'index_j' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  297 |     int index_j = std::max(
+      |     ^
+      |         const 
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:300:5: error: variable 'index_k' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  300 |     int index_k = std::max(
+      |     ^
+      |         const 
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:304:51: error: narrowing conversion from 'value_type' (aka 'unsigned int') to signed type 'int' is implementation-defined [bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions,-warnings-as-errors]
+  304 |     blocks[index_i][index_j][index_k].addParticle(particles.id[index]);
+      |                                                   ^
+80284 warnings and 1 error generated.
+Error while processing /home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp.
+Suppressed 80234 warnings (80234 in non-user code).
+Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
+45 warnings treated as errors
+gmake[2]: *** [sim/soa/CMakeFiles/soa.dir/build.make:90: sim/soa/CMakeFiles/soa.dir/grid_soa.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:388: sim/soa/CMakeFiles/soa.dir/all] Error 2
+gmake[1]: *** Se espera a que terminen otras tareas....
+[ 23%] Linking CXX static library ../../../lib/libgtest.a
+[ 23%] Built target gtest
+gmake: *** [Makefile:146: all] Error 2
