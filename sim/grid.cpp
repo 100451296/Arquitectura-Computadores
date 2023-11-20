@@ -1,7 +1,7 @@
 #include "grid.hpp"
 
 using namespace std;
-
+static constexpr double Nine = 9;
 // Offsets para buscar bloques contiguos
 std::vector<std::tuple<int, int, int>> const Grid::offsets = {
   {1,  1,  1},
@@ -78,7 +78,7 @@ void Grid::initializeBlockVectors() {
       std::vector<Block> tempVector1;
       for (int blockZ = 0; blockZ < nz; blockZ++) {
         tempVector1.push_back(
-            Block(particles, accelerationX, accelerationY, accelerationZ, density));
+            Block(particles, density , accelerationX, accelerationY, accelerationZ));
       }
       tempVector2.push_back(tempVector1);
     }
@@ -189,7 +189,7 @@ int Grid::writeFile(std::string const & output_file_name) {
 }
 
 bool Grid::writeHeader(std::ofstream & output_file) {
-  float ppm_float = static_cast<float>(ppm);
+  auto ppm_float  = static_cast<float>(ppm);
   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
   return output_file.good();

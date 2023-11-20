@@ -3,7 +3,7 @@
 using namespace std;
 
 // METODOS de BLOCK
-
+static constexpr double Epsilon = 1e-10;
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
   for (size_t i = 0; i < particlesID.size(); i++) {
@@ -208,7 +208,7 @@ void Block::collisionsX(unsigned int cx) {
     } else if (cx == data.nx - 1) {
       increm_x = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_X - cord_x);
     }
-    if (increm_x > EPSILON) {
+    if (increm_x > Epsilon) {
       if (cx == 0) {
         (*accelerationX)[Bid] += COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * (*particles)[Bid].velX;
       } else if (cx == data.nx - 1) {
@@ -228,7 +228,7 @@ void Block::collisionsY(unsigned int cy) {
     } else if (cy == data.ny - 1) {
       increm_y = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_Y - cord_y);
     }
-    if (increm_y > EPSILON) {
+    if (increm_y > Epsilon) {
       if (cy == 0) {
         (*accelerationY)[Bid] += COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * (*particles)[Bid].velY;
       } else if (cy == data.ny - 1) {
@@ -248,7 +248,7 @@ void Block::collisionsZ(unsigned int cz) {
     } else if (cz == data.nz - 1) {
       increm_z = TAMANO_PARTICULA - (LIMITE_SUPERIOR_RECINTO_Z - cord_z);
     }
-    if (increm_z > EPSILON) {
+    if (increm_z > Epsilon) {
       if (cz == 0) {
         (*accelerationZ)[Bid] += COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * (*particles)[Bid].velZ;
       } else if (cz == data.nz - 1) {
