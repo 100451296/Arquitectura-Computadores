@@ -6,9 +6,11 @@ using namespace std;
 
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
-  for (size_t i = 0; i < particlesID.size(); i++) {
-    for (size_t j = i + 1; j < particlesID.size(); j++) {
-      particlePairs.push_back(make_pair(particlesID[i], particlesID[j]));
+  particlePairs.reserve((particlesID.size() * (particlesID.size() - 1)) / 2);
+
+  for (auto it1 = particlesID.begin(); it1 != particlesID.end(); ++it1) {
+    for (auto it2 = std::next(it1); it2 != particlesID.end(); ++it2) {
+      particlePairs.emplace_back(*it1, *it2);
     }
   }
 }
@@ -16,12 +18,10 @@ void Block::generarParejasBloque() {
 // Metodo encargado de crear las parejas de particulas entre bloques contiguos
 void Block::generarParejasEntreBloques(Block & otherBlock, vector<std::pair<int, int>> & aux) {
   for (auto & id : particlesID) {
-    std::transform(
-      otherBlock.particlesID.begin(),
-      otherBlock.particlesID.end(),
-      std::back_inserter(aux),
-      [&](int Cid) { return std::make_pair(id, Cid); }
-    );
+    std::transform(otherBlock.particlesID.begin(), otherBlock.particlesID.end(),
+                   std::back_inserter(aux), [&](int Cid) {
+                     return std::make_pair(id, Cid);
+                   });
   }
 }
 
@@ -46,26 +46,11 @@ void Block::initDensityAcceleration() {
   }
 }
 
-
-// Funcion encargada de modificar el vector de densidades del propio bloque
-/*void Block::densityIncreaseSingle() {
-  for (auto const & pair : particlePairs) {
-    double aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
-    double aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
-    double aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
-    if (aux_x + aux_y + aux_z < data.h_square) {
-      double increm_density_pair   = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
-      density[pair.first]  += increm_density_pair;
-      density[pair.second] += increm_density_pair;
-    }
-  }
-}*/
-
 // Funcion encargada de modificar el vector de densidades del propio bloque
 void Block::densityIncreaseSingle() {
   for (auto const & pair : particlePairs) {
-    Particle& particle1 = particles[pair.first];
-    Particle& particle2 = particles[pair.second];
+    Particle const & particle1 = particles[pair.first];
+    Particle const & particle2 = particles[pair.second];
 
     double dx = particle1.posX - particle2.posX;
     double dy = particle1.posY - particle2.posY;
@@ -75,9 +60,10 @@ void Block::densityIncreaseSingle() {
 
     if (distanceSquared < data.h_square) {
       double hSquareMinusDistSquared = data.h_square - distanceSquared;
-      double incremDensityPair = hSquareMinusDistSquared * hSquareMinusDistSquared * hSquareMinusDistSquared;
+      double incremDensityPair =
+          hSquareMinusDistSquared * hSquareMinusDistSquared * hSquareMinusDistSquared;
 
-      density[pair.first] += incremDensityPair;
+      density[pair.first]  += incremDensityPair;
       density[pair.second] += incremDensityPair;
     }
   }
@@ -92,24 +78,10 @@ void Block::densityIncrease(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-/*void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
-  for (auto const & pair : ParejaParticulas) {
-    double aux_x = std::pow(particles[pair.first].posX - particles[pair.second].posX, 2);
-    double aux_y = std::pow(particles[pair.first].posY - particles[pair.second].posY, 2);
-    double aux_z = std::pow(particles[pair.first].posZ - particles[pair.second].posZ, 2);
-    if (aux_x + aux_y + aux_z < data.h_square) {
-      double increm_density_pair   = std::pow(data.h_square - (aux_x + aux_y + aux_z), 3);
-      density[pair.first]  += increm_density_pair;
-      density[pair.second] += increm_density_pair;
-    }
-  }
-}*/
-
-// Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
 void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
-  for (const auto & pair : ParejaParticulas) {
-    Particle& particle1 = particles[pair.first];
-    Particle& particle2 = particles[pair.second];
+  for (auto const & pair : ParejaParticulas) {
+    Particle const & particle1 = particles[pair.first];
+    Particle const & particle2 = particles[pair.second];
 
     double dx = particle1.posX - particle2.posX;
     double dy = particle1.posY - particle2.posY;
@@ -119,14 +91,14 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 
     if (distanceSquared < data.h_square) {
       double hSquareMinusDistSquared = data.h_square - distanceSquared;
-      double incremDensityPair = hSquareMinusDistSquared * hSquareMinusDistSquared * hSquareMinusDistSquared;
+      double incremDensityPair =
+          hSquareMinusDistSquared * hSquareMinusDistSquared * hSquareMinusDistSquared;
 
-      density[pair.first] += incremDensityPair;
+      density[pair.first]  += incremDensityPair;
       density[pair.second] += incremDensityPair;
     }
   }
 }
-
 
 // Metodo auxiliar que realiza los diferentes calculos para la transformacion lineal de la
 // densidad en un mismo bloque
@@ -190,37 +162,35 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para la aceleracion
-void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
+void Block::accelerationTransferCalculations(vector<std::pair<int, int>> const pair_vec) {
   for (auto const & pair : pair_vec) {
-    // Si las dos particulas estan cerca
-    if ((pow(particles[pair.first].posX - particles[pair.second].posX, 2) +
-         pow(particles[pair.first].posY - particles[pair.second].posY, 2) +
-         pow(particles[pair.first].posZ - particles[pair.second].posZ, 2)) <
-        pow(data.long_suavizado, 2)) {
-      // Calculo de distancia
-      double dist = calculate_dist(particles[pair.first].posX - particles[pair.second].posX,
-                                   particles[pair.first].posY - particles[pair.second].posY,
-                                   particles[pair.first].posZ - particles[pair.second].posZ);
-      // Calculo vector posicion
-      vector<double> position = {particles[pair.first].posX - particles[pair.second].posX,
-                                 particles[pair.first].posY - particles[pair.second].posY,
-                                 particles[pair.first].posZ - particles[pair.second].posZ};
-      // Calculo vector velocidad
-      vector<double> velocity = {particles[pair.second].velX - particles[pair.first].velX,
-                                 particles[pair.second].velY - particles[pair.first].velY,
-                                 particles[pair.second].velZ - particles[pair.first].velZ};
+    Particle const & particle1 = particles[pair.first];
+    Particle const & particle2 = particles[pair.second];
+
+    double dx = particle1.posX - particle2.posX;
+    double dy = particle1.posY - particle2.posY;
+    double dz = particle1.posZ - particle2.posZ;
+
+    double distanceSquared = dx * dx + dy * dy + dz * dz;
+
+    if (distanceSquared < data.h_square) {
+      double dist = calculate_dist(dx, dy, dz);
+
+      vector<double> position = {dx, dy, dz};
+      vector<double> velocity = {particle2.velX - particle1.velX, particle2.velY - particle1.velY,
+                                 particle2.velZ - particle1.velZ};
 
       vector<int> Id = {pair.first, pair.second};
 
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Id);
 
-      accelerationX[pair.first]  = accelerationX[pair.first] + increm_aceleration[0];
-      accelerationY[pair.first]  = accelerationY[pair.first] + increm_aceleration[1];
-      accelerationZ[pair.first]  = accelerationZ[pair.first] + increm_aceleration[2];
-      accelerationX[pair.second] = accelerationX[pair.second] - increm_aceleration[0];
-      accelerationY[pair.second] = accelerationY[pair.second] - increm_aceleration[1];
-      accelerationZ[pair.second] = accelerationZ[pair.second] - increm_aceleration[2];
+      accelerationX[pair.first]  += increm_aceleration[0];
+      accelerationY[pair.first]  += increm_aceleration[1];
+      accelerationZ[pair.first]  += increm_aceleration[2];
+      accelerationX[pair.second] -= increm_aceleration[0];
+      accelerationY[pair.second] -= increm_aceleration[1];
+      accelerationZ[pair.second] -= increm_aceleration[2];
     }
   }
 }

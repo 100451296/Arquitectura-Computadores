@@ -3,11 +3,11 @@
 
 #include "common.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <numbers>
 #include <vector>
-#include <algorithm>
 
 class Block {
     // Representa un bloque en la malla. Realizará todos los cálculos entre
@@ -53,7 +53,6 @@ class Block {
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<int> Id);
     double calculate_dist(double posX, double posY, double posZ);
-
     void accelerationTransferCalculations(std::vector<std::pair<int, int>> pair_vec);
 };
 
