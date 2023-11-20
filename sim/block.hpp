@@ -14,6 +14,8 @@ class Block {
     // partículas
 
   public:
+    static constexpr double EPSILON = 1e-10;
+
     Block(std::vector<Particle> & particlesRef, std::vector<double> & accelerationXRef,
           std::vector<double> & accelerationYRef, std::vector<double> & accelerationZRef,
           std::vector<double> & densityRef)
