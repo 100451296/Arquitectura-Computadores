@@ -45,8 +45,6 @@ void Block::initDensityAcceleration() {
 void Block::densityIncreaseSingle() {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : particlePairs) {
-
-
     aux_x = std::pow(particles.posX[pair.first] - particles.posX[pair.second], 2);
     aux_y = std::pow(particles.posY[pair.first] - particles.posY[pair.second], 2);
     aux_z = std::pow(particles.posZ[pair.first] - particles.posZ[pair.second], 2);
@@ -74,7 +72,6 @@ void Block::densityIncrease(Block & contiguousBlock) {
 void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) {
   double aux_x, aux_y, aux_z, increm_density_pair;
   for (auto const & pair : ParejaParticulas) {
-    if (pair.first == 2496 || pair.second == 2496) { aux_x = 0; }
     aux_x = std::pow(particles.posX[pair.first] - particles.posX[pair.second], 2);
     aux_y = std::pow(particles.posY[pair.first] - particles.posY[pair.second], 2);
     aux_z = std::pow(particles.posZ[pair.first] - particles.posZ[pair.second], 2);
@@ -251,17 +248,17 @@ void Block::collisionsZ(unsigned int cz) {
 void Block::particleMotion() {
   for (auto & Bid : particlesID) {
     particles.posX[Bid] = particles.posX[Bid] + particles.smoothVecX[Bid] * PASO_TIEMPO +
-                         accelerationX[Bid] * pow(PASO_TIEMPO, 2);
-    particles.posY[Bid] = particles.posY[Bid] + particles.smoothVecY[Bid]  * PASO_TIEMPO +
-                         accelerationY[Bid] * pow(PASO_TIEMPO, 2);
-    particles.posZ[Bid] = particles.posZ[Bid] + particles.smoothVecZ[Bid]  * PASO_TIEMPO +
-                         accelerationZ[Bid] * pow(PASO_TIEMPO, 2);
-    particles.velX[Bid]       = particles.smoothVecX[Bid] + ((accelerationX[Bid] * PASO_TIEMPO) / 2);
-    particles.velY[Bid]       = particles.smoothVecY[Bid]  + ((accelerationY[Bid] * PASO_TIEMPO) / 2);
-    particles.velZ[Bid]       = particles.smoothVecZ[Bid]  + ((accelerationZ[Bid] * PASO_TIEMPO) / 2);
+                          accelerationX[Bid] * pow(PASO_TIEMPO, 2);
+    particles.posY[Bid] = particles.posY[Bid] + particles.smoothVecY[Bid] * PASO_TIEMPO +
+                          accelerationY[Bid] * pow(PASO_TIEMPO, 2);
+    particles.posZ[Bid] = particles.posZ[Bid] + particles.smoothVecZ[Bid] * PASO_TIEMPO +
+                          accelerationZ[Bid] * pow(PASO_TIEMPO, 2);
+    particles.velX[Bid] = particles.smoothVecX[Bid] + ((accelerationX[Bid] * PASO_TIEMPO) / 2);
+    particles.velY[Bid] = particles.smoothVecY[Bid] + ((accelerationY[Bid] * PASO_TIEMPO) / 2);
+    particles.velZ[Bid] = particles.smoothVecZ[Bid] + ((accelerationZ[Bid] * PASO_TIEMPO) / 2);
     particles.smoothVecX[Bid] = particles.smoothVecX[Bid] + accelerationX[Bid] * PASO_TIEMPO;
-    particles.smoothVecY[Bid]  = particles.smoothVecY[Bid]  + accelerationY[Bid] * PASO_TIEMPO;
-    particles.smoothVecZ[Bid]  = particles.smoothVecZ[Bid]  + accelerationZ[Bid] * PASO_TIEMPO;
+    particles.smoothVecY[Bid] = particles.smoothVecY[Bid] + accelerationY[Bid] * PASO_TIEMPO;
+    particles.smoothVecZ[Bid] = particles.smoothVecZ[Bid] + accelerationZ[Bid] * PASO_TIEMPO;
   }
 }
 
@@ -302,7 +299,7 @@ void Block::interactionsY(unsigned int cy) {
         particles.posY[Bid] = LIMITE_SUPERIOR_RECINTO_Y + dyB;
       }
       particles.velY[Bid]       = -particles.velY[Bid];
-      particles.smoothVecY[Bid]  = -particles.smoothVecY[Bid] ;
+      particles.smoothVecY[Bid] = -particles.smoothVecY[Bid];
     }
   }
 }
@@ -323,7 +320,7 @@ void Block::interactionsZ(unsigned int cz) {
         particles.posZ[Bid] = LIMITE_SUPERIOR_RECINTO_Z + dzB;
       }
       particles.velZ[Bid]       = -particles.velZ[Bid];
-      particles.smoothVecZ[Bid]  = -particles.smoothVecZ[Bid] ;
+      particles.smoothVecZ[Bid] = -particles.smoothVecZ[Bid];
     }
   }
 }
