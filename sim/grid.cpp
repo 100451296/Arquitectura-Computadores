@@ -39,7 +39,7 @@ void Grid::initGrid() {
   data.nz             = static_cast<unsigned int>(nz);
   data.h_square       = pow(h, 2);
   data.h_pow6         = pow(h, 6);
-  data.h_pow9         = pow(h, 9);
+  data.h_pow9         = pow(h, Nine);
 
   initBlocks();
   initDensityAcceleration();
@@ -154,7 +154,7 @@ bool Grid::readParticles(std::ifstream & input_file) {
 
 bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int index) {
   float buffer[9];
-  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * 9)) {
+  if (!input_file.read(reinterpret_cast<char *>(buffer), sizeof(float) * Nine)) {
     std::cerr << "Error al leer las partículas del archivo" << std::endl;
     return false;
   }
@@ -209,7 +209,7 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
     static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
     static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
     static_cast<float>(particle.velZ)};
-  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * 9)) {
+  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * Nine)) {
     std::cerr << "Error al escribir las partículas en el archivo" << std::endl;
     return false;
   }
