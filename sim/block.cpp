@@ -13,10 +13,6 @@ static constexpr double FortyFive = 45;
 static constexpr double SixtyFour = 64;
 static constexpr double ThreeHundFifteen = 315;
 
-
-
-
-
 // Metodo encargado de crear las parejas de particulas de un mismo bloque
 void Block::generarParejasBloque() {
   for (size_t i = 0; i < particlesID.size(); i++) {
