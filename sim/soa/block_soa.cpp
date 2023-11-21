@@ -146,13 +146,10 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para la aceleracion
-void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
+void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) {
   for (auto const & pair : pair_vec) {
     // Si las dos particulas estan cerca
-    if ((pow((*particles).posX[pair.first] - (*particles).posX[pair.second], 2) +
-         pow((*particles).posY[pair.first] - (*particles).posY[pair.second], 2) +
-         pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], 2)) <
-        pow(data.long_suavizado, Two)) {
+    if (distClose(pair.first,pair.second )) {
       // Calculo de distancia
       double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
                                    (*particles).posY[pair.first] - (*particles).posY[pair.second],
@@ -171,14 +168,27 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_ve
       vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Bid);
 
-      (*accelerationX)[pair.first]  = (*accelerationX)[pair.first] + increm_aceleration[0];
-      (*accelerationY)[pair.first]  = (*accelerationY)[pair.first] + increm_aceleration[1];
-      (*accelerationZ)[pair.first]  = (*accelerationZ)[pair.first] + increm_aceleration[2];
-      (*accelerationX)[pair.second] = (*accelerationX)[pair.second] - increm_aceleration[0];
-      (*accelerationY)[pair.second] = (*accelerationY)[pair.second] - increm_aceleration[1];
-      (*accelerationZ)[pair.second] = (*accelerationZ)[pair.second] - increm_aceleration[2];
+      updateAcceleration(pair.first, pair.second, increm_aceleration);
     }
   }
+}
+// Metodo auxiliar que realiza los diferentes calculos para modificar la aceleracion
+void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) {
+  (*accelerationX)[p1]  = (*accelerationX)[p1] + increm_aceleration[0];
+  (*accelerationY)[p1]  = (*accelerationY)[p1] + increm_aceleration[1];
+  (*accelerationZ)[p1]  = (*accelerationZ)[p1] + increm_aceleration[2];
+  (*accelerationX)[p2] = (*accelerationX)[p2] - increm_aceleration[0];
+  (*accelerationY)[p2] = (*accelerationY)[p2] - increm_aceleration[1];
+  (*accelerationZ)[p2] = (*accelerationZ)[p2] - increm_aceleration[2];
+}
+// Método auxiliar que realiza los diferentes cálculos para saber si dos partículas están lo
+// suficientemente cerca
+bool Block::distClose(int idP1, int idP2) {
+  if (pow(((*particles).posX[idP1] - (*particles).posX[idP2]), 2) + pow(((*particles).posY[idP1] - (*particles).posY[idP2]), 2) + pow(((*particles).posZ[idP1] - (*particles).posZ[idP2]), 2) <
+      pow(data.long_suavizado, 2)) {
+    return true;
+  }
+  return false;
 }
 
 // Debe actualizar la componente x del vector de aceleración para cada particula
