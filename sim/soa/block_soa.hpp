@@ -23,6 +23,7 @@ class Block {
     static constexpr double SixtyFour        = 64;
     static constexpr double ThreeHundFifteen = 315;
 
+    //NOLINTNEXTLINE
     Block(Particles & particlesRef, std::vector<double> & densityRef,
           std::vector<double> & accelerationXRef, std::vector<double> & accelerationYRef,
           std::vector<double> & accelerationZRef)
@@ -62,7 +63,7 @@ class Block {
                                                      std::vector<int> Id) const;
     static double calculate_dist(double posX, double posY, double posZ);
     void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec)const;
-    [[nodiscard]] bool distClose(int idP1, int idP2)const;
+    [[nodiscard]]bool distClose(int idP1, int idP2)const;
     void updateAcceleration(int p1, int p2,const std::vector<double> & increm_aceleration)const;
 };
 

@@ -45,9 +45,12 @@ void Block::initDensityAcceleration() {
 void Block::densityIncreaseSingle() {
   double increm_density_pair = 0;
   for (auto const & pair : particlePairs) {
-    const double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second],Two);
-    const double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second],Two);
-    const double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second],Two);
+    double const aux_x =
+        std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
+    double const aux_y =
+        std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
+    double const aux_z =
+        std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
 
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
@@ -69,12 +72,16 @@ void Block::densityIncrease(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density(const std::vector<std::pair<int, int>> & ParejaParticulas) const {
+void Block::calculate_increm_density(
+    std::vector<std::pair<int, int>> const & ParejaParticulas) const {
   double increm_density_pair = 0;
   for (auto const & pair : ParejaParticulas) {
-    const double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
-    const double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
-    const double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
+    double const aux_x =
+        std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
+    double const aux_y =
+        std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
+    double const aux_z =
+        std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
     } else {
@@ -89,31 +96,31 @@ void Block::calculate_increm_density(const std::vector<std::pair<int, int>> & Pa
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & Bid : particlesID) {
-    const double coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
+    double const coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
 
     (*density)[Bid] = ((*density)[Bid] + data.h_pow6) * coeficiente;
   }
 }
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
-                                                   const double dist, vector<int> Bid) const {
-  const double pi_x = position[0];
-  const double pi_y = position[1];
-  const double pi_z = position[2];
+                                                   double const dist, vector<int> Bid) const {
+  double const pi_x = position[0];
+  double const pi_y = position[1];
+  double const pi_z = position[2];
 
-  const double vi_x = velocity[0];
-  const double vi_y = velocity[1];
-  const double vi_z = velocity[2];
+  double const vi_x = velocity[0];
+  double const vi_y = velocity[1];
+  double const vi_z = velocity[2];
 
-  const double rho_i = (*density)[Bid[0]];
-  const double rho_j = (*density)[Bid[1]];
+  double const rho_i = (*density)[Bid[0]];
+  double const rho_j = (*density)[Bid[1]];
 
-  const double term1 = Fifteen / (M_PI * pow(data.long_suavizado, Six));
-  const double term2 = Three * data.mass * PRESION_RIGIDEZ / Two;
-  const double term3 = pow(data.long_suavizado - dist, Two) / dist;
-  const double term4 = rho_i + rho_j - Two * DENSIDAD_FLUIDO;
-  const double term5 = FortyFive / (M_PI * pow(data.long_suavizado, Six)) * VISCOSIDAD * data.mass;
-  const double term6 = (*density)[Bid[0]] * (*density)[Bid[1]];
+  double const term1 = Fifteen / (M_PI * pow(data.long_suavizado, Six));
+  double const term2 = Three * data.mass * PRESION_RIGIDEZ / Two;
+  double const term3 = pow(data.long_suavizado - dist, Two) / dist;
+  double const term4 = rho_i + rho_j - Two * DENSIDAD_FLUIDO;
+  double const term5 = FortyFive / (M_PI * pow(data.long_suavizado, Six)) * VISCOSIDAD * data.mass;
+  double const term6 = (*density)[Bid[0]] * (*density)[Bid[1]];
 
   vector<double> increment_acceleration = {
     (pi_x * term1 * term2 * term3 * term4 + vi_x * term5) / term6,
@@ -124,7 +131,7 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
 
 // Metodo auxiliar que realiza los diferentes calculos para la distancia
 double Block::calculate_dist(double posX, double posY, double posZ) {
-  const double dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
+  double const dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
   return dist;
 }
 
@@ -145,39 +152,41 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
 // Metodo auxiliar que realiza los diferentes calculos para la aceleracion
 void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) const {
   for (auto const & pair : pair_vec) {
-    // Si las dos particulas estan cerca
-    if (distClose(pair.first,pair.second )) {
-      // Calculo de distancia
-      const double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
-                                   (*particles).posY[pair.first] - (*particles).posY[pair.second],
-                                   (*particles).posZ[pair.first] - (*particles).posZ[pair.second]);
-      // Calculo vector posicion
-      const vector<double> position = {(*particles).posX[pair.first] - (*particles).posX[pair.second],
-                                 (*particles).posY[pair.first] - (*particles).posY[pair.second],
-                                 (*particles).posZ[pair.first] - (*particles).posZ[pair.second]};
-      // Calculo vector velocidad
-      const vector<double> velocity = {(*particles).velX[pair.second] - (*particles).velX[pair.first],
-                                 (*particles).velY[pair.second] - (*particles).velY[pair.first],
-                                 (*particles).velZ[pair.second] - (*particles).velZ[pair.first]};
+    if (distClose(pair.first, pair.second)) {  // Si las dos particulas estan cerca
+      double const dist =                      // Calculo de la distancia
+          calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
+                         (*particles).posY[pair.first] - (*particles).posY[pair.second],
+                         (*particles).posZ[pair.first] - (*particles).posZ[pair.second]);
+      vector<double> const position = {
+        // Calculo vector posicion
+        (*particles).posX[pair.first] - (*particles).posX[pair.second],
+        (*particles).posY[pair.first] - (*particles).posY[pair.second],
+        (*particles).posZ[pair.first] - (*particles).posZ[pair.second]};
+      vector<double> const velocity = {
+        // Calculo vector velocity
+        (*particles).velX[pair.second] - (*particles).velX[pair.first],
+        (*particles).velY[pair.second] - (*particles).velY[pair.first],
+        (*particles).velZ[pair.second] - (*particles).velZ[pair.first]};
 
-      const vector<int> Bid = {pair.first, pair.second};
+      vector<int> const Bid = {pair.first, pair.second};
 
-      const vector<double> increm_aceleration =
+      vector<double> const increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Bid);
-
       updateAcceleration(pair.first, pair.second, increm_aceleration);
     }
   }
 }
+
 // Metodo auxiliar que realiza los diferentes calculos para modificar la aceleracion
-void Block::updateAcceleration(int p1, int p2, const vector<double> & increm_aceleration) const {
-  (*accelerationX)[p1]  = (*accelerationX)[p1] + increm_aceleration[0];
-  (*accelerationY)[p1]  = (*accelerationY)[p1] + increm_aceleration[1];
-  (*accelerationZ)[p1]  = (*accelerationZ)[p1] + increm_aceleration[2];
+void Block::updateAcceleration(int p1, int p2, vector<double> const & increm_aceleration) const {
+  (*accelerationX)[p1] = (*accelerationX)[p1] + increm_aceleration[0];
+  (*accelerationY)[p1] = (*accelerationY)[p1] + increm_aceleration[1];
+  (*accelerationZ)[p1] = (*accelerationZ)[p1] + increm_aceleration[2];
   (*accelerationX)[p2] = (*accelerationX)[p2] - increm_aceleration[0];
   (*accelerationY)[p2] = (*accelerationY)[p2] - increm_aceleration[1];
   (*accelerationZ)[p2] = (*accelerationZ)[p2] - increm_aceleration[2];
 }
+
 // Método auxiliar que realiza los diferentes cálculos para saber si dos partículas están lo
 // suficientemente cerca
 bool Block::distClose(int idP1, int idP2) const {
@@ -191,7 +200,7 @@ bool Block::distClose(int idP1, int idP2) const {
 void Block::collisionsX(unsigned int cx) {
   double increm_x = 0;
   for (auto & Bid : particlesID) {
-     const double cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO;
+    double const cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -199,9 +208,11 @@ void Block::collisionsX(unsigned int cx) {
     }
     if (increm_x > Epsilon) {
       if (cx == 0) {
-        (*accelerationX)[Bid] += COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * (*particles).velX[Bid];
+        (*accelerationX)[Bid] +=
+            COLISIONES_RIGIDEZ * increm_x - AMORTIGUAMIENTO * (*particles).velX[Bid];
       } else if (cx == data.nx - 1) {
-        (*accelerationX)[Bid] -= COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * (*particles).velX[Bid];
+        (*accelerationX)[Bid] -=
+            COLISIONES_RIGIDEZ * increm_x + AMORTIGUAMIENTO * (*particles).velX[Bid];
       }
     }
   }
@@ -211,7 +222,7 @@ void Block::collisionsX(unsigned int cx) {
 void Block::collisionsY(unsigned int cy) {
   double increm_y = 0;
   for (auto & Bid : particlesID) {
-    const double cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
+    double const cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
     } else if (cy == data.ny - 1) {
@@ -219,9 +230,11 @@ void Block::collisionsY(unsigned int cy) {
     }
     if (increm_y > Epsilon) {
       if (cy == 0) {
-        (*accelerationY)[Bid] += COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * (*particles).velY[Bid];
+        (*accelerationY)[Bid] +=
+            COLISIONES_RIGIDEZ * increm_y - AMORTIGUAMIENTO * (*particles).velY[Bid];
       } else if (cy == data.ny - 1) {
-        (*accelerationY)[Bid] -= COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * (*particles).velY[Bid];
+        (*accelerationY)[Bid] -=
+            COLISIONES_RIGIDEZ * increm_y + AMORTIGUAMIENTO * (*particles).velY[Bid];
       }
     }
   }
@@ -231,7 +244,7 @@ void Block::collisionsY(unsigned int cy) {
 void Block::collisionsZ(unsigned int cz) {
   double increm_z = 0;
   for (auto & Bid : particlesID) {
-    const double cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
+    double const cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
     } else if (cz == data.nz - 1) {
@@ -239,9 +252,11 @@ void Block::collisionsZ(unsigned int cz) {
     }
     if (increm_z > Epsilon) {
       if (cz == 0) {
-        (*accelerationZ)[Bid] += COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * (*particles).velZ[Bid];
+        (*accelerationZ)[Bid] +=
+            COLISIONES_RIGIDEZ * increm_z - AMORTIGUAMIENTO * (*particles).velZ[Bid];
       } else if (cz == data.nz - 1) {
-        (*accelerationZ)[Bid] -= COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * (*particles).velZ[Bid];
+        (*accelerationZ)[Bid] -=
+            COLISIONES_RIGIDEZ * increm_z + AMORTIGUAMIENTO * (*particles).velZ[Bid];
       }
     }
   }
@@ -251,17 +266,23 @@ void Block::collisionsZ(unsigned int cz) {
 void Block::particleMotion() {
   for (auto & Bid : particlesID) {
     (*particles).posX[Bid] = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO +
-                          (*accelerationX)[Bid] * pow(PASO_TIEMPO, Two);
+                             (*accelerationX)[Bid] * pow(PASO_TIEMPO, Two);
     (*particles).posY[Bid] = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO +
-                          (*accelerationY)[Bid] * pow(PASO_TIEMPO, Two);
+                             (*accelerationY)[Bid] * pow(PASO_TIEMPO, Two);
     (*particles).posZ[Bid] = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO +
-                          (*accelerationZ)[Bid] * pow(PASO_TIEMPO, Two);
-    (*particles).velX[Bid] = (*particles).smoothVecX[Bid] + (((*accelerationX)[Bid] * PASO_TIEMPO) / Two);
-    (*particles).velY[Bid] = (*particles).smoothVecY[Bid] + (((*accelerationY)[Bid] * PASO_TIEMPO) / Two);
-    (*particles).velZ[Bid] = (*particles).smoothVecZ[Bid] + (((*accelerationZ)[Bid] * PASO_TIEMPO) / Two);
-    (*particles).smoothVecX[Bid] = (*particles).smoothVecX[Bid] + (*accelerationX)[Bid] * PASO_TIEMPO;
-    (*particles).smoothVecY[Bid] = (*particles).smoothVecY[Bid] + (*accelerationY)[Bid] * PASO_TIEMPO;
-    (*particles).smoothVecZ[Bid] = (*particles).smoothVecZ[Bid] + (*accelerationZ)[Bid] * PASO_TIEMPO;
+                             (*accelerationZ)[Bid] * pow(PASO_TIEMPO, Two);
+    (*particles).velX[Bid] =
+        (*particles).smoothVecX[Bid] + (((*accelerationX)[Bid] * PASO_TIEMPO) / Two);
+    (*particles).velY[Bid] =
+        (*particles).smoothVecY[Bid] + (((*accelerationY)[Bid] * PASO_TIEMPO) / Two);
+    (*particles).velZ[Bid] =
+        (*particles).smoothVecZ[Bid] + (((*accelerationZ)[Bid] * PASO_TIEMPO) / Two);
+    (*particles).smoothVecX[Bid] =
+        (*particles).smoothVecX[Bid] + (*accelerationX)[Bid] * PASO_TIEMPO;
+    (*particles).smoothVecY[Bid] =
+        (*particles).smoothVecY[Bid] + (*accelerationY)[Bid] * PASO_TIEMPO;
+    (*particles).smoothVecZ[Bid] =
+        (*particles).smoothVecZ[Bid] + (*accelerationZ)[Bid] * PASO_TIEMPO;
   }
 }
 

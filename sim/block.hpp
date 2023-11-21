@@ -27,7 +27,7 @@ class Block {
     Block(std::vector<Particle> & particlesRef, std::vector<double> & densityRef,
           std::vector<double> & accelerationXRef, std::vector<double> & accelerationYRef,
           std::vector<double> & accelerationZRef)
-      : particles(&particlesRef), particlesID(), data(), accelerationX(&accelerationXRef),
+          : particles(&particlesRef), particlesID(), data(), accelerationX(&accelerationXRef),
         accelerationY(&accelerationYRef), accelerationZ(&accelerationZRef), density(&densityRef) { }
 
     std::vector<Particle> * particles;
@@ -62,9 +62,9 @@ class Block {
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<int> Id) const;
     static double calculate_dist(double posX, double posY, double posZ);
-    void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec)const;
+    void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec) const;
     bool distClose(Particle p1, Particle p2) const;
-    void updateAcceleration(int p1, int p2, std::vector<double> & increm_aceleration)const;
+    void updateAcceleration(int p1, int p2, std::vector<double> & increm_aceleration) const;
 };
 
 #endif

@@ -105,7 +105,7 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> & ParejaPa
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & Bid : particlesID) {
-    const double coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
+    double const coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
 
     (*density)[Bid] = ((*density)[Bid] + data.h_pow6) * coeficiente;
   }
@@ -144,7 +144,7 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
 
 // Metodo auxiliar que realiza los diferentes calculos para la distancia
 double Block::calculate_dist(double posX, double posY, double posZ) {
-  const double dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
+  double const dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
   return dist;
 }
 
@@ -174,9 +174,9 @@ bool Block::distClose(Particle p1, Particle p2) const {
 
 // Metodo auxiliar que realiza los diferentes calculos para modificar la aceleracion
 void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) const {
-  (*accelerationX)[p1]  = (*accelerationX)[p1] + increm_aceleration[0];
-  (*accelerationY)[p1]  = (*accelerationY)[p1] + increm_aceleration[1];
-  (*accelerationZ)[p1]  = (*accelerationZ)[p1] + increm_aceleration[2];
+  (*accelerationX)[p1] = (*accelerationX)[p1] + increm_aceleration[0];
+  (*accelerationY)[p1] = (*accelerationY)[p1] + increm_aceleration[1];
+  (*accelerationZ)[p1] = (*accelerationZ)[p1] + increm_aceleration[2];
   (*accelerationX)[p2] = (*accelerationX)[p2] - increm_aceleration[0];
   (*accelerationY)[p2] = (*accelerationY)[p2] - increm_aceleration[1];
   (*accelerationZ)[p2] = (*accelerationZ)[p2] - increm_aceleration[2];
