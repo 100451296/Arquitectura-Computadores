@@ -126,12 +126,12 @@ int leer_cabecera_archivo(ifstream & fichero, float & ppm, int & num_particles) 
 int leer_particulas_archivo(ifstream & fichero, int num_particles) {
   // Cada particula equivale a 9 * 4 (tamaño de float) bytes. A continuacion se va a comenzar con la
   // lectura de particulas del archivo
-  size_t const size_of_particle = Nine * sizeof(float);
+  size_t const size_of_particle = particleAttr * sizeof(float);
   int particles_contadas        = 0;
+  // NOLINT
+  std::array<float, particleAttr> buffer = {};
   // NOLINTNEXTLINE
-  std::array<float, particleAttr> particle_data = {};
-  // NOLINTNEXTLINE
-  while (fichero.read(reinterpret_cast<char *>(particle_data.data()), size_of_particle)) {
+  while (fichero.read(reinterpret_cast<char *>(buffer.data()), size_of_particle)) {
     particles_contadas++;
   }  // Con un bucle vamos guardando en un contador el numero real de particulas que se cuentan en
      // el archivo
