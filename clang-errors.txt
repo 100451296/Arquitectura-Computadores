@@ -23,84 +23,42 @@ CMake suite maintained and supported by Kitware (kitware.com/cmake).
 -- Looking for pthread_create in pthread
 -- Looking for pthread_create in pthread - found
 -- Found Threads: TRUE  
--- Configuring done (15.8s)
--- Generating done (1.5s)
+-- Configuring done (17.4s)
+-- Generating done (1.7s)
 -- Build files have been written to: /home/alumnos/a0451296/proyecto/build
-[ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/block_soa.cpp.o
 [ 15%] Building CXX object ftest/CMakeFiles/ftest.dir/test1.cpp.o
+[ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/block_soa.cpp.o
 [ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/grid_soa.cpp.o
 [ 15%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
 [ 19%] Linking CXX executable ftest
 [ 19%] Built target ftest
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:72:71: error: the parameter 'ParejaParticulas' is copied for each invocation but only used as a const reference; consider making it a const reference [performance-unnecessary-value-param,-warnings-as-errors]
-   72 | void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) const {
-      |                                                                       ^
-      |                                      const                           &
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:75:5: error: variable 'aux_x' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-   75 |     double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:72:77: error: the const qualified parameter 'ParejaParticulas' is copied for each invocation; consider making it a reference [performance-unnecessary-value-param,-warnings-as-errors]
+   72 | void Block::calculate_increm_density(const std::vector<std::pair<int, int>> ParejaParticulas) const {
+      |                                                                             ^
+      |                                                                            &
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:186:12: error: redundant boolean literal in conditional return statement [readability-simplify-boolean-expr,-warnings-as-errors]
+  184 |   if (pow(((*particles).posX[idP1] - (*particles).posX[idP2]), 2) + pow(((*particles).posY[idP1] - (*particles).posY[idP2]), 2) + pow(((*particles).posZ[idP1] - (*particles).posZ[idP2]), 2) <
+      |   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  185 |       pow(data.long_suavizado, 2)) {
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  186 |     return true;
+      |     ~~~~~~~^~~~~
+  187 |   }
+      |   ~
+  188 |   return false;
+      |   ~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:195:6: error: variable 'cord_x' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  195 |      double cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO;
+      |      ^
+      |             const 
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:215:5: error: variable 'cord_y' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  215 |     double cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
       |     ^
       |            const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:76:5: error: variable 'aux_y' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-   76 |     double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:235:5: error: variable 'cord_z' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  235 |     double cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
       |     ^
       |            const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:77:5: error: variable 'aux_z' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-   77 |     double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
-      |     ^
-      |            const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:98:23: error: function 'calculate_increm_aceleration' exceeds recommended size/complexity thresholds [readability-function-size,-warnings-as-errors]
-   98 | vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
-      |                       ^
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:98:23: note: 27 lines including whitespace and comments (threshold 25)
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:149:13: error: function 'accelerationTransferCalculations' exceeds recommended size/complexity thresholds [readability-function-size,-warnings-as-errors]
-  149 | void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
-      |             ^
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:149:13: note: 33 lines including whitespace and comments (threshold 25)
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:149:13: error: method 'accelerationTransferCalculations' can be made const [readability-make-member-function-const,-warnings-as-errors]
-  149 | void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
-      |             ^
-      |                                                                                    const
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:149:74: error: the parameter 'pair_vec' is copied for each invocation but only used as a const reference; consider making it a const reference [performance-unnecessary-value-param,-warnings-as-errors]
-  149 | void Block::accelerationTransferCalculations(vector<std::pair<int, int>> pair_vec) {
-      |                                                                          ^
-      |                                              const                      &
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:157:7: error: variable 'dist' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  157 |       double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
-      |       ^
-      |              const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:161:7: error: variable 'position' of type 'vector<double>' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  161 |       vector<double> position = {(*particles).posX[pair.first] - (*particles).posX[pair.second],
-      |       ^
-      |                      const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:165:7: error: variable 'velocity' of type 'vector<double>' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  165 |       vector<double> velocity = {(*particles).velX[pair.second] - (*particles).velX[pair.first],
-      |       ^
-      |                      const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:169:7: error: variable 'Bid' of type 'vector<int>' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  169 |       vector<int> Bid = {pair.first, pair.second};
-      |       ^
-      |                   const 
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:186:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
-  186 |   double cord_x, increm_x = 0;
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:186:10: error: variable 'cord_x' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
-  186 |   double cord_x, increm_x = 0;
-      |          ^
-note: this fix will not be applied because it overlaps with another fix
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:206:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
-  206 |   double cord_y, increm_y = 0;
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:206:10: error: variable 'cord_y' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
-  206 |   double cord_y, increm_y = 0;
-      |          ^
-note: this fix will not be applied because it overlaps with another fix
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:226:3: error: multiple declarations in a single statement reduces readability [readability-isolate-declaration,-warnings-as-errors]
-  226 |   double cord_z, increm_z = 0;
-      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/alumnos/a0451296/proyecto/sim/soa/block_soa.cpp:226:10: error: variable 'cord_z' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
-  226 |   double cord_z, increm_z = 0;
-      |          ^
-note: this fix will not be applied because it overlaps with another fix
 /home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:26:37: error: 4 adjacent parameters of 'Block' of similar type ('std::vector<double> &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
    26 |     Block(Particles & particlesRef, std::vector<double> & densityRef,
       |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,10 +79,14 @@ note: this fix will not be applied because it overlaps with another fix
    60 |     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
       |     ^
       |     [[nodiscard]] 
-73157 warnings generated.
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:65:5: error: function 'distClose' should be marked [[nodiscard]] [modernize-use-nodiscard,-warnings-as-errors]
+   65 |     bool distClose(int idP1, int idP2)const;
+      |     ^
+      |     [[nodiscard]] 
+73145 warnings generated.
 Suppressed 73136 warnings (73136 in non-user code).
 Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
-21 warnings treated as errors
+9 warnings treated as errors
 gmake[2]: *** [sim/soa/CMakeFiles/soa.dir/build.make:76: sim/soa/CMakeFiles/soa.dir/block_soa.cpp.o] Error 1
 gmake[2]: *** Se espera a que terminen otras tareas....
 /home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:26:37: error: 4 adjacent parameters of 'Block' of similar type ('std::vector<double> &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
@@ -147,60 +109,38 @@ gmake[2]: *** Se espera a que terminen otras tareas....
    60 |     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
       |     ^
       |     [[nodiscard]] 
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:6:55: error: initialization of 'offsets' with static storage duration may throw an exception that cannot be caught [cert-err58-cpp,-warnings-as-errors]
-    6 | std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
+/home/alumnos/a0451296/proyecto/sim/soa/block_soa.hpp:65:5: error: function 'distClose' should be marked [[nodiscard]] [modernize-use-nodiscard,-warnings-as-errors]
+   65 |     bool distClose(int idP1, int idP2)const;
+      |     ^
+      |     [[nodiscard]] 
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:7:55: error: initialization of 'offsets' with static storage duration may throw an exception that cannot be caught [cert-err58-cpp,-warnings-as-errors]
+    7 | std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
       |                                                       ^
 /usr/lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/stl_vector.h:625:7: note: possibly throwing constructor declared here
   625 |       vector(initializer_list<value_type> __l,
       |       ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:41:32: error: 6 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-   41 |   data.h_pow6         = pow(h, 6);
-      |                                ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:59:15: error: method 'printParameters' can be made const [readability-make-member-function-const,-warnings-as-errors]
-   59 | void GridSoA::printParameters() {
-      |               ^
-      |                                 const
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:83:13: error: unnecessary temporary object created while calling emplace_back [modernize-use-emplace,-warnings-as-errors]
-   83 |             Block(particles, density, accelerationX, accelerationY, accelerationZ));
-      |             ^~~~~~                                                               ~
 /home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:143:19: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
   143 |   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
       |                   ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:144:19: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  144 |   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:145:19: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  145 |   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
       |                   ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:163:3: error: uninitialized record type: 'buffer' [cppcoreguidelines-pro-type-member-init,-warnings-as-errors]
-  163 |   std::array<float, particleAttr> buffer;
-      |   ^                                     
-      |                                         {}
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:164:24: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  164 |   if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:166:24: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  166 |   if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
       |                        ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:201:21: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  201 |   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:203:21: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  203 |   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
       |                     ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:202:21: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  202 |   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:204:21: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  204 |   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
       |                     ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:224:26: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  224 |   if (!output_file.write(reinterpret_cast<char const *>(buffer.data()), sizeof(float) * Nine)) {
+/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:226:26: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  226 |   if (!output_file.write(reinterpret_cast<char const *>(buffer.data()), sizeof(float) * Nine)) {
       |                          ^
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:306:5: error: variable 'index_i' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  306 |     int index_i = std::max(
-      |     ^
-      |         const 
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:309:5: error: variable 'index_j' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  309 |     int index_j = std::max(
-      |     ^
-      |         const 
-/home/alumnos/a0451296/proyecto/sim/soa/grid_soa.cpp:312:5: error: variable 'index_k' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  312 |     int index_k = std::max(
-      |     ^
-      |         const 
-80257 warnings generated.
-Suppressed 80239 warnings (80239 in non-user code).
+80258 warnings generated.
+Suppressed 80247 warnings (80247 in non-user code).
 Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
-17 warnings treated as errors
+11 warnings treated as errors
 gmake[2]: *** [sim/soa/CMakeFiles/soa.dir/build.make:90: sim/soa/CMakeFiles/soa.dir/grid_soa.cpp.o] Error 1
 gmake[1]: *** [CMakeFiles/Makefile2:388: sim/soa/CMakeFiles/soa.dir/all] Error 2
 gmake[1]: *** Se espera a que terminen otras tareas....
