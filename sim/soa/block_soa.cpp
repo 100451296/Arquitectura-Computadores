@@ -69,12 +69,12 @@ void Block::densityIncrease(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) const {
+void Block::calculate_increm_density(const std::vector<std::pair<int, int>> ParejaParticulas) const {
   double increm_density_pair = 0;
   for (auto const & pair : ParejaParticulas) {
-    double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
-    double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
-    double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
+    const double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
+    const double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second], Two);
+    const double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second], Two);
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
     } else {
@@ -96,7 +96,7 @@ void Block::lineal_transformate_density() {
 }
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
-                                                   double dist, vector<int> Bid) const {
+                                                   const double dist, vector<int> Bid) const {
   const double pi_x = position[0];
   const double pi_y = position[1];
   const double pi_z = position[2];
@@ -116,11 +116,8 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
   const double term6 = (*density)[Bid[0]] * (*density)[Bid[1]];
 
   vector<double> increment_acceleration = {
-    // Posicion X
     (pi_x * term1 * term2 * term3 * term4 + vi_x * term5) / term6,
-    // Posicion Y
     (pi_y * term1 * term2 * term3 * term4 + vi_y * term5) / term6,
-    // Posicion Z
     (pi_z * term1 * term2 * term3 * term4 + vi_z * term5) / term6};
   return increment_acceleration;
 }
@@ -151,21 +148,21 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_
     // Si las dos particulas estan cerca
     if (distClose(pair.first,pair.second )) {
       // Calculo de distancia
-      double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
+      const double dist = calculate_dist((*particles).posX[pair.first] - (*particles).posX[pair.second],
                                    (*particles).posY[pair.first] - (*particles).posY[pair.second],
                                    (*particles).posZ[pair.first] - (*particles).posZ[pair.second]);
       // Calculo vector posicion
-      vector<double> position = {(*particles).posX[pair.first] - (*particles).posX[pair.second],
+      const vector<double> position = {(*particles).posX[pair.first] - (*particles).posX[pair.second],
                                  (*particles).posY[pair.first] - (*particles).posY[pair.second],
                                  (*particles).posZ[pair.first] - (*particles).posZ[pair.second]};
       // Calculo vector velocidad
-      vector<double> velocity = {(*particles).velX[pair.second] - (*particles).velX[pair.first],
+      const vector<double> velocity = {(*particles).velX[pair.second] - (*particles).velX[pair.first],
                                  (*particles).velY[pair.second] - (*particles).velY[pair.first],
                                  (*particles).velZ[pair.second] - (*particles).velZ[pair.first]};
 
-      vector<int> Bid = {pair.first, pair.second};
+      const vector<int> Bid = {pair.first, pair.second};
 
-      vector<double> increm_aceleration =
+      const vector<double> increm_aceleration =
           calculate_increm_aceleration(position, velocity, dist, Bid);
 
       updateAcceleration(pair.first, pair.second, increm_aceleration);
@@ -173,7 +170,7 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_
   }
 }
 // Metodo auxiliar que realiza los diferentes calculos para modificar la aceleracion
-void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) const {
+void Block::updateAcceleration(int p1, int p2, const vector<double> & increm_aceleration) const {
   (*accelerationX)[p1]  = (*accelerationX)[p1] + increm_aceleration[0];
   (*accelerationY)[p1]  = (*accelerationY)[p1] + increm_aceleration[1];
   (*accelerationZ)[p1]  = (*accelerationZ)[p1] + increm_aceleration[2];
