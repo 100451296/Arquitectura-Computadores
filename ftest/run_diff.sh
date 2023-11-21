@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Verificar si se proporciona un valor para n (iteraciones)
-if [ -z "$1" ]; then
-    echo "Debe proporcionar un valor para n (iteraciones)."
-    exit 1
-fi
-
 # Iterar desde 1 hasta 5
 for ((i=1; i<=5; i++)); do
     # Asignar valores a las variables
