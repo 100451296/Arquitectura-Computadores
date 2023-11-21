@@ -1,8 +1,9 @@
 #include "grid.hpp"
 
 using namespace std;
-static constexpr double Nine = 9;
+
 // Offsets para buscar bloques contiguos
+// NOLINT
 std::vector<std::tuple<int, int, int>> const Grid::offsets = {
   {1,  1,  1},
   {1,  1,  0},
@@ -56,7 +57,7 @@ void Grid::initDensityAcceleration() {
   accelerationZ.resize(particles.size(), ACELERACION_GRAVEDAD_Z);
 }
 
-void Grid::printParameters() {
+void Grid::printParameters() const {
   std::cout << "Number of particles: " << num_particles << "\n";
   std::cout << "Particles per meter: " << ppm << "\n";
   std::cout << "Smoothing length: " << h << "\n";
@@ -73,19 +74,17 @@ void Grid::initBlocks() {
 
 void Grid::initializeBlockVectors() {
   for (int blockX = 0; blockX < nx; blockX++) {
-    std::vector<std::vector<Block>> tempVector2;
+    blocks.emplace_back();  // Emplace an empty vector for the outer vector
+    auto & tempVector2 = blocks.back();
     tempVector2.reserve(ny);  // Reserve capacity for the outer vector
     for (int blockY = 0; blockY < ny; blockY++) {
-      std::vector<Block> tempVector1;
+      tempVector2.emplace_back();  // Emplace an empty vector for the inner vector
+      auto & tempVector1 = tempVector2.back();
       tempVector1.reserve(nz);  // Reserve capacity for the inner vector
       for (int blockZ = 0; blockZ < nz; blockZ++) {
-        tempVector1.emplace_back(
-            Block(particles, density, accelerationX, accelerationY, accelerationZ));
+        tempVector1.emplace_back(particles, density, accelerationX, accelerationY, accelerationZ);
       }
-      tempVector2.emplace_back(
-          std::move(tempVector1));  // Use std::move to avoid unnecessary copies
     }
-    blocks.emplace_back(std::move(tempVector2));  // Use std::move to avoid unnecessary copies
   }
 }
 
@@ -141,7 +140,9 @@ int Grid::readFile(string const & input_file_name) {
 
 bool Grid::readHeader(std::ifstream & input_file) {
   float buffer = INIT_BUFFER;
+  // NOLINT
   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
+  // NOLINT
   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
 
   ppm = static_cast<double>(buffer);
@@ -157,7 +158,8 @@ bool Grid::readParticles(std::ifstream & input_file) {
 }
 
 bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int index) {
-  std::array<float, particleAttr> buffer;
+  std::array<float, particleAttr> buffer = {};
+  // NOLINT
   if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
     std::cerr << "Error al leer las partículas del archivo\n";
     return false;
@@ -296,13 +298,13 @@ void Grid::resetBlocks() {
 void Grid::positionateParticle() {
   for (auto & particle : particles) {
     // Obtener índices de bloque
-    int index_i =
+    int const index_i =
         std::max(0, std::min(nx - 1, static_cast<int>(std::floor(
                                          (particle.posX - LIMITE_INFERIOR_RECINTO_X) / sx))));
-    int index_j =
+    int const index_j =
         std::max(0, std::min(ny - 1, static_cast<int>(std::floor(
                                          (particle.posY - LIMITE_INFERIOR_RECINTO_Y) / sy))));
-    int index_k =
+    int const index_k =
         std::max(0, std::min(nz - 1, static_cast<int>(std::floor(
                                          (particle.posZ - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente

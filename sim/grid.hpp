@@ -77,7 +77,7 @@ class Grid {
     void initBlocks();
 
     void populatePairs();
-    void printParameters();
+    void printParameters() const;
 };
 
 #endif

@@ -1,8 +1,9 @@
 #include "grid_soa.hpp"
 
 using namespace std;
-static constexpr double Nine = 9;
+
 // Offsets para buscar bloques contiguos
+// NOLINT
 std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
   {1,  1,  1},
   {1,  1,  0},
@@ -22,7 +23,7 @@ std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
 // Método para inicializar la malla con valores predeterminados
 void GridSoA::initGrid() {
   h             = MULTIPLICADOR_RADIO / ppm;
-  particle_mass = DENSIDAD_FLUIDO * pow(ppm, -3);
+  particle_mass = DENSIDAD_FLUIDO * pow(ppm, Neg3);
   nx            = floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / h);
   ny            = floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / h);
   nz            = floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / h);
@@ -37,8 +38,8 @@ void GridSoA::initGrid() {
   data.nx             = static_cast<unsigned int>(nx);
   data.ny             = static_cast<unsigned int>(ny);
   data.nz             = static_cast<unsigned int>(nz);
-  data.h_square       = pow(h, 2);
-  data.h_pow6         = pow(h, 6);
+  data.h_square       = pow(h, Two);
+  data.h_pow6         = pow(h, Six);
   data.h_pow9         = pow(h, Nine);
 
   initBlocks();
@@ -56,7 +57,7 @@ void GridSoA::initDensityAcceleration() {
   accelerationZ.resize(particles.id.size(), ACELERACION_GRAVEDAD_Z);
 }
 
-void GridSoA::printParameters() {
+void GridSoA::printParameters() const {
   std::cout << "Number of particles: " << num_particles << "\n";
   std::cout << "Particles per meter: " << ppm << "\n";
   std::cout << "Smoothing length: " << h << "\n";
@@ -73,19 +74,17 @@ void GridSoA::initBlocks() {
 
 void GridSoA::initializeBlockVectors() {
   for (int blockX = 0; blockX < nx; blockX++) {
-    std::vector<std::vector<Block>> tempVector2;
+    blocks.emplace_back();  // Emplace an empty vector for the outer vector
+    auto & tempVector2 = blocks.back();
     tempVector2.reserve(ny);  // Reserve capacity for the outer vector
     for (int blockY = 0; blockY < ny; blockY++) {
-      std::vector<Block> tempVector1;
+      tempVector2.emplace_back();  // Emplace an empty vector for the inner vector
+      auto & tempVector1 = tempVector2.back();
       tempVector1.reserve(nz);  // Reserve capacity for the inner vector
       for (int blockZ = 0; blockZ < nz; blockZ++) {
-        tempVector1.emplace_back(
-            Block(particles, density, accelerationX, accelerationY, accelerationZ));
+        tempVector1.emplace_back(particles, density, accelerationX, accelerationY, accelerationZ);
       }
-      tempVector2.emplace_back(
-          std::move(tempVector1));  // Use std::move to avoid unnecessary copies
     }
-    blocks.emplace_back(std::move(tempVector2));  // Use std::move to avoid unnecessary copies
   }
 }
 
@@ -140,7 +139,9 @@ int GridSoA::readFile(string const & input_file_name) {
 
 bool GridSoA::readHeader(std::ifstream & input_file) {
   float buffer = INIT_BUFFER;
+  // NOLINT
   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
+  // NOLINT
   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
 
   ppm = static_cast<double>(buffer);
@@ -160,7 +161,8 @@ bool GridSoA::readParticles(std::ifstream & input_file) {
 }
 
 bool GridSoA::readParticle(std::ifstream & input_file, Particles & particles, int index) {
-  std::array<float, particleAttr> buffer;
+  std::array<float, particleAttr> buffer = {};
+  // NOLINT
   if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
     std::cerr << "Error al leer las partículas del archivo\n";
     return false;
@@ -303,13 +305,13 @@ void GridSoA::resetBlocks() {
 void GridSoA::positionateParticle() {
   for (size_t index = 0; index < particles.id.size(); ++index) {
     // Obtener índices de bloque
-    int index_i = std::max(
+    int const index_i = std::max(
         0, std::min(nx - 1, static_cast<int>(std::floor(
                                 (particles.posX[index] - LIMITE_INFERIOR_RECINTO_X) / sx))));
-    int index_j = std::max(
+    int const index_j = std::max(
         0, std::min(ny - 1, static_cast<int>(std::floor(
                                 (particles.posY[index] - LIMITE_INFERIOR_RECINTO_Y) / sy))));
-    int index_k = std::max(
+    int const index_k = std::max(
         0, std::min(nz - 1, static_cast<int>(std::floor(
                                 (particles.posZ[index] - LIMITE_INFERIOR_RECINTO_Z) / sz))));
     // Insertar partícula en el bloque correspondiente
