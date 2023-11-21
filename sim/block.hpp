@@ -24,10 +24,11 @@ class Block {
     static constexpr double ThreeHundFifteen = 315;
 
   public:
+    //NOLINTNEXTLINE
     Block(std::vector<Particle> & particlesRef, std::vector<double> & densityRef,
           std::vector<double> & accelerationXRef, std::vector<double> & accelerationYRef,
           std::vector<double> & accelerationZRef)
-          : particles(&particlesRef), particlesID(), data(), accelerationX(&accelerationXRef),
+          : particles(&particlesRef), data(), accelerationX(&accelerationXRef),
         accelerationY(&accelerationYRef), accelerationZ(&accelerationZRef), density(&densityRef) { }
 
     std::vector<Particle> * particles;
@@ -58,12 +59,12 @@ class Block {
     void initDensityAcceleration();
     void calculate_increm_density(std::vector<std::pair<int, int>> & ParejaParticulas) const;
     void lineal_transformate_density();
-    std::vector<double> calculate_increm_aceleration(std::vector<double> position,
+    [[nodiscard]] std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<int> Id) const;
     static double calculate_dist(double posX, double posY, double posZ);
     void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec) const;
-    bool distClose(Particle p1, Particle p2) const;
+    [[nodiscard]] bool distClose(Particle p1, Particle p2) const;
     void updateAcceleration(int p1, int p2, std::vector<double> & increm_aceleration) const;
 };
 
