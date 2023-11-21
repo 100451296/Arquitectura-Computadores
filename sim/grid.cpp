@@ -38,8 +38,8 @@ void Grid::initGrid() {
   data.nx             = static_cast<unsigned int>(nx);
   data.ny             = static_cast<unsigned int>(ny);
   data.nz             = static_cast<unsigned int>(nz);
-  data.h_square       = pow(h, 2);
-  data.h_pow6         = pow(h, 6);
+  data.h_square       = pow(h, Two);
+  data.h_pow6         = pow(h, Six);
   data.h_pow9         = pow(h, Nine);
 
   initBlocks();
@@ -213,14 +213,14 @@ bool Grid::writeParticles(std::ofstream & output_file) const {
 }
 
 bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle) {
-  float buffer[particleAttr] = {
+  std::array<float, particleAttr> buffer = {
     static_cast<float>(particle.posX),       static_cast<float>(particle.posY),
     static_cast<float>(particle.posZ),       static_cast<float>(particle.smoothVecX),
     static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
     static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
     static_cast<float>(particle.velZ)};
   // NOLINTNEXTLINE
-  if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * Nine)) {
+  if (!output_file.write(reinterpret_cast<char const *>(buffer.data()), sizeof(float) * Nine)) {
     std::cerr << "Error al escribir las partículas en el archivo"
               << "\n";
     return false;
@@ -250,15 +250,14 @@ void Grid::simulation(int iterations) {
 void Grid::printParticles() {
   std::cout << "Partículas en la cuadrícula:"
             << "\n";
-  for (size_t i = 0; i < particles.size(); ++i) {
-    std::cout << "ID: " << particles[i].id << ", ";
-    std::cout << "Posición (" << particles[i].posX << ", " << particles[i].posY << ", "
-              << particles[i].posZ << "), ";
-    std::cout << "Vector de suavizado (" << particles[i].smoothVecX << ", "
-              << particles[i].smoothVecY << ", " << particles[i].smoothVecZ << "), ";
-    std::cout << "Velocidad (" << particles[i].velX << ", " << particles[i].velY << ", "
-              << particles[i].velZ << ")"
-              << "\n";
+  for (auto const & particle : particles) {
+    std::cout << "ID: " << particle.id << ", ";
+    std::cout << "Posición (" << particle.posX << ", " << particle.posY << ", " << particle.posZ
+              << "), ";
+    std::cout << "Vector de suavizado (" << particle.smoothVecX << ", " << particle.smoothVecY
+              << ", " << particle.smoothVecZ << "), ";
+    std::cout << "Velocidad (" << particle.velX << ", " << particle.velY << ", " << particle.velZ
+              << ")";
   }
 }
 
@@ -373,26 +372,34 @@ void Grid::collisionsXGrid() {
 }
 
 void Grid::collisionsYGrid() {
-  int cy = 0;
+  int borderY = 0;
   for (int blockX = 0; blockX < nx; blockX++) {
-    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].collisionsY(cy); }
+    for (int blockZ = 0; blockZ < nz; blockZ++) {
+      blocks[blockX][borderY][blockZ].collisionsY(borderY);
+    }
   }
 
-  cy = ny - 1;
+  borderY = ny - 1;
   for (int blockX = 0; blockX < nx; blockX++) {
-    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].collisionsY(cy); }
+    for (int blockZ = 0; blockZ < nz; blockZ++) {
+      blocks[blockX][borderY][blockZ].collisionsY(borderY);
+    }
   }
 }
 
 void Grid::collisionsZGrid() {
-  int cz = 0;
+  int borderZ = 0;
   for (int blockY = 0; blockY < ny; blockY++) {
-    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].collisionsZ(cz); }
+    for (int blockX = 0; blockX < nx; blockX++) {
+      blocks[blockX][blockY][borderZ].collisionsZ(borderZ);
+    }
   }
 
-  cz = nz - 1;
+  borderZ = nz - 1;
   for (int blockY = 0; blockY < ny; blockY++) {
-    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].collisionsZ(cz); }
+    for (int blockX = 0; blockX < nx; blockX++) {
+      blocks[blockX][blockY][borderZ].collisionsZ(borderZ);
+    }
   }
 }
 
@@ -423,25 +430,33 @@ void Grid::interactionsXGrid() {
 }
 
 void Grid::interactionsYGrid() {
-  int cy = 0;
+  int borderY = 0;
   for (int blockX = 0; blockX < nx; blockX++) {
-    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].interactionsY(cy); }
+    for (int blockZ = 0; blockZ < nz; blockZ++) {
+      blocks[blockX][borderY][blockZ].interactionsY(borderY);
+    }
   }
 
-  cy = ny - 1;
+  borderY = ny - 1;
   for (int blockX = 0; blockX < nx; blockX++) {
-    for (int blockZ = 0; blockZ < nz; blockZ++) { blocks[blockX][cy][blockZ].interactionsY(cy); }
+    for (int blockZ = 0; blockZ < nz; blockZ++) {
+      blocks[blockX][borderY][blockZ].interactionsY(borderY);
+    }
   }
 }
 
 void Grid::interactionsZGrid() {
-  int cz = 0;
+  int borderZ = 0;
   for (int blockY = 0; blockY < ny; blockY++) {
-    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].interactionsZ(cz); }
+    for (int blockX = 0; blockX < nx; blockX++) {
+      blocks[blockX][blockY][borderZ].interactionsZ(borderZ);
+    }
   }
 
-  cz = nz - 1;
+  borderZ = nz - 1;
   for (int blockY = 0; blockY < ny; blockY++) {
-    for (int blockX = 0; blockX < nx; blockX++) { blocks[blockX][blockY][cz].interactionsZ(cz); }
+    for (int blockX = 0; blockX < nx; blockX++) {
+      blocks[blockX][blockY][borderZ].interactionsZ(borderZ);
+    }
   }
 }

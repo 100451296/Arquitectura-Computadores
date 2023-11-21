@@ -34,8 +34,8 @@ constexpr unsigned int VEL_Z_INDEX        = 8;
 
 constexpr float INIT_BUFFER = 0.0F;
 static constexpr int Nine   = 9;
-static constexpr int Six    = 9;
-static constexpr int Two    = 9;
+static constexpr int Six    = 6;
+static constexpr int Two    = 2;
 static constexpr int Neg3   = -3;
 
 #include <cmath>
