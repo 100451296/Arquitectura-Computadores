@@ -15,7 +15,7 @@ int main(int argc, char * argv[]) {
   string input    = argv[2];
   string output   = argv[3];
 
-  int resultado = proargs_validations(num_iter, input, output);
+  int resultado = proargs_validations(input, num_iter, output); //Se toma este orden para evitar parametros facilmente intercambiables (propuesto por clang tidy)
   if (resultado != 0) { return resultado; }
   string input_file_name  = argv[2];
   string output_file_name = argv[3];

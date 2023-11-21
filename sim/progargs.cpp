@@ -141,7 +141,7 @@ int leer_archivo_entrada(const string& num_iter_file) {
   }
 
 
-int proargs_validations(string const & num_iter, string const & input,string const & output) {    
+int proargs_validations(string const & input, string const & num_iter,string const & output) {    
   const int error_archivo_escritura = -5; //Definido porque 6 es un numero magico
   const int error_num_particulas = -6; //Definido porque 6 es un numero magico     
   if (comprobacion_primer_argumento(num_iter) == -1) { return -2; }  // Numero de iteraciones
@@ -154,23 +154,28 @@ int proargs_validations(string const & num_iter, string const & input,string con
 }
 
 void printParameters(int ppm, int num_particles) {
-  // Calcula parametros y los imprime directamente
+  //Calcula parametros y los imrprime directamente
   cout << "Number of particles: " << num_particles << endl;
   cout << "Particles per meter: " << ppm << endl;
-  cout << "Smoothing length: " << MULTIPLICADOR_RADIO / static_cast<double>(ppm) << endl;
-  cout << "Particle mass: " << DENSIDAD_FLUIDO * pow(ppm, -3) << endl;
-  cout << "Grid size: "
-            << floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / (MULTIPLICADOR_RADIO / ppm))
-            << " x "
-            << floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / (MULTIPLICADOR_RADIO / ppm))
-            << " x "
-            << floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / (MULTIPLICADOR_RADIO / ppm)) << endl;
-  cout << "Number of blocks: "
-            << floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / (MULTIPLICADOR_RADIO / ppm)) * floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / (MULTIPLICADOR_RADIO / ppm)) * floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / (MULTIPLICADOR_RADIO / ppm)) << endl;
-  cout << "Block size: "
-            << (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / (MULTIPLICADOR_RADIO / ppm))
-            << " x "
-            << (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / (MULTIPLICADOR_RADIO / ppm))
-            << " x "
-            << (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / (MULTIPLICADOR_RADIO / ppm)) << endl;
+  
+  double smoothing_length = MULTIPLICADOR_RADIO / static_cast<double>(ppm);
+  double particle_mass = DENSIDAD_FLUIDO * pow(ppm, -3);
+
+  int grid_size_x = floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / smoothing_length);
+  int grid_size_y = floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / smoothing_length);
+  int grid_size_z = floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / smoothing_length);
+
+  int num_blocks = grid_size_x * grid_size_y * grid_size_z;
+
+  double block_size_x = (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / grid_size_x;
+  double block_size_y = (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / grid_size_y;
+  double block_size_z = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / grid_size_z;
+
+  cout << "Smoothing length: " << smoothing_length << endl;
+  cout << "Particle mass: " << particle_mass << endl;
+  cout << "Grid size: " << grid_size_x << " x " << grid_size_y << " x " << grid_size_z << endl;
+  cout << "Number of blocks: " << num_blocks << endl;
+  cout << "Block size: " << block_size_x << " x " << block_size_y << " x " << block_size_z << endl;
 }
+
+
