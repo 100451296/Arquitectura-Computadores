@@ -23,13 +23,13 @@ CMake suite maintained and supported by Kitware (kitware.com/cmake).
 -- Looking for pthread_create in pthread
 -- Looking for pthread_create in pthread - found
 -- Found Threads: TRUE  
--- Configuring done (14.2s)
--- Generating done (1.3s)
+-- Configuring done (15.7s)
+-- Generating done (1.2s)
 -- Build files have been written to: /home/alumnos/a0451296/proyecto/build
-[ 15%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
 [ 15%] Building CXX object ftest/CMakeFiles/ftest.dir/test1.cpp.o
 [ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/block_soa.cpp.o
 [ 15%] Building CXX object sim/soa/CMakeFiles/soa.dir/grid_soa.cpp.o
+[ 15%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
 [ 19%] Linking CXX executable ftest
 [ 19%] Built target ftest
 [ 23%] Linking CXX static library libsoa.a
@@ -39,8 +39,8 @@ CMake suite maintained and supported by Kitware (kitware.com/cmake).
 [ 34%] Building CXX object sim/CMakeFiles/sim.dir/block.cpp.o
 [ 38%] Linking CXX static library ../../../lib/libgtest.a
 [ 38%] Built target gtest
+[ 42%] Building CXX object _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
 [ 46%] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
-[ 46%] Building CXX object _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/src/gmock-all.cc.o
 [ 50%] Linking CXX static library ../../../lib/libgtest_main.a
 [ 50%] Built target gtest_main
 [ 53%] Linking CXX static library ../../../lib/libgmock.a
@@ -48,155 +48,159 @@ CMake suite maintained and supported by Kitware (kitware.com/cmake).
 [ 57%] Building CXX object _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o
 [ 61%] Linking CXX static library ../../../lib/libgmock_main.a
 [ 61%] Built target gmock_main
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:23:8: error: variable 'c' of type 'char' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-   23 |   for (char c : num_iter) {
-      |        ^
-      |             const 
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:23:13: error: variable name 'c' is too short, expected at least 3 characters [readability-identifier-length,-warnings-as-errors]
-   23 |   for (char c : num_iter) {
-      |             ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:26:12: error: implicit conversion 'int' -> bool [readability-implicit-bool-conversion,-warnings-as-errors]
-   26 |       if (!isdigit(c) && c != '-') {
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:13:70: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   13 |     cerr << "Error: Invalid number of arguments: " << num_params  << endl;
+      |                                                                      ^~~~
+      |                                                                      '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:27:12: error: implicit conversion 'int' -> bool [readability-implicit-bool-conversion,-warnings-as-errors]
+   27 |       if (!isdigit(static_cast<unsigned char>(caracter_actual)) && caracter_actual != '-') { //unsigned char evita problemas con valores negativos de char. Se realiza una comparacion explicita
       |           ~^
-      |           (           == 0)
+      |           (                                                     == 0)
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:28:57: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   28 |         cerr << "Error: time steps must be numeric." << endl;
+      |                                                         ^~~~
+      |                                                         '\n'
 /home/alumnos/a0451296/proyecto/sim/progargs.cpp:34:12: error: implicit conversion 'int' -> bool [readability-implicit-bool-conversion,-warnings-as-errors]
-   34 |       if (!isdigit(c)) {
-      |           ~^         
-      |                       == 0
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:45:3: error: variable 'pasos' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-   45 |   int pasos = stoi(num_iter);
-      |   ^
-      |       const 
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:92:13: error: 5 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-   92 |     return -5;
-      |             ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:104:13: error: 5 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-  104 |     return -5;
-      |             ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:109:5: error: function 'leer_archivo_entrada' exceeds recommended size/complexity thresholds [readability-function-size,-warnings-as-errors]
-  109 | int leer_archivo_entrada(string const & num_iter_file) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:109:5: note: 34 lines including whitespace and comments (threshold 25)
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:116:9: error: variable 'ppm' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
-    2 |   float ppm;
-      |         ^  
-      |             = NAN
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:117:7: error: variable 'num_particles' is not initialized [cppcoreguidelines-init-variables,-warnings-as-errors]
-  117 |   int num_particles;
-      |       ^            
-      |                     = 0
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:118:16: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  118 |   fichero.read(reinterpret_cast<char *>(&ppm), sizeof(float));  // Lectura del particulas per meter
+   34 |       if (!isdigit(static_cast<unsigned char>(caracter_actual))) { //Unsigned char aporta la misma ventaja que para el anterior condicional
+      |           ~^                                                   
+      |                                                                 == 0
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:35:57: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   35 |         cerr << "Error: time steps must be numeric." << endl;
+      |                                                         ^~~~
+      |                                                         '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:49:55: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   49 |     cerr << "Error: Invalid number of time steps." << endl;
+      |                                                       ^~~~
+      |                                                       '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:60:65: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   60 |     cerr << "Error: Cannot open " << input << " for reading" << endl;
+      |                                                                 ^~~~
+      |                                                                 '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:71:70: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   71 |         cerr << "Error: Cannot open " << output << " for writing" << endl;
+      |                                                                      ^~~~
+      |                                                                      '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:76:66: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   76 |     cerr << "Error: Cannot open " << output << " for writing" << endl;
+      |                                                                  ^~~~
+      |                                                                  '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:86:73: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   86 |     cerr << "Error: Invalid number of particles: " << num_particulas << endl;
+      |                                                                         ^~~~
+      |                                                                         '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:98:118: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+   98 |     cerr << "Error: Number of particles mismatch. Header: " << num_particles << ", Found: " << particles_contadas << endl;
+      |                                                                                                                      ^~~~
+      |                                                                                                                      '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:106:16: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  106 |   fichero.read(reinterpret_cast<char *>(&ppm), sizeof(ppm)); //Lectura del particulas per meter
       |                ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:119:16: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  119 |   fichero.read(reinterpret_cast<char *>(&num_particles),
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:107:16: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  107 |   fichero.read(reinterpret_cast<char *>(&num_particles), sizeof(num_particles)); //Lectura del numero de particulas
       |                ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:121:3: error: variable 'resultado' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  121 |   int resultado = iniciacion_simulacion(num_particles);  // Comprobacion de iniciacion_simulacion
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:116:3: error: uninitialized record type: 'particle_data' [cppcoreguidelines-pro-type-member-init,-warnings-as-errors]
+  116 |   array<float,9> particle_data; 
+      |   ^                           
+      |                               {}
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:116:15: error: 9 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
+  116 |   array<float,9> particle_data; 
+      |               ^
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:117:23: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
+  117 |   while (fichero.read(reinterpret_cast<char *>(particle_data.data()), size_of_particle)) { 
+      |                       ^
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:127:47: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  127 |     cerr << "No se pudo abrir el archivo." << endl; 
+      |                                               ^~~~
+      |                                               '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:129:15: error: floating point literal has suffix 'f', which is not uppercase [readability-uppercase-literal-suffix,-warnings-as-errors]
+  129 |   float ppm = 0.0f;
+      |               ^  ~
+      |                  F
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:131:3: error: variable 'resultado_comprobacion1' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  131 |   int resultado_comprobacion1 = leer_cabecera_archivo(fichero, ppm, num_particles);
       |   ^
       |       const 
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:130:3: error: do not declare C-style arrays, use std::array<> instead [cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays,-warnings-as-errors]
-  130 |   float particle_data[9];
-      |   ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:130:23: error: 9 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-  130 |   float particle_data[9];
-      |                       ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:131:23: error: do not use reinterpret_cast [cppcoreguidelines-pro-type-reinterpret-cast,-warnings-as-errors]
-  131 |   while (fichero.read(reinterpret_cast<char *>(&particle_data), size_of_particle)) {
-      |                       ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:135:3: error: variable 'resultado_comp' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
-  135 |   int resultado_comp = comparacion_cantidad_particulas(
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:135:3: error: variable 'resultado_comprobacion2' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  135 |   int resultado_comprobacion2 = leer_particulas_archivo(fichero, num_particles);
       |   ^
       |       const 
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:145:25: error: 3 adjacent parameters of 'proargs_validations' of similar type ('const string &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
-  145 | int proargs_validations(string const & num_iter, string const & input, string const & output) {
-      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:145:40: note: the first parameter in the range is 'num_iter'
-  145 | int proargs_validations(string const & num_iter, string const & input, string const & output) {
-      |                                        ^~~~~~~~
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:145:87: note: the last parameter in the range is 'output'
-  145 | int proargs_validations(string const & num_iter, string const & input, string const & output) {
-      |                                                                                       ^~~~~~
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:149:63: error: 5 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-  149 |   if (comprobacion_archivo_escritura(output) == -4) { return -5; }   // Archivo de salida
-      |                                                               ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:150:39: error: 5 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-  150 |   if (leer_archivo_entrada(input) == -5) { return -6; }              // Numero de particulas
-      |                                       ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:150:52: error: 6 is a magic number; consider replacing it with a named constant [cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers,-warnings-as-errors]
-  150 |   if (leer_archivo_entrada(input) == -5) { return -6; }              // Numero de particulas
-      |                                                    ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:155:6: error: function 'printParameters' exceeds recommended size/complexity thresholds [readability-function-size,-warnings-as-errors]
-  155 | void printParameters(int ppm, int num_particles) {
-      |      ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:155:6: note: 37 lines including whitespace and comments (threshold 25)
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:14:5: error: function 'comprobacion_num_param' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name,-warnings-as-errors]
-   14 | int comprobacion_num_param(int argc);
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:5:5: note: the definition seen here
-    5 | int comprobacion_num_param(int num_params) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:14:5: note: differing parameters are named here: ('argc'), in definition: ('num_params')
-   14 | int comprobacion_num_param(int argc);
-      |     ^                          ~~~~
-      |                                num_params
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:15:5: error: function 'comprobacion_primer_argumento' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name,-warnings-as-errors]
-   15 | int comprobacion_primer_argumento(std::string const & arg1);
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:18:5: note: the definition seen here
-   18 | int comprobacion_primer_argumento(string const & num_iter) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:15:5: note: differing parameters are named here: ('arg1'), in definition: ('num_iter')
-   15 | int comprobacion_primer_argumento(std::string const & arg1);
-      |     ^                                                 ~~~~
-      |                                                       num_iter
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:16:5: error: function 'comprobacion_pasos_tiempo' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name,-warnings-as-errors]
-   16 | int comprobacion_pasos_tiempo(std::string const & arg1);
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:44:5: note: the definition seen here
-   44 | int comprobacion_pasos_tiempo(string const & num_iter) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:16:5: note: differing parameters are named here: ('arg1'), in definition: ('num_iter')
-   16 | int comprobacion_pasos_tiempo(std::string const & arg1);
-      |     ^                                             ~~~~
-      |                                                   num_iter
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:17:5: error: function 'comprobacion_archivo_lectura' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name,-warnings-as-errors]
-   17 | int comprobacion_archivo_lectura(std::string const & arg2);
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:56:5: note: the definition seen here
-   56 | int comprobacion_archivo_lectura(string const & input) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:17:5: note: differing parameters are named here: ('arg2'), in definition: ('input')
-   17 | int comprobacion_archivo_lectura(std::string const & arg2);
-      |     ^                                                ~~~~
-      |                                                      input
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:18:5: error: function 'comprobacion_archivo_escritura' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name,-warnings-as-errors]
-   18 | int comprobacion_archivo_escritura(std::string const & arg3);
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:68:5: note: the definition seen here
-   68 | int comprobacion_archivo_escritura(string const & output) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:18:5: note: differing parameters are named here: ('arg3'), in definition: ('output')
-   18 | int comprobacion_archivo_escritura(std::string const & arg3);
-      |     ^                                                  ~~~~
-      |                                                        output
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:22:5: error: function 'proargs_validations' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name,-warnings-as-errors]
-   22 | int proargs_validations(std::string const & arg1, std::string const & arg2,
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.cpp:145:5: note: the definition seen here
-  145 | int proargs_validations(string const & num_iter, string const & input, string const & output) {
-      |     ^
-/home/alumnos/a0451296/proyecto/sim/progargs.hpp:22:5: note: differing parameters are named here: ('arg1', 'arg2', 'arg3'), in definition: ('num_iter', 'input', 'output')
-   22 | int proargs_validations(std::string const & arg1, std::string const & arg2,
-      |     ^                                       ~~~~                      ~~~~
-      |                                             num_iter                  input
-   23 |                         std::string const & arg3);
-      |                                             ~~~~
-      |                                             output
-85914 warnings generated.
-Suppressed 85879 warnings (85879 in non-user code).
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:144:25: error: 3 adjacent parameters of 'proargs_validations' of similar type ('const string &') are easily swapped by mistake [bugprone-easily-swappable-parameters,-warnings-as-errors]
+  144 | int proargs_validations(string const & input, string const & num_iter,string const & output) {    
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:144:40: note: the first parameter in the range is 'input'
+  144 | int proargs_validations(string const & input, string const & num_iter,string const & output) {    
+      |                                        ^~~~~
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:144:86: note: the last parameter in the range is 'output'
+  144 | int proargs_validations(string const & input, string const & num_iter,string const & output) {    
+      |                                                                                      ^~~~~~
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:158:55: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  158 |   cout << "Number of particles: " << num_particles << endl;
+      |                                                       ^~~~
+      |                                                       '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:159:45: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  159 |   cout << "Particles per meter: " << ppm << endl;
+      |                                             ^~~~
+      |                                             '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:161:3: error: variable 'smoothing_length' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  161 |   double smoothing_length = MULTIPLICADOR_RADIO / static_cast<double>(ppm);
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:162:3: error: variable 'particle_mass' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  162 |   double particle_mass = DENSIDAD_FLUIDO * pow(ppm, -3);
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:164:3: error: variable 'grid_size_x' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  164 |   int grid_size_x = floor((LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / smoothing_length);
+      |   ^
+      |       const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:165:3: error: variable 'grid_size_y' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  165 |   int grid_size_y = floor((LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / smoothing_length);
+      |   ^
+      |       const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:166:3: error: variable 'grid_size_z' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  166 |   int grid_size_z = floor((LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / smoothing_length);
+      |   ^
+      |       const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:168:3: error: variable 'num_blocks' of type 'int' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  168 |   int num_blocks = grid_size_x * grid_size_y * grid_size_z;
+      |   ^
+      |       const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:170:3: error: variable 'block_size_x' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  170 |   double block_size_x = (LIMITE_SUPERIOR_RECINTO_X - LIMITE_INFERIOR_RECINTO_X) / grid_size_x;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:171:3: error: variable 'block_size_y' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  171 |   double block_size_y = (LIMITE_SUPERIOR_RECINTO_Y - LIMITE_INFERIOR_RECINTO_Y) / grid_size_y;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:172:3: error: variable 'block_size_z' of type 'double' can be declared 'const' [misc-const-correctness,-warnings-as-errors]
+  172 |   double block_size_z = (LIMITE_SUPERIOR_RECINTO_Z - LIMITE_INFERIOR_RECINTO_Z) / grid_size_z;
+      |   ^
+      |          const 
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:174:55: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  174 |   cout << "Smoothing length: " << smoothing_length << endl;
+      |                                                       ^~~~
+      |                                                       '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:175:49: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  175 |   cout << "Particle mass: " << particle_mass << endl;
+      |                                                 ^~~~
+      |                                                 '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:176:91: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  176 |   cout << "Grid size: " << grid_size_x << " x " << grid_size_y << " x " << grid_size_z << endl;
+      |                                                                                           ^~~~
+      |                                                                                           '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:177:49: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  177 |   cout << "Number of blocks: " << num_blocks << endl;
+      |                                                 ^~~~
+      |                                                 '\n'
+/home/alumnos/a0451296/proyecto/sim/progargs.cpp:178:95: error: do not use 'endl' with streams; use '\n' instead [performance-avoid-endl,-warnings-as-errors]
+  178 |   cout << "Block size: " << block_size_x << " x " << block_size_y << " x " << block_size_z << endl;
+      |                                                                                               ^~~~
+      |                                                                                               '\n'
+85928 warnings generated.
+Suppressed 85890 warnings (85890 in non-user code).
 Use -header-filter=.* to display errors from all non-system headers. Use -system-headers to display errors from system headers as well.
-28 warnings treated as errors
+37 warnings treated as errors
 gmake[2]: *** [sim/CMakeFiles/sim.dir/build.make:76: sim/CMakeFiles/sim.dir/progargs.cpp.o] Error 1
 gmake[2]: *** Se espera a que terminen otras tareas....
 gmake[1]: *** [CMakeFiles/Makefile2:362: sim/CMakeFiles/sim.dir/all] Error 2
