@@ -27,6 +27,7 @@
 #define PARTCOL1_PATH "../../files/trz/small/partcol-base-1.trz"
 #define MOTION_PATH "../../files/trz/small/motion-base-1.trz"
 #define INTERACTIONS_PATH "../../files/trz/small/boundint-base-1.trz"
+#define INITACC2_PATH "../../files/trz/small/initacc-base-2.trz"
 
 class GridTest : public Grid {
   public:

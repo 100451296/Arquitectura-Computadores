@@ -154,3 +154,19 @@ TEST(DensityIncrease2, TestGrid) {
 
   EXPECT_EQ(gridTest.compareDensity(grid), 0);
 }
+
+// Define una prueba trivial que verifica la igualdad de dos números
+TEST(InitAcc2, TestGrid) {
+  GridTest gridTest;
+  gridTest.readTraze(INITACC2_PATH);
+
+  Grid grid;
+  grid.readFile(SMALL_PATH);
+  grid.simulation(1);
+
+  EXPECT_EQ(gridTest.compareDensity(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationX(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationY(grid), 0);
+  EXPECT_EQ(gridTest.compareAccelerationZ(grid), 0);
+  EXPECT_EQ(gridTest.compareParticles(grid), 0);
+}
