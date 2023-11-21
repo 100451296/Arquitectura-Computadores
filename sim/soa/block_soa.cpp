@@ -69,7 +69,7 @@ void Block::densityIncrease(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para el incremento de densidad
-void Block::calculate_increm_density(const std::vector<std::pair<int, int>> ParejaParticulas) const {
+void Block::calculate_increm_density(const std::vector<std::pair<int, int>> & ParejaParticulas) const {
   double increm_density_pair = 0;
   for (auto const & pair : ParejaParticulas) {
     const double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second], Two);
@@ -180,19 +180,18 @@ void Block::updateAcceleration(int p1, int p2, const vector<double> & increm_ace
 }
 // Método auxiliar que realiza los diferentes cálculos para saber si dos partículas están lo
 // suficientemente cerca
-bool Block::distClose(int idP1, int idP2) const{
-  if (pow(((*particles).posX[idP1] - (*particles).posX[idP2]), 2) + pow(((*particles).posY[idP1] - (*particles).posY[idP2]), 2) + pow(((*particles).posZ[idP1] - (*particles).posZ[idP2]), 2) <
-      pow(data.long_suavizado, 2)) {
-    return true;
-  }
-  return false;
+bool Block::distClose(int idP1, int idP2) const {
+  return pow(((*particles).posX[idP1] - (*particles).posX[idP2]), 2) +
+             pow(((*particles).posY[idP1] - (*particles).posY[idP2]), 2) +
+             pow(((*particles).posZ[idP1] - (*particles).posZ[idP2]), 2) <
+         pow(data.long_suavizado, 2);
 }
 
 // Debe actualizar la componente x del vector de aceleración para cada particula
 void Block::collisionsX(unsigned int cx) {
   double increm_x = 0;
   for (auto & Bid : particlesID) {
-     double cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO;
+     const double cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -212,7 +211,7 @@ void Block::collisionsX(unsigned int cx) {
 void Block::collisionsY(unsigned int cy) {
   double increm_y = 0;
   for (auto & Bid : particlesID) {
-    double cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
+    const double cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
     } else if (cy == data.ny - 1) {
@@ -232,7 +231,7 @@ void Block::collisionsY(unsigned int cy) {
 void Block::collisionsZ(unsigned int cz) {
   double increm_z = 0;
   for (auto & Bid : particlesID) {
-    double cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
+    const double cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
     } else if (cz == data.nz - 1) {

@@ -26,7 +26,7 @@ class Block {
     Block(Particles & particlesRef, std::vector<double> & densityRef,
           std::vector<double> & accelerationXRef, std::vector<double> & accelerationYRef,
           std::vector<double> & accelerationZRef)
-      : particles(&particlesRef), particlesID(), data(), accelerationX(&accelerationXRef),
+      : particles(&particlesRef), data(), accelerationX(&accelerationXRef),
         accelerationY(&accelerationYRef), accelerationZ(&accelerationZRef), density(&densityRef) { }
 
     Particles * particles;
@@ -55,14 +55,14 @@ class Block {
     void generarParejasEntreBloques(Block & otherBlock, std::vector<std::pair<int, int>> & aux);
     void calculateDataCommon();
     void initDensityAcceleration();
-    void calculate_increm_density(std::vector<std::pair<int, int>> ParejaParticulas) const;
+    void calculate_increm_density(const std::vector<std::pair<int, int>> & ParejaParticulas) const;
     void lineal_transformate_density();
-    std::vector<double> calculate_increm_aceleration(std::vector<double> position,
+    [[nodiscard]] std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<int> Id) const;
     static double calculate_dist(double posX, double posY, double posZ);
     void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec)const;
-    bool distClose(int idP1, int idP2)const;
+    [[nodiscard]] bool distClose(int idP1, int idP2)const;
     void updateAcceleration(int p1, int p2,const std::vector<double> & increm_aceleration)const;
 };
 
