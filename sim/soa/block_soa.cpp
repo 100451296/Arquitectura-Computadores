@@ -8,7 +8,7 @@ using namespace std;
 void Block::generarParejasBloque() {
   for (size_t i = 0; i < particlesID.size(); i++) {
     for (size_t j = i + 1; j < particlesID.size(); j++) {
-      particlePairs.emplace_back(make_pair(particlesID[i], particlesID[j]));
+      particlePairs.emplace_back(particlesID[i], particlesID[j]);
     }
   }
 }
@@ -16,7 +16,7 @@ void Block::generarParejasBloque() {
 // Metodo encargado de crear las parejas de particulas entre bloques contiguos
 void Block::generarParejasEntreBloques(Block & otherBlock, vector<std::pair<int, int>> & aux) {
   for (auto & Bid : particlesID) {
-    for (auto & Cid : otherBlock.particlesID) { aux.emplace_back(make_pair(Bid, Cid)); }
+    for (auto & Cid : otherBlock.particlesID) { aux.emplace_back(Bid, Cid); }
   }
 }
 
@@ -45,9 +45,9 @@ void Block::initDensityAcceleration() {
 void Block::densityIncreaseSingle() {
   double increm_density_pair = 0;
   for (auto const & pair : particlePairs) {
-    double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second],Two);
-    double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second],Two);
-    double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second],Two);
+    const double aux_x = std::pow((*particles).posX[pair.first] - (*particles).posX[pair.second],Two);
+    const double aux_y = std::pow((*particles).posY[pair.first] - (*particles).posY[pair.second],Two);
+    const double aux_z = std::pow((*particles).posZ[pair.first] - (*particles).posZ[pair.second],Two);
 
     if (aux_x + aux_y + aux_z < data.h_square) {
       increm_density_pair = std::pow(data.h_square - (aux_x + aux_y + aux_z), Three);
@@ -89,14 +89,14 @@ void Block::calculate_increm_density(std::vector<std::pair<int, int>> ParejaPart
 // densidad en un mismo bloque
 void Block::lineal_transformate_density() {
   for (auto & Bid : particlesID) {
-    double coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
+    const double coeficiente = ThreeHundFifteen / (SixtyFour * M_PI * data.h_pow9) * data.mass;
 
     (*density)[Bid] = ((*density)[Bid] + data.h_pow6) * coeficiente;
   }
 }
 
 vector<double> Block::calculate_increm_aceleration(vector<double> position, vector<double> velocity,
-                                                   double dist, vector<int> Bid) {
+                                                   double dist, vector<int> Bid) const {
   const double pi_x = position[0];
   const double pi_y = position[1];
   const double pi_z = position[2];
@@ -127,7 +127,7 @@ vector<double> Block::calculate_increm_aceleration(vector<double> position, vect
 
 // Metodo auxiliar que realiza los diferentes calculos para la distancia
 double Block::calculate_dist(double posX, double posY, double posZ) {
-  double dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
+  const double dist = sqrt(max(pow(posX, Two) + pow(posY, Two) + pow(posZ, Two), TenLessTwuelve));
   return dist;
 }
 

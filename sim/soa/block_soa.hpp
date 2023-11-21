@@ -59,7 +59,7 @@ class Block {
     void lineal_transformate_density();
     std::vector<double> calculate_increm_aceleration(std::vector<double> position,
                                                      std::vector<double> velocity, double dist,
-                                                     std::vector<int> Id);
+                                                     std::vector<int> Id) const;
     static double calculate_dist(double posX, double posY, double posZ);
 
     void accelerationTransferCalculations(std::vector<std::pair<int, int>> pair_vec);
