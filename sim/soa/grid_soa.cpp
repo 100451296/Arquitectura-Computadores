@@ -3,7 +3,7 @@
 using namespace std;
 
 // Offsets para buscar bloques contiguos
-// NOLINT
+// NOLINTNEXTLINE
 std::vector<std::tuple<int, int, int>> const GridSoA::offsets = {
   {1,  1,  1},
   {1,  1,  0},
@@ -139,9 +139,9 @@ int GridSoA::readFile(string const & input_file_name) {
 
 bool GridSoA::readHeader(std::ifstream & input_file) {
   float buffer = INIT_BUFFER;
-  // NOLINT
+  // NOLINTNEXTLINE
   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
-  // NOLINT
+  // NOLINTNEXTLINE
   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
 
   ppm = static_cast<double>(buffer);
@@ -162,7 +162,7 @@ bool GridSoA::readParticles(std::ifstream & input_file) {
 
 bool GridSoA::readParticle(std::ifstream & input_file, Particles & particles, int index) {
   std::array<float, particleAttr> buffer = {};
-  // NOLINT
+  // NOLINTNEXTLINE
   if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
     std::cerr << "Error al leer las partículas del archivo\n";
     return false;
@@ -200,7 +200,9 @@ int GridSoA::writeFile(std::string const & output_file_name) {
 
 bool GridSoA::writeHeader(std::ofstream & output_file) {
   auto ppm_float = static_cast<float>(ppm);
+  // NOLINTNEXTLINE
   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
+  // NOLINTNEXTLINE
   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
   return output_file.good();
 }
@@ -223,6 +225,7 @@ bool GridSoA::writeParticle(std::ofstream & output_file, Particles const & parti
                                             static_cast<float>(particles.velY[index]),
                                             static_cast<float>(particles.velZ[index])};
 
+  // NOLINTNEXTLINE
   if (!output_file.write(reinterpret_cast<char const *>(buffer.data()), sizeof(float) * Nine)) {
     std::cerr << "Error al escribir las partículas en el archivo"
               << "\n";

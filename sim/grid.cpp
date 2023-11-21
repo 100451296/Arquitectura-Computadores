@@ -3,7 +3,7 @@
 using namespace std;
 
 // Offsets para buscar bloques contiguos
-// NOLINT
+// NOLINTNEXTLINE
 std::vector<std::tuple<int, int, int>> const Grid::offsets = {
   {1,  1,  1},
   {1,  1,  0},
@@ -140,9 +140,9 @@ int Grid::readFile(string const & input_file_name) {
 
 bool Grid::readHeader(std::ifstream & input_file) {
   float buffer = INIT_BUFFER;
-  // NOLINT
+  // NOLINTNEXTLINE
   input_file.read(reinterpret_cast<char *>(&buffer), sizeof(float));
-  // NOLINT
+  // NOLINTNEXTLINE
   input_file.read(reinterpret_cast<char *>(&num_particles), sizeof(int));
 
   ppm = static_cast<double>(buffer);
@@ -159,7 +159,7 @@ bool Grid::readParticles(std::ifstream & input_file) {
 
 bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int index) {
   std::array<float, particleAttr> buffer = {};
-  // NOLINT
+  // NOLINTNEXTLINE
   if (!input_file.read(reinterpret_cast<char *>(buffer.data()), sizeof(float) * Nine)) {
     std::cerr << "Error al leer las partículas del archivo\n";
     return false;
@@ -180,6 +180,7 @@ bool Grid::readParticle(std::ifstream & input_file, Particle & particle, int ind
 }
 
 int Grid::writeFile(std::string const & output_file_name) {
+  // NOLINTNEXTLINENEXTLINE
   std::ofstream output_file(output_file_name, std::ios::binary);
   if (!output_file.is_open()) {
     std::cerr << "Error al abrir el archivo de salida"
@@ -197,7 +198,9 @@ int Grid::writeFile(std::string const & output_file_name) {
 
 bool Grid::writeHeader(std::ofstream & output_file) {
   auto ppm_float = static_cast<float>(ppm);
+  // NOLINTNEXTLINE
   output_file.write(reinterpret_cast<char const *>(&ppm_float), sizeof(float));
+  // NOLINTNEXTLINE
   output_file.write(reinterpret_cast<char const *>(&num_particles), sizeof(int));
   return output_file.good();
 }
@@ -216,6 +219,7 @@ bool Grid::writeParticle(std::ofstream & output_file, Particle const & particle)
     static_cast<float>(particle.smoothVecY), static_cast<float>(particle.smoothVecZ),
     static_cast<float>(particle.velX),       static_cast<float>(particle.velY),
     static_cast<float>(particle.velZ)};
+  // NOLINTNEXTLINE
   if (!output_file.write(reinterpret_cast<char const *>(buffer), sizeof(float) * Nine)) {
     std::cerr << "Error al escribir las partículas en el archivo"
               << "\n";
