@@ -61,9 +61,9 @@ class Block {
                                                      std::vector<double> velocity, double dist,
                                                      std::vector<int> Id) const;
     static double calculate_dist(double posX, double posY, double posZ);
-    void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec);
-    bool distClose(int idP1, int idP2);
-    void updateAcceleration(int p1, int p2, std::vector<double> & increm_aceleration);
+    void accelerationTransferCalculations(std::vector<std::pair<int, int>> & pair_vec)const;
+    bool distClose(int idP1, int idP2)const;
+    void updateAcceleration(int p1, int p2, std::vector<double> & increm_aceleration)const;
 };
 
 #endif

@@ -164,7 +164,7 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
 
 // Método auxiliar que realiza los diferentes cálculos para saber si dos partículas están lo
 // suficientemente cerca
-bool Block::distClose(Particle p1, Particle p2) {
+bool Block::distClose(Particle p1, Particle p2) const {
   if (pow((p1.posX - p2.posX), 2) + pow((p1.posY - p2.posY), 2) + pow((p1.posZ - p2.posZ), 2) <
       pow(data.long_suavizado, 2)) {
     return true;
@@ -173,7 +173,7 @@ bool Block::distClose(Particle p1, Particle p2) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para modificar la aceleracion
-void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) {
+void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) const {
   (*accelerationX)[p1]  = (*accelerationX)[p1] + increm_aceleration[0];
   (*accelerationY)[p1]  = (*accelerationY)[p1] + increm_aceleration[1];
   (*accelerationZ)[p1]  = (*accelerationZ)[p1] + increm_aceleration[2];
@@ -183,7 +183,7 @@ void Block::updateAcceleration(int p1, int p2, vector<double> & increm_acelerati
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para la aceleracion
-void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) {
+void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) const {
   for (auto const & pair : pair_vec) {
     // Si las dos particulas estan cerca
     if (distClose((*particles)[pair.first], (*particles)[pair.second])) {

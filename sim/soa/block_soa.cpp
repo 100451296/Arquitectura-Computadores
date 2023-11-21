@@ -146,7 +146,7 @@ void Block::accelerationTransfer(Block & contiguousBlock) {
 }
 
 // Metodo auxiliar que realiza los diferentes calculos para la aceleracion
-void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) {
+void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_vec) const {
   for (auto const & pair : pair_vec) {
     // Si las dos particulas estan cerca
     if (distClose(pair.first,pair.second )) {
@@ -173,7 +173,7 @@ void Block::accelerationTransferCalculations(vector<std::pair<int, int>> & pair_
   }
 }
 // Metodo auxiliar que realiza los diferentes calculos para modificar la aceleracion
-void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) {
+void Block::updateAcceleration(int p1, int p2, vector<double> & increm_aceleration) const {
   (*accelerationX)[p1]  = (*accelerationX)[p1] + increm_aceleration[0];
   (*accelerationY)[p1]  = (*accelerationY)[p1] + increm_aceleration[1];
   (*accelerationZ)[p1]  = (*accelerationZ)[p1] + increm_aceleration[2];
@@ -183,7 +183,7 @@ void Block::updateAcceleration(int p1, int p2, vector<double> & increm_acelerati
 }
 // Método auxiliar que realiza los diferentes cálculos para saber si dos partículas están lo
 // suficientemente cerca
-bool Block::distClose(int idP1, int idP2) {
+bool Block::distClose(int idP1, int idP2) const{
   if (pow(((*particles).posX[idP1] - (*particles).posX[idP2]), 2) + pow(((*particles).posY[idP1] - (*particles).posY[idP2]), 2) + pow(((*particles).posZ[idP1] - (*particles).posZ[idP2]), 2) <
       pow(data.long_suavizado, 2)) {
     return true;
@@ -193,9 +193,9 @@ bool Block::distClose(int idP1, int idP2) {
 
 // Debe actualizar la componente x del vector de aceleración para cada particula
 void Block::collisionsX(unsigned int cx) {
-  double cord_x, increm_x = 0;
+  double increm_x = 0;
   for (auto & Bid : particlesID) {
-    { cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO; }
+     double cord_x = (*particles).posX[Bid] + (*particles).smoothVecX[Bid] * PASO_TIEMPO;
     if (cx == 0) {
       increm_x = TAMANO_PARTICULA - (cord_x - LIMITE_INFERIOR_RECINTO_X);
     } else if (cx == data.nx - 1) {
@@ -213,9 +213,9 @@ void Block::collisionsX(unsigned int cx) {
 
 // Debe actualizar la componente y del vector de aceleración para cada particula
 void Block::collisionsY(unsigned int cy) {
-  double cord_y, increm_y = 0;
+  double increm_y = 0;
   for (auto & Bid : particlesID) {
-    cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
+    double cord_y = (*particles).posY[Bid] + (*particles).smoothVecY[Bid] * PASO_TIEMPO;
     if (cy == 0) {
       increm_y = TAMANO_PARTICULA - (cord_y - LIMITE_INFERIOR_RECINTO_Y);
     } else if (cy == data.ny - 1) {
@@ -233,9 +233,9 @@ void Block::collisionsY(unsigned int cy) {
 
 // Debe actualizar la componente z del vector de aceleración para cada particula
 void Block::collisionsZ(unsigned int cz) {
-  double cord_z, increm_z = 0;
+  double increm_z = 0;
   for (auto & Bid : particlesID) {
-    cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
+    double cord_z = (*particles).posZ[Bid] + (*particles).smoothVecZ[Bid] * PASO_TIEMPO;
     if (cz == 0) {
       increm_z = TAMANO_PARTICULA - (cord_z - LIMITE_INFERIOR_RECINTO_Z);
     } else if (cz == data.nz - 1) {
