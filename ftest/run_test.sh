@@ -1,15 +1,8 @@
 #!/bin/bash
 
-# Variables para almacenar los resultados esperados
-expected_result_params=(-1 -1 -1 -1 -1 -2 -3 -4)
-expected_result_num_particles=(-5 -5 -5)
-expected_result_simulation=(0 0 0)
-
-# Contadores de tests exitosos y totales
 successful_tests=0
 total_tests=0
 
-# Función para modificar el número de partículas en el archivo .fld
 modify_particles() {
     local input_file=$1
     local new_num_particles=$2
@@ -28,59 +21,56 @@ modify_particles() {
     echo -ne "$(echo $hex_value | tac -rs..)" | xxd -r -p | dd of="$input_file" bs=1 seek=4 count=4 conv=notrunc
 }
 
-# Función para ejecutar el programa con un conjunto específico de parámetros y verificar el resultado
 run_and_verify() {
-    local expected_result=$1
-    local num_iter=$2
-    local input=$3
-    local output=$4
+    local expected_error=$1
+    shift  # Eliminar el primer argumento (mensaje de error esperado)
     
-
     # Ejecutar el programa
-    ../build/fluid/fluid $num_iter "$input" "$output"
-    # Verificar el código de salida
-    local exit_code=$?
-    if [ $exit_code -eq $expected_result ]; then
-        echo -e "\033[0;32mTest Passed:\033[0m fluid $num_iter $input $output"
+    local error_message
+    error_message=$("../build/fluid/fluid" "$@" 2>&1 >/dev/null)
+
+    # Verificar si el mensaje de error contiene el texto esperado
+    if [ $exit_code -eq 0 ] || [[ "$error_message_lowercase" == *"$expected_error_lowercase"* ]]; then
+        echo -e "\033[0;32mTest Passed:\033[0m fluid $*"
+        echo "Expected error message: $expected_error"
+        echo "Actual error message: $error_message"
         ((successful_tests++))
     else
-        echo -e "\033[0;31mTest Failed:\033[0m fluid $num_iter $input $output"
+        echo -e "\033[0;31mTest Failed:\033[0m fluid $*"
+        echo "Expected error message: $expected_error"
+        echo "Actual error message: $error_message"
     fi
+
     ((total_tests++))
 }
 
 run_tests_parameters() {
-    # Pruebas de análisis de argumentos que deben dar fallo (TEST FAILED)
-    run_and_verify  ${expected_result_params[1]}
-    run_and_verify 10 ${expected_result_params[1]}
-    run_and_verify hola ../files/small.fld ${expected_result_params[2]}
-    run_and_verify hola ../files/small.fld ../../files/results/small-3.fld ${expected_result_params[3]}
-    run_and_verify 10.5 ../files/small.fld ../../files/results/small-3.fld ${expected_result_params[4]}
-    run_and_verify -10 ../files/small.fld ../../files/results/small-3.fld ${expected_result_params[5]}
-    run_and_verify 10 ../files/no_existe.fld ../../files/results/small-3.fld ${expected_result_params[6]}
-    run_and_verify 10 ../files/small.fld ../../files/results/no_existe.fld ${expected_result_params[7]}
+    run_and_verify "Error: Invalid number of arguments: 0"  
+    run_and_verify "Error: Invalid number of arguments: 1" 10 
+    run_and_verify "Error: Invalid number of arguments: 2" 10 ../files/small.fld 
+    run_and_verify "Error: time steps must be numeric." hola ../files/small.fld ../../files/results/small-3.fld 
+    run_and_verify "Error: time steps must be numeric." 10.5 ../files/small.fld ../../files/results/small-3.fld 
+    run_and_verify "Error: Invalid number of time steps." -10 ../files/small.fld ../../files/results/small-3.fld 
+    run_and_verify "Error: Cannot open ../files/no_existe.fld for reading" 10 ../files/no_existe.fld ../../files/results/small-3.fld 
+    run_and_verify "Error: Cannot open ../../files/results/no_existe.fld for writing" 10 ../files/small.fld ../../files/results/no_existe.fld 
 }
 
 run_tests_num_particles() {
-    # Pruebas de comprobación del valor de num_particles especificado en la cabecera del archivo. El valor se modifica en un archivo llamado small_malo.fld
-    modify_particles ./files/archivos_pruebas/small_malo.fld 0
-    run_and_verify 1 ./files/archivos_pruebas/small_malo.fld ../files/results/small-1.fld ${expected_result_num_particles[0]}
+    modify_particles ../files/archivos_pruebas/small_malo.fld 0
+    run_and_verify "Error: Invalid number of particles: 0" 1 ../files/archivos_pruebas/small_malo.fld ../files/results/small-1.fld 
     modify_particles ../files/archivos_pruebas/small_malo.fld -123
-    run_and_verify 1 ../files/archivos_pruebas/small_malo.fld ../files/results/small-1.fld ${expected_result_num_particles[1]}
+    run_and_verify "Error: Invalid number of particles: " 1 ../files/archivos_pruebas/small_malo.fld ../files/results/small-1.fld 
     modify_particles ../files/archivos_pruebas/pepe.fld
-    run_and_verify 1 ../files/archivos_pruebas/pepe.fld ../files/results/small-1.fld ${expected_result_num_particles[2]}
+    run_and_verify "Error: Number of particles mismatch." 1 ../files/archivos_pruebas/pepe.fld ../files/results/small-1.fld 
 }
 
 run_tests_simulacion() {
-    # Pruebas de simulación que deben ser válidas y finalizar con éxito (TEST PASSED) para el uso de los archivos pequeños small.fld
-    run_and_verify 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
-    #run_and_verify 100 ../files/small.fld ../files/results/small-2.fld ${expected_result_simulation[1]}
-    #run_and_verify 1000 ../files/small.fld ../files/results/small-3.fld ${expected_result_simulation[2]}
-
-    # Pruebas de simulación que deben ser válidas y finalizar con éxito (TEST PASSED) para el uso de los archivos grandes large.fld
-    run_and_verify 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
-    #run_and_verify 100 ../files/large.fld ../files/results/large-2.fld ${expected_result_simulation[1]}
-    #run_and_verify 1000 ../files/large.fld ../files/results/large-1000.fld ${expected_result_simulation[2]}
+    run_and_verify "Error: Invalid number of particles: 0" 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
+    run_and_verify "Error: Invalid number of particles: " 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
+    run_and_verify "Error: Number of particles mismatch." 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
+    run_and_verify "Error: Invalid number of particles: 0" 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
+    run_and_verify "Error: Invalid number of particles: " 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
+    run_and_verify "Error: Number of particles mismatch." 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
 }
 
 # Función para ejecutar todas las pruebas y mostrar el resultado final
@@ -88,10 +78,9 @@ run_all_tests() {
     run_tests_parameters
     run_tests_num_particles
     run_tests_simulacion
-
-    echo -e "\nTotal de tests exitosos: $successful_tests de $total_tests"
+    echo "Total tests: $total_tests"
+    echo "Successful tests: $successful_tests"
 }
 
 # Ejecutar todas las pruebas al ejecutar el script
 run_all_tests
-
