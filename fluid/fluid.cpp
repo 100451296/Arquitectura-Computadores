@@ -4,20 +4,21 @@
 #include <cmath>
 #include <fstream>
 #include <iostream>
+#include <span>
 #include <vector>
 
 using namespace std;
 
 int main(int argc, char * argv[]) {
-  if (comprobacion_num_param(argc) == -1) { return -1; }  // Comprobacion del numero de parametros
+  if (comprobacion_num_param(argc) == -1) { return -1; }
 
-  string const num_iter = argv[1];
-  string const input    = argv[2];
-  string const output   = argv[3];
+  std::vector<char const *> args_view(argv + 1, argv + argc);
 
-  int resultado = proargs_validations(
-      input, num_iter, output);  // Se toma este orden para evitar parametros facilmente
-                                 // intercambiables (propuesto por clang tidy)
+  string const num_iter = args_view[0];
+  string const input    = args_view[1];
+  string const output   = args_view[2];
+  int const resultado   = proargs_validations(input, num_iter, output);
+
   if (resultado != 0) { return resultado; }
 
   Grid grid;
