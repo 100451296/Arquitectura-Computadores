@@ -21,22 +21,27 @@ constexpr double LIMITE_INFERIOR_RECINTO_X = -0.065;
 constexpr double LIMITE_INFERIOR_RECINTO_Y = -0.08;
 constexpr double LIMITE_INFERIOR_RECINTO_Z = -0.065;
 
-constexpr unsigned int particleAttr       = 9;
-constexpr unsigned int POS_X_INDEX        = 0;
-constexpr unsigned int POS_Y_INDEX        = 1;
-constexpr unsigned int POS_Z_INDEX        = 2;
-constexpr unsigned int SMOOTH_VEC_X_INDEX = 3;
-constexpr unsigned int SMOOTH_VEC_Y_INDEX = 4;
-constexpr unsigned int SMOOTH_VEC_Z_INDEX = 5;
-constexpr unsigned int VEL_X_INDEX        = 6;
-constexpr unsigned int VEL_Y_INDEX        = 7;
-constexpr unsigned int VEL_Z_INDEX        = 8;
+constexpr unsigned int particleAttr         = 9;
+constexpr unsigned int POS_X_INDEX          = 0;
+constexpr unsigned int POS_Y_INDEX          = 1;
+constexpr unsigned int POS_Z_INDEX          = 2;
+constexpr unsigned int SMOOTH_VEC_X_INDEX   = 3;
+constexpr unsigned int SMOOTH_VEC_Y_INDEX   = 4;
+constexpr unsigned int SMOOTH_VEC_Z_INDEX   = 5;
+constexpr unsigned int VEL_X_INDEX          = 6;
+constexpr unsigned int VEL_Y_INDEX          = 7;
+constexpr unsigned int VEL_Z_INDEX          = 8;
+constexpr unsigned int DENSITY_INDEX        = 9;
+constexpr unsigned int ACCELERATION_X_INDEX = 10;
+constexpr unsigned int ACCELERATION_Y_INDEX = 11;
+constexpr unsigned int ACCELERATION_Z_INDEX = 12;
 
 constexpr float INIT_BUFFER = 0.0F;
 static constexpr int Nine   = 9;
 static constexpr int Six    = 6;
 static constexpr int Two    = 2;
 static constexpr int Neg3   = -3;
+constexpr int ElementsTraze = 13;
 
 #include <cmath>
 #include <vector>
