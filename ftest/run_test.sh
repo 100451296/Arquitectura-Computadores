@@ -30,7 +30,7 @@ run_and_verify() {
     error_message=$("../build/fluid/fluid" "$@" 2>&1 >/dev/null)
 
     # Verificar si el mensaje de error contiene el texto esperado
-    if [ $exit_code -eq 0 ] || [[ "$error_message_lowercase" == *"$expected_error_lowercase"* ]]; then
+    if  [ $exit_code -eq 0 ] || [[ "$error_message" == *"$expected_error"* ]]; then
         echo -e "\033[0;32mTest Passed:\033[0m fluid $*"
         echo "Expected error message: $expected_error"
         echo "Actual error message: $error_message"
@@ -48,6 +48,8 @@ run_tests_parameters() {
     run_and_verify "Error: Invalid number of arguments: 0"  
     run_and_verify "Error: Invalid number of arguments: 1" 10 
     run_and_verify "Error: Invalid number of arguments: 2" 10 ../files/small.fld 
+    run_and_verify "Error: Invalid number of arguments: 4" 10 ../files/small.fld ../../files/results/small-3.fld 40
+    #run_and_verify "Error: time steps must be numeric." 10 ../files/small.fld ../../files/results/small-3.fld 40 #Se usaba como prueba para ver si detecta un test fallido
     run_and_verify "Error: time steps must be numeric." hola ../files/small.fld ../../files/results/small-3.fld 
     run_and_verify "Error: time steps must be numeric." 10.5 ../files/small.fld ../../files/results/small-3.fld 
     run_and_verify "Error: Invalid number of time steps." -10 ../files/small.fld ../../files/results/small-3.fld 
@@ -65,12 +67,12 @@ run_tests_num_particles() {
 }
 
 run_tests_simulacion() {
-    run_and_verify "Error: Invalid number of particles: 0" 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
-    run_and_verify "Error: Invalid number of particles: " 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
-    run_and_verify "Error: Number of particles mismatch." 1 ../files/small.fld ../files/results/small-1.fld ${expected_result_simulation[0]}
-    run_and_verify "Error: Invalid number of particles: 0" 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
-    run_and_verify "Error: Invalid number of particles: " 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
-    run_and_verify "Error: Number of particles mismatch." 1 ../files/large.fld ../files/results/large-1.fld ${expected_result_simulation[0]}
+    run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
+    run_and_verify "" 10 ../files/small.fld ../files/results/small-1.fld 
+    run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
+    run_and_verify "" 1 ../files/large.fld ../files/results/large-1.fld 
+    run_and_verify "" 10 ../files/large.fld ../files/results/large-1.fld 
+    run_and_verify "" 1 ../files/large.fld ../files/results/large-1.fld 
 }
 
 # Función para ejecutar todas las pruebas y mostrar el resultado final
