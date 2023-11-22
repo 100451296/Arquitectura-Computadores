@@ -128,7 +128,6 @@ int leer_particulas_archivo(ifstream & fichero, int num_particles) {
   // lectura de particulas del archivo
   size_t const size_of_particle = particleAttr * sizeof(float);
   int particles_contadas        = 0;
-  // NOLINT
   std::vector<float> particle_data(particleAttr, 0.0F);
   // NOLINTNEXTLINE
   while (fichero.read(reinterpret_cast<char *>(particle_data.data()), size_of_particle)) {

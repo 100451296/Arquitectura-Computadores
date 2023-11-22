@@ -13,7 +13,7 @@ TEST(Prueba, GridTestSoA) {
   grid.readFile(SMALL_PATH);
   grid.positionateParticle();
 
-  int result = gridTest.comparePositionate(grid);
+  int const result = gridTest.comparePositionate(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }

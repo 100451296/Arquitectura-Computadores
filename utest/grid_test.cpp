@@ -12,7 +12,7 @@ TEST(Positionate, TestGrid) {
   grid.readFile(SMALL_PATH);
   grid.positionateParticle();
 
-  int result = gridTest.comparePositionate(grid);
+  int const result = gridTest.comparePositionate(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }
@@ -27,7 +27,7 @@ TEST(DensityIncrease, TestGrid) {
   grid.positionateParticle();
   grid.densityIncreaseGrid();
 
-  int result = gridTest.compareDensity(grid);
+  int const result = gridTest.compareDensity(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }
@@ -43,7 +43,7 @@ TEST(LinearTransfrom, TestGrid) {
   grid.densityIncreaseGrid();
   grid.linealDensityTransform();
 
-  int result = gridTest.compareDensity(grid);
+  int const result = gridTest.compareDensity(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }
@@ -136,7 +136,7 @@ TEST(Positionate2, TestGrid) {
   grid.simulation(1);
   grid.positionateParticle();
 
-  int result = gridTest.comparePositionate(grid);
+  int const result = gridTest.comparePositionate(grid);
   // Verifica que a sea igual a b
   EXPECT_EQ(result, 0);
 }
