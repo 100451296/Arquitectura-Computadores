@@ -68,10 +68,10 @@ run_tests_num_particles() {
 run_tests_simulacion() {
     run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
     run_and_verify "" 10 ../files/small.fld ../files/results/small-1.fld 
-    run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
+    run_and_verify "" 100 ../files/small.fld ../files/results/small-1.fld 
     run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
-    run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
-    run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
+    run_and_verify "" 10 ../files/large.fld ../files/results/large-2.fld 
+    run_and_verify "" 100 ../files/large.fld ../files/results/large-2.fld 
 }
 
 run_tests_iterations() {
@@ -82,6 +82,26 @@ run_tests_iterations() {
         input_file="../files/small.fld"
         output_file="../files/results/small-$iterations.fld"
         diff_file="../files/out/small-$iterations.fld"
+
+        touch $output_file
+        # Ejecutar el programa
+        ../build/fluid/fluid $iterations $input_file $output_file > /dev/null
+        # Verificar si los archivos son iguales usando diff
+        if diff -q $diff_file $output_file > /dev/null; then
+            echo -e "\033[0;32mTest Passed:\033[0m $iterations $input_file $output_file"
+            ((successful_tests++))
+        else
+            echo -e "\033[0;31mTest Failed:\033[0m $iterations $input_file $output_file"
+        fi
+        ((total_tests++))
+    done
+
+    for ((i=1; i<=5; i++)); do
+        # Asignar valores a las variables
+        iterations=$i
+        input_file="../files/large.fld"
+        output_file="../files/results/large-$iterations.fld"
+        diff_file="../files/out/large-$iterations.fld"
 
         touch $output_file
         # Ejecutar el programa
