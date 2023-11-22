@@ -27,10 +27,10 @@ run_and_verify() {
     
     # Ejecutar el programa
     local error_message
-    error_message=$("../build/fluid/fluid" "$@" 2>&1 >/dev/null)
+    error_message=$("../build/fluid/fluid" "$@" 2>&1)
 
     # Verificar si el mensaje de error contiene el texto esperado
-    if  [ $exit_code -eq 0 ] || [[ "$error_message" == *"$expected_error"* ]]; then
+    if [ $? -eq 0 ] || [[ "$error_message" == *"$expected_error"* ]]; then
         echo -e "\033[0;32mTest Passed:\033[0m fluid $*"
         echo "Expected error message: $expected_error"
         echo "Actual error message: $error_message"
@@ -49,7 +49,6 @@ run_tests_parameters() {
     run_and_verify "Error: Invalid number of arguments: 1" 10 
     run_and_verify "Error: Invalid number of arguments: 2" 10 ../files/small.fld 
     run_and_verify "Error: Invalid number of arguments: 4" 10 ../files/small.fld ../../files/results/small-3.fld 40
-    #run_and_verify "Error: time steps must be numeric." 10 ../files/small.fld ../../files/results/small-3.fld 40 #Se usaba como prueba para ver si detecta un test fallido
     run_and_verify "Error: time steps must be numeric." hola ../files/small.fld ../../files/results/small-3.fld 
     run_and_verify "Error: time steps must be numeric." 10.5 ../files/small.fld ../../files/results/small-3.fld 
     run_and_verify "Error: Invalid number of time steps." -10 ../files/small.fld ../../files/results/small-3.fld 
@@ -70,9 +69,32 @@ run_tests_simulacion() {
     run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
     run_and_verify "" 10 ../files/small.fld ../files/results/small-1.fld 
     run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
-    run_and_verify "" 1 ../files/large.fld ../files/results/large-1.fld 
-    run_and_verify "" 10 ../files/large.fld ../files/results/large-1.fld 
-    run_and_verify "" 1 ../files/large.fld ../files/results/large-1.fld 
+    run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
+    run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
+    run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
+}
+
+run_tests_iterations() {
+    # Iterar desde 1 hasta 5 para evaluar los archivos de small.fld
+    for ((i=1; i<=5; i++)); do
+        # Asignar valores a las variables
+        iterations=$i
+        input_file="../files/small.fld"
+        output_file="../files/results/small-$iterations.fld"
+        diff_file="../files/out/small-$iterations.fld"
+
+        touch $output_file
+        # Ejecutar el programa
+        ../build/fluid/fluid $iterations $input_file $output_file > /dev/null
+        # Verificar si los archivos son iguales usando diff
+        if diff -q $diff_file $output_file > /dev/null; then
+            echo -e "\033[0;32mTest Passed:\033[0m $iterations $input_file $output_file"
+            ((successful_tests++))
+        else
+            echo -e "\033[0;31mTest Failed:\033[0m $iterations $input_file $output_file"
+        fi
+        ((total_tests++))
+    done
 }
 
 # Función para ejecutar todas las pruebas y mostrar el resultado final
@@ -80,6 +102,7 @@ run_all_tests() {
     run_tests_parameters
     run_tests_num_particles
     run_tests_simulacion
+    run_tests_iterations
     echo "Total tests: $total_tests"
     echo "Successful tests: $successful_tests"
 }
