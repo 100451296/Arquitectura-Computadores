@@ -2,7 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#define SMALL_PATH "../../files/small.fld"
 
 // Define una prueba trivial que verifica la igualdad de dos números
 TEST(Prueba, GridTestSoA) {

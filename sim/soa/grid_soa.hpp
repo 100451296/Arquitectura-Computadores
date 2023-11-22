@@ -25,19 +25,20 @@ class GridSoA {
     std::vector<double> accelerationZ;
     std::vector<double> density;
     static std::vector<std::tuple<int, int, int>> const offsets;
-    double ppm;
-    int num_particles;
-    double h;
-    double particle_mass;
-    int nx;
-    int ny;
-    int nz;
-    int num_blocks;
-    double sx;
-    double sy;
-    double sz;
-
+    double ppm           = 0.0;
+    int num_particles    = 0;
+    double h             = 0.0;
+    double particle_mass = 0.0;
+    int nx               = 0;
+    int ny               = 0;
+    int nz               = 0;
+    int num_blocks       = 0;
+    double sx            = 0.0;
+    double sy            = 0.0;
+    double sz            = 0.0;
     DataCommon data;
+
+    GridSoA() : data() { }
 
     void printParticles();
     void printFirst();

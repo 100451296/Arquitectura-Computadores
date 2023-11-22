@@ -194,7 +194,7 @@ int GridTest::compareParticles(Grid & grid) {
   return 0;
 }
 
-bool GridTest::areParticlesDifferent(Particle const & particle1, Particle const & particle2) const {
+bool GridTest::areParticlesDifferent(Particle const & particle1, Particle const & particle2) {
   return particle1.id != particle2.id || !areEqualWithTolerance(particle1.posX, particle2.posX) ||
          !areEqualWithTolerance(particle1.posY, particle2.posY) ||
          !areEqualWithTolerance(particle1.posZ, particle2.posZ) ||
@@ -207,7 +207,7 @@ bool GridTest::areParticlesDifferent(Particle const & particle1, Particle const 
 }
 
 void GridTest::printDifferentParticlesDetails(Particle const & particle1,
-                                              Particle const & particle2) const {
+                                              Particle const & particle2) {
   std::cout << "Partícula diferente encontrada: ID " << particle1.id
             << " || posX: " << particle1.posX << " || grid.posX: " << particle2.posX << "\n";
 

@@ -52,10 +52,10 @@ class GridTest : public Grid {
     static bool areEqualWithTolerance(double value1, double value2);
     static void printDifferentAttributes(double value1, std::string const & attributeName,
                                          double value2);
-    [[nodiscard]] bool areParticlesDifferent(Particle const & particle1,
-                                             Particle const & particle2) const;
-    void printDifferentParticlesDetails(Particle const & particle1,
-                                        Particle const & particle2) const;
+    [[nodiscard]] static bool areParticlesDifferent(Particle const & particle1,
+                                             Particle const & particle2);
+    static void printDifferentParticlesDetails(Particle const & particle1,
+                                        Particle const & particle2);
 };
 
 #endif
