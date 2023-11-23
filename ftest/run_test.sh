@@ -67,11 +67,11 @@ run_tests_num_particles() {
 
 run_tests_simulacion() {
     run_and_verify "" 1 ../files/small.fld ../files/results/small-1.fld 
-    run_and_verify "" 10 ../files/small.fld ../files/results/small-1.fld 
-    run_and_verify "" 100 ../files/small.fld ../files/results/small-1.fld 
-    run_and_verify "" 1 ../files/large.fld ../files/results/large-2.fld 
+    run_and_verify "" 10 ../files/small.fld ../files/results/small-2.fld 
+    run_and_verify "" 100 ../files/small.fld ../files/results/small-3.fld 
+    run_and_verify "" 1 ../files/large.fld ../files/results/large-1.fld 
     run_and_verify "" 10 ../files/large.fld ../files/results/large-2.fld 
-    run_and_verify "" 100 ../files/large.fld ../files/results/large-2.fld 
+    run_and_verify "" 100 ../files/large.fld ../files/results/large-3.fld 
 }
 
 run_tests_iterations() {
