@@ -7,19 +7,12 @@
   1) Después de clonar el proyecto ejecuta ```bash build.sh```. Esto crea la carpeta build y genera una carpeta por cada componente. En esta carpeta se compila el codigo fuente.
   2) Dentro de la carpeta build ejecuta ```make```. Esto compila el proyecto entero. Si solo quieres compilar un componente, ejecuta ```make``` dentro de su carpeta en build.
 
-## Paquetes Linux
- - git
- - cmake
- - cppcheck
+## Utest 
+  Ejecutar ./utest o ctest dentro de la carpeta de compilación
 
-## Extensiones Vs Code
-  - C++
-  - CMake Tools: Sirve para hacer build y make del proyecto de manera más rápida
-  - Code Runner: Permite ejecutar el proyecto o componentes separadas de manera más rápida
+## Ftest
+  Los test deben ejecutarse dentro de la carpeta ftest/ para que resuelva correctamente las rutas
 
-## Clang
-Explicacion
+## Scripts
+  Los scripts dentro del directorio scripts/ para medir el rendimiento y energia de la aplicación deben ejecutarse en ese directorio ya que contiene rutas relativas desde esa ubicacion.
 
-## Optimizaciones 
-### Almacenamiento de cáclulos recurrentes
-  - Si es posible almacenar los cálculos de cuadrados para evitar hacer lo mismos cálculos varias veces
