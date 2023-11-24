@@ -72,7 +72,7 @@ TEST(progargs_archivo_lectura_test, archivo_lectura_no_valido) {
 
 // Tests para la funcion llamada comprobacion_archivo_escritura
 TEST(progargs_archivo_escritura_test, archivo_escritura_valido) {
-  string const archivo_valido = "../../files/out/large-1.fld";
+  string const archivo_valido = "../../files/archivos_pruebas/test_escritura.fld";
   int const funcion           = comprobacion_archivo_escritura(archivo_valido);
   EXPECT_EQ(0, funcion);
 }
